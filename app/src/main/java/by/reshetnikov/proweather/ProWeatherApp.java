@@ -4,15 +4,14 @@ import android.app.Application;
 import android.os.StrictMode;
 import android.util.Log;
 
-/**
- * Created by SacRahl on 5/22/2017.
- */
-
 public class ProWeatherApp extends Application {
 
     private static final String TAG = "ProWeatherApp";
+
+    private static final String baseURL = "https://api.openweathermap.org";
     private static ProWeatherApp proWeatherApp;
     private static AppComponent appComponent;
+
 
     public static ProWeatherApp getProWeatherApp() {
         return proWeatherApp;
@@ -31,8 +30,14 @@ public class ProWeatherApp extends Application {
 
         proWeatherApp = this;
 
-        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+        appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .networkModule(new NetworkModule(baseURL))
+                .build();
 
+    }
 
+    public AppComponent getAppComponent() {
+        return appComponent;
     }
 }

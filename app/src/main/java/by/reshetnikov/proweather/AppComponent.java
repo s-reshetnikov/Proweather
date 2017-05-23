@@ -1,18 +1,15 @@
 package by.reshetnikov.proweather;
 
-import android.content.Context;
+import javax.inject.Singleton;
 
 import dagger.Component;
 
-/**
- * Created by SacRahl on 5/22/2017.
- */
-
-@Component(modules = AppModule.class)
-public interface AppComponent {
+@Singleton
+@Component(modules = {AppModule.class, NetworkModule.class})
+interface AppComponent {
 
     ProWeatherApp getProWeatherApp();
 
-    Context getContext();
+    void injectActivity(WeatherActivity weatherActivity);
 
 }
