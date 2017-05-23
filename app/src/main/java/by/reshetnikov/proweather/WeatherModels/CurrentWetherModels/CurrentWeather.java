@@ -23,10 +23,6 @@ public class CurrentWeather {
     @Expose
     public List<Weather> weather = null;
 
-    @SerializedName("base")
-    @Expose
-    public String base;
-
     @SerializedName("main")
     @Expose
     public Main main;
@@ -43,6 +39,7 @@ public class CurrentWeather {
     @Expose
     public Rain rain;
 
+    //  Time of data calculation, unix, UTC
     @SerializedName("dt")
     @Expose
     public int dt;
@@ -51,16 +48,13 @@ public class CurrentWeather {
     @Expose
     public Sys sys;
 
+    // City ID
     @SerializedName("id")
     @Expose
     public int id;
 
+    // City name
     @SerializedName("name")
     @Expose
     public String name;
-
-    @SerializedName("cod")
-    @Expose
-    public int cod;
-
 }

@@ -15,6 +15,7 @@ public class ForecastWeather {
     @Expose
     public double message;
 
+    // Number of lines returned by this API call
     @SerializedName("cnt")
     @Expose
     public int cnt;

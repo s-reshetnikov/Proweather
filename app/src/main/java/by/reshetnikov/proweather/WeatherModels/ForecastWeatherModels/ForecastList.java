@@ -12,6 +12,7 @@ import by.reshetnikov.proweather.WeatherModels.Wind;
 
 public class ForecastList {
 
+    // Time of data forecasted, unix, UTC
     @SerializedName("dt")
     @Expose
     public int dt;
@@ -40,6 +41,7 @@ public class ForecastList {
     @Expose
     public Sys sys;
 
+    //  Data/time of caluclation, UTC
     @SerializedName("dt_txt")
     @Expose
     public String dtTxt;

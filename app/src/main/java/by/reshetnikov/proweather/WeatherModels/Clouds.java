@@ -5,8 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Clouds {
 
+    // Cloudiness, %
     @SerializedName("all")
     @Expose
-    public int all;
+    public int cloudiness;
 
 }
