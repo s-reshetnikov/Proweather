@@ -1,9 +1,10 @@
 package by.reshetnikov.proweather;
 
-
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
@@ -11,15 +12,17 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
-public class NetworkModule {
+public class NetModule {
 
+    private static final int TIME_OUT = 3;
     private String baseUrl;
 
-    NetworkModule(String baseUrl) {
+    NetModule(String baseUrl) {
         this.baseUrl = baseUrl;
     }
 
@@ -41,9 +44,14 @@ public class NetworkModule {
     @Singleton
     @Provides
     OkHttpClient provideOkHttpClient(Cache cache) {
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.cache(cache);
-        return client.build();
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        return new OkHttpClient.Builder()
+                .cache(cache)
+                .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
+                .addInterceptor(loggingInterceptor)
+                .build();
     }
 
     @Singleton

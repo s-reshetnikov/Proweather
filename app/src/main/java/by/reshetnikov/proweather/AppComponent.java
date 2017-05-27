@@ -5,7 +5,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {AppModule.class, NetworkModule.class})
+@Component(modules = {AppModule.class, NetModule.class})
 interface AppComponent {
 
     ProWeatherApp getProWeatherApp();

@@ -9,17 +9,50 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.HashMap;
+
+import javax.inject.Inject;
+
+import by.reshetnikov.proweather.WeatherModels.CurrentWetherModels.CurrentWeather;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class WeatherActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    @Inject
+    Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
+
+        HashMap<String, String> options = new HashMap<>();
+        options.put("q", "Minsk,BY");
+        String key = "Minsk,BY";
+
+        Call<CurrentWeather> currentWeather = retrofit.create(NetworkService.class).getCurrentWeather(options, key);
+
+        currentWeather.enqueue(new Callback<CurrentWeather>() {
+            @Override
+            public void onResponse(Call<CurrentWeather> call, Response<CurrentWeather> response) {
+                Log.d(WeatherActivity.class.getSimpleName(), "Ok");
+            }
+
+            @Override
+            public void onFailure(Call<CurrentWeather> call, Throwable t) {
+                Log.d(WeatherActivity.class.getSimpleName(), "Error");
+            }
+        });
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
