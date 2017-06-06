@@ -4,11 +4,17 @@ import android.app.Application;
 import android.os.StrictMode;
 import android.util.Log;
 
+import by.reshetnikov.proweather.dagger.component.AppComponent;
+import by.reshetnikov.proweather.dagger.component.DaggerAppComponent;
+import by.reshetnikov.proweather.dagger.module.AppModule;
+import by.reshetnikov.proweather.dagger.module.DataModule;
+
+
 public class ProWeatherApp extends Application {
 
-    private static final String TAG = "ProWeatherApp";
+    private static final String TAG = ProWeatherApp.class.getSimpleName();
 
-    private static final String baseURL = "https://api.openweathermap.org/";
+    private static final String baseURL = "http://api.openweathermap.org/";
     private static ProWeatherApp proWeatherApp;
     private static AppComponent appComponent;
 
@@ -32,7 +38,7 @@ public class ProWeatherApp extends Application {
 
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
-                .netModule(new NetModule(baseURL))
+                .dataModule(new DataModule(baseURL))
                 .build();
 
     }
