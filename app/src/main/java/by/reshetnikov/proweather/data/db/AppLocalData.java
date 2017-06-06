@@ -1,5 +1,10 @@
 package by.reshetnikov.proweather.data.db;
 
+import android.content.Context;
+
+import javax.inject.Inject;
+
+import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.AppDataContract;
 import by.reshetnikov.proweather.data.ForecastType;
 import by.reshetnikov.proweather.data.models.CurrentWetherModels.CurrentWeather;
@@ -11,6 +16,15 @@ import io.reactivex.Observable;
  */
 
 public class AppLocalData implements AppDataContract {
+
+    Context context;
+
+    @Inject
+    public AppLocalData(Context context) {
+        ProWeatherApp.getProWeatherApp().getAppComponent().injectLocalData(this);
+        this.context = context;
+    }
+
     @Override
     public Observable<CurrentWeather> getCurrentWeather() {
         return null;

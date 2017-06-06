@@ -1,8 +1,11 @@
 package by.reshetnikov.proweather.data;
 
+import javax.inject.Inject;
+
+import by.reshetnikov.proweather.data.db.AppLocalData;
 import by.reshetnikov.proweather.data.models.CurrentWetherModels.CurrentWeather;
 import by.reshetnikov.proweather.data.models.ForecastWeatherModels.ForecastWeather;
-import by.reshetnikov.proweather.data.remote.APIService;
+import by.reshetnikov.proweather.data.remote.AppRemoteData;
 import io.reactivex.Observable;
 
 /**
@@ -11,10 +14,13 @@ import io.reactivex.Observable;
 
 public class RepositoryWeather implements AppDataContract {
 
-    APIService networkService;
+    private AppLocalData appLocalData;
+    private AppRemoteData appRemoteData;
 
-    public RepositoryWeather(APIService networkService) {
-        this.networkService = networkService;
+    @Inject
+    public RepositoryWeather(AppLocalData appLocalData, AppRemoteData appRemoteData) {
+        this.appLocalData = appLocalData;
+        this.appRemoteData = appRemoteData;
     }
 
     @Override

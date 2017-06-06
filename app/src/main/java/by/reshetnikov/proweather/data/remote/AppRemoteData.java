@@ -16,9 +16,6 @@ import by.reshetnikov.proweather.utils.ApiUtils;
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
 
-/**
- * Created by SacRahl on 6/6/2017.
- */
 
 public class AppRemoteData implements AppDataContract {
 
@@ -27,16 +24,20 @@ public class AppRemoteData implements AppDataContract {
     @Inject
     Retrofit retrofit;
 
+    APIService apiService;
+
+    @Inject
     public AppRemoteData() {
-        ProWeatherApp.getProWeatherApp().getAppComponent().inject(this);
+        ProWeatherApp.getProWeatherApp().getAppComponent().injectRemoteData(this);
+        apiService = retrofit.create(APIService.class);
     }
 
     @Override
     public Observable<CurrentWeather> getCurrentWeather() {
         Log.d(TAG, "getCurrentWeather() start");
 
-        APIService apiService = retrofit.create(APIService.class);
-        Observable<CurrentWeather> currentWeather = apiService.getCurrentWeather(getApiQuery());
+
+        // Observable<CurrentWeather> currentWeather = apiService.getCurrentWeather(getApiQuery()).doOnNext(new Action1(){});
         Log.d(TAG, "getCurrentWeather() end");
         return null;
     }

@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import by.reshetnikov.proweather.R;
+import by.reshetnikov.proweather.utils.FragmentUtils;
 import by.reshetnikov.proweather.weather.currentweather.CurrentWeatherFragment;
 
 public class WeatherActivity extends AppCompatActivity
@@ -62,11 +61,10 @@ public class WeatherActivity extends AppCompatActivity
                 return;
             }
 
-            CurrentWeatherFragment currentWeatherFragment = new CurrentWeatherFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.weather_fragment_placeholder, currentWeatherFragment);
-            fragmentTransaction.commit();
+            FragmentUtils.replaceFragment(getSupportFragmentManager(),
+                    R.id.weather_fragment_placeholder,
+                    new CurrentWeatherFragment());
+
         }
 
         Log.d(TAG, "onCreate end");

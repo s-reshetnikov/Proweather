@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather;
+package by.reshetnikov.proweather.dagger.module;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -8,6 +8,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
+import by.reshetnikov.proweather.ProWeatherApp;
+import by.reshetnikov.proweather.data.db.AppLocalData;
+import by.reshetnikov.proweather.data.remote.AppRemoteData;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
@@ -17,12 +20,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
-public class NetModule {
+public class DataModule {
 
-    private static final int TIME_OUT = 3;
+    private static final int TIME_OUT = 3; //in seconds
     private String baseUrl;
 
-    NetModule(String baseUrl) {
+    public DataModule(String baseUrl) {
         this.baseUrl = baseUrl;
     }
 
@@ -64,4 +67,15 @@ public class NetModule {
                 .build();
     }
 
+    @Provides
+    @Singleton
+    AppLocalData provideLocalDataP(ProWeatherApp context) {
+        return new AppLocalData(context);
+    }
+
+    @Provides
+    @Singleton
+    AppRemoteData provideAppRemoteData() {
+        return new AppRemoteData();
+    }
 }

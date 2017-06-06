@@ -1,18 +1,19 @@
-package by.reshetnikov.proweather;
+package by.reshetnikov.proweather.dagger.module;
 
 import android.content.Context;
 
 import javax.inject.Singleton;
 
+import by.reshetnikov.proweather.ProWeatherApp;
 import dagger.Module;
 import dagger.Provides;
 
 @Module
-class AppModule {
+public class AppModule {
 
     private Context context;
 
-    AppModule(Context context) {
+    public AppModule(Context context) {
         this.context = context;
     }
 
