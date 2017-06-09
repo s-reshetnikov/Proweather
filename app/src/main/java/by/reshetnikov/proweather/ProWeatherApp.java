@@ -41,6 +41,8 @@ public class ProWeatherApp extends Application {
                 .dataModule(new DataModule(baseURL))
                 .build();
 
+        Log.d(TAG, "onCreate() end");
+
     }
 
     public AppComponent getAppComponent() {

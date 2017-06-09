@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import javax.inject.Inject;
+
 import by.reshetnikov.proweather.R;
 
 /**
@@ -20,12 +22,12 @@ import by.reshetnikov.proweather.R;
  */
 public class CurrentWeatherFragment extends Fragment implements CurrentWeatherContract.View,
         View.OnClickListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    @Inject
+    CurrentWeatherPresenter presenter;
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private Button btnWeatherDetails;
@@ -33,7 +35,6 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     private OnFragmentInteractionListener mListener;
 
     public CurrentWeatherFragment() {
-        // Required empty public constructor
     }
 
     /**

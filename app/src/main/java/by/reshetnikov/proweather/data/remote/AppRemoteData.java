@@ -1,7 +1,6 @@
 package by.reshetnikov.proweather.data.remote;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.HashMap;
 
@@ -24,34 +23,34 @@ public class AppRemoteData implements AppDataContract {
     @Inject
     Retrofit retrofit;
 
-    APIService apiService;
+    WeatherApi weatherApi;
 
     @Inject
     public AppRemoteData() {
         ProWeatherApp.getProWeatherApp().getAppComponent().injectRemoteData(this);
-        apiService = retrofit.create(APIService.class);
+        weatherApi = retrofit.create(WeatherApi.class);
     }
 
     @Override
     public Observable<CurrentWeather> getCurrentWeather() {
-        Log.d(TAG, "getCurrentWeather() start");
+        return weatherApi.getCurrentWeather(getCurrentWeatherApiQuery());
+    }
 
-
-        // Observable<CurrentWeather> currentWeather = apiService.getCurrentWeather(getApiQuery()).doOnNext(new Action1(){});
-        Log.d(TAG, "getCurrentWeather() end");
-        return null;
+    @Override
+    public Observable<ForecastWeather> getForecastWeather(ForecastType forecastType) {
+        return weatherApi.getForecastWeather(getForecastWeatherApiQuery());
     }
 
     @NonNull
-    private HashMap<String, String> getApiQuery() {
+    private HashMap<String, String> getCurrentWeatherApiQuery() {
         HashMap<String, String> queryParams = new HashMap<>();
         queryParams.put(ApiUtils.CITY_NAME_PARAM, "Minsk, BY");
         queryParams.put(ApiUtils.API_KEY_PARAM, ApiUtils.getApiKey());
         return queryParams;
     }
 
-    @Override
-    public Observable<ForecastWeather> getForecastWeather(ForecastType forecastType) {
-        return null;
+    @NonNull
+    private HashMap<String, String> getForecastWeatherApiQuery() {
+        return getCurrentWeatherApiQuery();
     }
 }
