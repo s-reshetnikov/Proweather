@@ -1,5 +1,6 @@
 package by.reshetnikov.proweather.weather;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,8 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
 import by.reshetnikov.proweather.R;
+import by.reshetnikov.proweather.data.DataRepository;
+import by.reshetnikov.proweather.settings.SettingsActivity;
 import by.reshetnikov.proweather.utils.FragmentUtils;
+import by.reshetnikov.proweather.utils.ToastUtils;
 import by.reshetnikov.proweather.weather.currentweather.CurrentWeatherFragment;
 
 public class WeatherActivity extends AppCompatActivity
@@ -24,6 +30,9 @@ public class WeatherActivity extends AppCompatActivity
         CurrentWeatherFragment.OnFragmentInteractionListener {
 
     private final String TAG = WeatherActivity.class.getSimpleName();
+
+    @Inject
+    DataRepository dataRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,39 +101,28 @@ public class WeatherActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent settingsActivityIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsActivityIntent);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        switch (id) {
+            case R.id.nav_camera: {
+                Toast toast = Toast.makeText(this, "Camera", Toast.LENGTH_SHORT);
+                ToastUtils.showToast(toast);
+            }
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -142,16 +140,20 @@ public class WeatherActivity extends AppCompatActivity
 
     @Override
     public void showProgress() {
+        Toast loadingToast = Toast.makeText(this, "Loading ...", Toast.LENGTH_LONG);
+        ToastUtils.showToast(loadingToast);
 
     }
 
     @Override
     public void hideProgress() {
-
+        Toast loadedToast = Toast.makeText(this, "Loaded!!!", Toast.LENGTH_SHORT);
+        ToastUtils.showToast(loadedToast);
     }
 
     @Override
     public void showError(String message) {
-
+        Toast errorToast = Toast.makeText(this, "Some error :(", Toast.LENGTH_SHORT);
+        ToastUtils.showToast(errorToast);
     }
 }
