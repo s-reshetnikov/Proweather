@@ -9,8 +9,8 @@ import javax.inject.Inject;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.AppDataContract;
 import by.reshetnikov.proweather.data.ForecastType;
-import by.reshetnikov.proweather.data.models.CurrentWetherModels.CurrentWeather;
-import by.reshetnikov.proweather.data.models.ForecastWeatherModels.ForecastWeather;
+import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
+import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
 import by.reshetnikov.proweather.utils.ApiUtils;
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
@@ -25,9 +25,8 @@ public class AppRemoteData implements AppDataContract {
 
     WeatherApi weatherApi;
 
-    @Inject
     public AppRemoteData() {
-        ProWeatherApp.getProWeatherApp().getAppComponent().injectRemoteData(this);
+        ProWeatherApp.getProWeatherApp().getAppComponent().inject(this);
         weatherApi = retrofit.create(WeatherApi.class);
     }
 

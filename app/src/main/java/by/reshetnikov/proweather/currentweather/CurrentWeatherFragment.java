@@ -1,16 +1,22 @@
-package by.reshetnikov.proweather.weather.currentweather;
+package by.reshetnikov.proweather.currentweather;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import javax.inject.Inject;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import by.reshetnikov.proweather.R;
+import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
+import by.reshetnikov.proweather.data.apimodels.Main;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,48 +26,39 @@ import by.reshetnikov.proweather.R;
  * Use the {@link CurrentWeatherFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CurrentWeatherFragment extends Fragment implements CurrentWeatherContract.View,
-        View.OnClickListener {
+public class CurrentWeatherFragment extends Fragment implements CurrentWeatherContract.View {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    @Inject
+    //@Inject
     CurrentWeatherPresenter presenter;
-
-    private String mParam1;
-    private String mParam2;
-    private Button btnWeatherDetails;
-
+    @BindView(R.id.tv_feels_like_temp)
+    TextView tvFeelsLikeTemperature;
+    @BindView(R.id.tv_humidity)
+    TextView tvHumidity;
+    @BindView(R.id.tv_max_min_temp)
+    TextView tvMaxMinTemperature;
+    @BindView(R.id.tv_precipitation)
+    TextView tvPrecipitation;
+    @BindView(R.id.tv_temp)
+    TextView tvTemperature;
+    @BindView(R.id.tv_wind)
+    TextView tvWind;
+    @BindView(R.id.btn_weather_details)
+    Button btnWeatherDetails;
+    @BindView(R.id.img_weather)
+    ImageView imgWeather;
     private OnFragmentInteractionListener mListener;
 
     public CurrentWeatherFragment() {
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CurrentWeatherFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CurrentWeatherFragment newInstance(String param1, String param2) {
-        CurrentWeatherFragment fragment = new CurrentWeatherFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static CurrentWeatherFragment newInstance() {
+        return new CurrentWeatherFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        presenter = new CurrentWeatherPresenter(this.getContext());
     }
 
     @Override
@@ -69,11 +66,16 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_current_weather, container, false);
-        btnWeatherDetails = (Button) view.findViewById(R.id.btn_weather_details);
-        btnWeatherDetails.setOnClickListener(this);
+        ButterKnife.bind(this, view);
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.setView(this);
+        presenter.loadCurrentWeather();
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onFragmentPressed(String message) {
@@ -97,11 +99,13 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        presenter.destroy();
     }
 
-    @Override
+    @OnClick(R.id.btn_weather_details)
     public void onClick(View v) {
         onFragmentPressed("Button clicked");
+
     }
 
     @Override
@@ -110,8 +114,16 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     }
 
     @Override
-    public void showCurrentWeather() {
+    public void showCurrentWeather(CurrentWeather currentWeather) {
+        if (currentWeather.main != null) {
+            Main mainWeatherData = currentWeather.main;
+            tvHumidity.setText(String.valueOf(mainWeatherData.humidity));
 
+            tvMaxMinTemperature.setText(String.valueOf(Math.floor(mainWeatherData.tempMin)) + " - " +
+                    String.valueOf(Math.floor(mainWeatherData.tempMax)));
+            tvTemperature.setText(String.valueOf(Math.floor(mainWeatherData.temperature)));
+            tvPrecipitation.setText(mainWeatherData);
+        }
     }
 
     /**
@@ -127,4 +139,4 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     public interface OnFragmentInteractionListener {
         void onCurrentWeatherFragmentInteraction(String message);
     }
-}
+    }

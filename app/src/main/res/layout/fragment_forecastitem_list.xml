@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="by.reshetnikov.proweather.weather.weatherForecast.ForecastFragment"
+    tools:context="by.reshetnikov.proweather.weatherForecast.WeatherForecastFragment"
     tools:listitem="@layout/fragment_forecastitem" />

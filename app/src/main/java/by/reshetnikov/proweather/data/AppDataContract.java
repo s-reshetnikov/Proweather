@@ -1,7 +1,7 @@
 package by.reshetnikov.proweather.data;
 
-import by.reshetnikov.proweather.data.models.CurrentWetherModels.CurrentWeather;
-import by.reshetnikov.proweather.data.models.ForecastWeatherModels.ForecastWeather;
+import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
+import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
 import io.reactivex.Observable;
 
 /**

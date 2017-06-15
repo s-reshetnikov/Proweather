@@ -2,8 +2,8 @@ package by.reshetnikov.proweather.data.remote;
 
 import java.util.Map;
 
-import by.reshetnikov.proweather.data.models.CurrentWetherModels.CurrentWeather;
-import by.reshetnikov.proweather.data.models.ForecastWeatherModels.ForecastWeather;
+import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
+import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.QueryMap;

@@ -1,17 +1,17 @@
-package by.reshetnikov.proweather.data.models.CurrentWetherModels;
+package by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import by.reshetnikov.proweather.data.models.Clouds;
-import by.reshetnikov.proweather.data.models.Coordinates;
-import by.reshetnikov.proweather.data.models.Main;
-import by.reshetnikov.proweather.data.models.Rain;
-import by.reshetnikov.proweather.data.models.Sys;
-import by.reshetnikov.proweather.data.models.Weather;
-import by.reshetnikov.proweather.data.models.Wind;
+import by.reshetnikov.proweather.data.apimodels.Clouds;
+import by.reshetnikov.proweather.data.apimodels.Coordinates;
+import by.reshetnikov.proweather.data.apimodels.Main;
+import by.reshetnikov.proweather.data.apimodels.Rain;
+import by.reshetnikov.proweather.data.apimodels.Sys;
+import by.reshetnikov.proweather.data.apimodels.Weather;
+import by.reshetnikov.proweather.data.apimodels.Wind;
 
 public class CurrentWeather {
 

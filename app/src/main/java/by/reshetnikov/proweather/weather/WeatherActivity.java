@@ -19,17 +19,21 @@ import android.widget.Toast;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.R;
+import by.reshetnikov.proweather.currentweather.CurrentWeatherFragment;
 import by.reshetnikov.proweather.data.DataRepository;
 import by.reshetnikov.proweather.settings.SettingsActivity;
 import by.reshetnikov.proweather.utils.FragmentUtils;
 import by.reshetnikov.proweather.utils.ToastUtils;
-import by.reshetnikov.proweather.weather.currentweather.CurrentWeatherFragment;
+
 
 public class WeatherActivity extends AppCompatActivity
         implements WeatherContract.View, NavigationView.OnNavigationItemSelectedListener,
         CurrentWeatherFragment.OnFragmentInteractionListener {
 
     private final String TAG = WeatherActivity.class.getSimpleName();
+
+    // @Inject
+    WeatherContract.WeatherPresenter presenter;
 
     @Inject
     DataRepository dataRepository;
@@ -39,6 +43,7 @@ public class WeatherActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate start");
         setContentView(R.layout.activity_weather);
+        //((ProWeatherApp)this.getApplication()).
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,17 +68,13 @@ public class WeatherActivity extends AppCompatActivity
 
         if (findViewById(R.id.weather_fragment_placeholder) != null) {
 
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
             if (savedInstanceState != null) {
                 return;
             }
 
             FragmentUtils.replaceFragment(getSupportFragmentManager(),
                     R.id.weather_fragment_placeholder,
-                    new CurrentWeatherFragment());
-
+                    CurrentWeatherFragment.newInstance());
         }
 
         Log.d(TAG, "onCreate end");
@@ -103,14 +104,17 @@ public class WeatherActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent settingsActivityIntent = new Intent(this, SettingsActivity.class);
-            startActivity(settingsActivityIntent);
+            startSettingsActivity();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startSettingsActivity() {
+        Intent settingsActivityIntent = new Intent(this, SettingsActivity.class);
+        startActivity(settingsActivityIntent);
     }
 
     @Override
@@ -118,9 +122,9 @@ public class WeatherActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.nav_camera: {
-                Toast toast = Toast.makeText(this, "Camera", Toast.LENGTH_SHORT);
-                ToastUtils.showToast(toast);
+            case R.id.nav_settings: {
+                startSettingsActivity();
+                break;
             }
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -135,7 +139,7 @@ public class WeatherActivity extends AppCompatActivity
 
     @Override
     public void setPresenter(WeatherContract.WeatherPresenter presenter) {
-
+        this.presenter = presenter;
     }
 
     @Override

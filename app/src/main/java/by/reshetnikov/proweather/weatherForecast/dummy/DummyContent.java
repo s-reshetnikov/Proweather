@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.weather.weatherForecast.dummy;
+package by.reshetnikov.proweather.weatherForecast.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

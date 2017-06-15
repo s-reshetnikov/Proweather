@@ -1,14 +1,14 @@
-package by.reshetnikov.proweather.data.models.ForecastWeatherModels;
+package by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import by.reshetnikov.proweather.data.models.Clouds;
-import by.reshetnikov.proweather.data.models.Main;
-import by.reshetnikov.proweather.data.models.Snow;
-import by.reshetnikov.proweather.data.models.Sys;
-import by.reshetnikov.proweather.data.models.Weather;
-import by.reshetnikov.proweather.data.models.Wind;
+import by.reshetnikov.proweather.data.apimodels.Clouds;
+import by.reshetnikov.proweather.data.apimodels.Main;
+import by.reshetnikov.proweather.data.apimodels.Snow;
+import by.reshetnikov.proweather.data.apimodels.Sys;
+import by.reshetnikov.proweather.data.apimodels.Weather;
+import by.reshetnikov.proweather.data.apimodels.Wind;
 
 public class ForecastList {
 

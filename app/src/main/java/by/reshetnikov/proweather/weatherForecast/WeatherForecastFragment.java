@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.weather.weatherForecast;
+package by.reshetnikov.proweather.weatherForecast;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.weather.weatherForecast.dummy.DummyContent;
-import by.reshetnikov.proweather.weather.weatherForecast.dummy.DummyContent.DummyItem;
+import by.reshetnikov.proweather.weatherForecast.dummy.DummyContent;
+import by.reshetnikov.proweather.weatherForecast.dummy.DummyContent.DummyItem;
 
 /**
  * A fragment representing a list of Items.
@@ -20,7 +20,7 @@ import by.reshetnikov.proweather.weather.weatherForecast.dummy.DummyContent.Dumm
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ForecastFragment extends Fragment {
+public class WeatherForecastFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -32,13 +32,13 @@ public class ForecastFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ForecastFragment() {
+    public WeatherForecastFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ForecastFragment newInstance(int columnCount) {
-        ForecastFragment fragment = new ForecastFragment();
+    public static WeatherForecastFragment newInstance(int columnCount) {
+        WeatherForecastFragment fragment = new WeatherForecastFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);

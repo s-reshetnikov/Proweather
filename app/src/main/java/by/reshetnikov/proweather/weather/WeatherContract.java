@@ -18,5 +18,7 @@ public interface WeatherContract {
 
     interface WeatherPresenter extends BasePresenter {
         void getCitiesList();
+
+        void setView(WeatherContract.View view);
     }
 }

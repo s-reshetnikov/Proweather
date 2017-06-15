@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.weather.weatherForecast;
+package by.reshetnikov.proweather.weatherForecast;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,20 +9,19 @@ import android.widget.TextView;
 import java.util.List;
 
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.weather.weatherForecast.ForecastFragment.OnListFragmentInteractionListener;
-import by.reshetnikov.proweather.weather.weatherForecast.dummy.DummyContent.DummyItem;
+import by.reshetnikov.proweather.weatherForecast.dummy.DummyContent.DummyItem;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link WeatherForecastFragment.OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class ForecastItemRecyclerViewAdapter extends RecyclerView.Adapter<ForecastItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final WeatherForecastFragment.OnListFragmentInteractionListener mListener;
 
-    public ForecastItemRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public ForecastItemRecyclerViewAdapter(List<DummyItem> items, WeatherForecastFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }

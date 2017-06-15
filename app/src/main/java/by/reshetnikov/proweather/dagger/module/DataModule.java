@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
+import by.reshetnikov.proweather.data.DataRepository;
 import by.reshetnikov.proweather.data.db.AppLocalData;
 import by.reshetnikov.proweather.data.remote.AppRemoteData;
 import dagger.Module;
@@ -17,6 +18,7 @@ import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
@@ -63,19 +65,26 @@ public class DataModule {
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(client)
                 .build();
     }
 
-    @Provides
     @Singleton
-    AppLocalData provideLocalDataP(ProWeatherApp context) {
+    @Provides
+    AppLocalData provideLocalData(ProWeatherApp context) {
         return new AppLocalData(context);
     }
 
-    @Provides
     @Singleton
+    @Provides
     AppRemoteData provideAppRemoteData() {
         return new AppRemoteData();
+    }
+
+    @Singleton
+    @Provides
+    DataRepository provideDataRepository() {
+        return new DataRepository();
     }
 }

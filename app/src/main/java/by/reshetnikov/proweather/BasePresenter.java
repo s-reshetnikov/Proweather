@@ -6,10 +6,6 @@ package by.reshetnikov.proweather;
 
 public interface BasePresenter {
 
-    void Subscribe();
-
-    void Unsubscribe();
-
     void resume();
 
     void pause();

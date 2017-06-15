@@ -1,9 +1,9 @@
-package by.reshetnikov.proweather.data.models.ForecastWeatherModels;
+package by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import by.reshetnikov.proweather.data.models.City;
+import by.reshetnikov.proweather.data.apimodels.City;
 
 public class ForecastWeather {
 

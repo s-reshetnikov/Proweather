@@ -1,8 +1,9 @@
-package by.reshetnikov.proweather.weather.currentweather;
+package by.reshetnikov.proweather.currentweather;
+
 
 import by.reshetnikov.proweather.BasePresenter;
 import by.reshetnikov.proweather.BaseView;
-import by.reshetnikov.proweather.data.models.CurrentWetherModels.CurrentWeather;
+import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
 
 /**
  * Created by SacRahl on 6/5/2017.
@@ -12,10 +13,12 @@ public interface CurrentWeatherContract {
 
     interface View extends BaseView<CurrentWeatherPresenter> {
 
-        void showCurrentWeather();
+        void showCurrentWeather(CurrentWeather currentWeather);
     }
 
     interface CurrentWeatherPresenter extends BasePresenter {
-        CurrentWeather getCurrentWeather(String cityId);
+        void loadCurrentWeather();
+
+        void setView(CurrentWeatherContract.View view);
     }
 }
