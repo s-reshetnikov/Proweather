@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.DataRepository;
 import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
+import by.reshetnikov.proweather.data.appmodels.CurrentWeatherAppModel;
 import by.reshetnikov.proweather.utils.ToastUtils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -66,10 +67,11 @@ public class CurrentWeatherPresenter implements CurrentWeatherContract.CurrentWe
                 .subscribeWith(new DisposableObserver<CurrentWeather>() {
 
                     @Override
-                    public void onNext(@NonNull CurrentWeather currentWeather) {
+                    public void onNext(@NonNull CurrentWeather currentWeatherData) {
 
                         Toast toast = Toast.makeText(context, "Current weather request completed", Toast.LENGTH_SHORT);
                         ToastUtils.showToast(toast);
+                        CurrentWeatherAppModel currentWeather = new CurrentWeatherAppModel(currentWeatherData);
                         view.showCurrentWeather(currentWeather);
                     }
 

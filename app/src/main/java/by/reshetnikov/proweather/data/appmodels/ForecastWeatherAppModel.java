@@ -6,11 +6,11 @@ import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWe
  * Created by SacRahl on 6/12/2017.
  */
 
-public class ForecastWeatherApp {
+public class ForecastWeatherAppModel {
 
     private final ForecastWeather weather;
 
-    public ForecastWeatherApp(ForecastWeather weather) {
+    public ForecastWeatherAppModel(ForecastWeather weather) {
         this.weather = weather;
     }
 }

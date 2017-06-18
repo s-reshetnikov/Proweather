@@ -3,6 +3,7 @@ package by.reshetnikov.proweather.data.remote;
 import android.support.annotation.NonNull;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -13,6 +14,7 @@ import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeat
 import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
 import by.reshetnikov.proweather.utils.ApiUtils;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.Retrofit;
 
 
@@ -38,6 +40,18 @@ public class AppRemoteData implements AppDataContract {
     @Override
     public Observable<ForecastWeather> getForecastWeather(ForecastType forecastType) {
         return weatherApi.getForecastWeather(getForecastWeatherApiQuery());
+    }
+
+    @Deprecated
+    @Override
+    public Single<Map<String, String>> getSettings() {
+        return null;
+    }
+
+    @Deprecated
+    @Override
+    public void saveSettings(Map<String, String> strings) {
+
     }
 
     @NonNull

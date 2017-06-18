@@ -15,8 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
-import by.reshetnikov.proweather.data.apimodels.Main;
+import by.reshetnikov.proweather.data.appmodels.CurrentWeatherAppModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -114,16 +113,12 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     }
 
     @Override
-    public void showCurrentWeather(CurrentWeather currentWeather) {
-        if (currentWeather.main != null) {
-            Main mainWeatherData = currentWeather.main;
-            tvHumidity.setText(String.valueOf(mainWeatherData.humidity));
-
-            tvMaxMinTemperature.setText(String.valueOf(Math.floor(mainWeatherData.tempMin)) + " - " +
-                    String.valueOf(Math.floor(mainWeatherData.tempMax)));
-            tvTemperature.setText(String.valueOf(Math.floor(mainWeatherData.temperature)));
-            tvPrecipitation.setText(mainWeatherData);
-        }
+    public void showCurrentWeather(CurrentWeatherAppModel currentWeather) {
+        tvHumidity.setText(currentWeather.getHumidity());
+        tvTemperature.setText(currentWeather.getTemperature());
+        //tvPrecipitation.setText();
+        //tvFeelsLikeTemperature.setText();
+        tvWind.setText(currentWeather.getWind() + ", " + currentWeather.getWindDirection());
     }
 
     /**
@@ -139,4 +134,4 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     public interface OnFragmentInteractionListener {
         void onCurrentWeatherFragmentInteraction(String message);
     }
-    }
+}
