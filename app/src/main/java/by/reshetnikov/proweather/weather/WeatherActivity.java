@@ -1,10 +1,18 @@
 package by.reshetnikov.proweather.weather;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,7 +39,7 @@ public class WeatherActivity extends AppCompatActivity
         CurrentWeatherFragment.OnFragmentInteractionListener {
 
     private final String TAG = WeatherActivity.class.getSimpleName();
-
+    private final int PERMISSION_REQUEST_CODE = 1409;
     // @Inject
     WeatherContract.WeatherPresenter presenter;
 
@@ -57,7 +65,7 @@ public class WeatherActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.weather_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -65,6 +73,14 @@ public class WeatherActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        if (hasPermissions()) {
+            createLocationSevice();
+
+        } else {
+            //our app doesn't have permissions, So i m requesting permissions.
+            requestPermissionWithRationale();
+        }
 
         if (findViewById(R.id.weather_fragment_placeholder) != null) {
 
@@ -83,7 +99,7 @@ public class WeatherActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed start");
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.weather_view);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             Log.d(TAG, "close drawer");
             drawer.closeDrawer(GravityCompat.START);
@@ -127,7 +143,7 @@ public class WeatherActivity extends AppCompatActivity
                 break;
             }
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.weather_view);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -160,4 +176,88 @@ public class WeatherActivity extends AppCompatActivity
         Toast errorToast = Toast.makeText(this, "Some error :(", Toast.LENGTH_SHORT);
         ToastUtils.showToast(errorToast);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        boolean allowed = true;
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            for (int result : grantResults)
+                allowed = allowed && result == PackageManager.PERMISSION_GRANTED;
+        }
+
+        if (allowed) {
+            createLocationSevice();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    Toast warning = Toast.makeText(this, R.string.location_permission_denied, Toast.LENGTH_SHORT);
+                    ToastUtils.showToast(warning);
+
+                } else {
+                    showNoLocationPermissionSnackbar();
+                }
+            }
+        }
+    }
+
+    private void createLocationSevice() {
+
+    }
+
+    private void requestPermissionWithRationale() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            final String message = getString(R.string.location_needed_to_locate_position);
+            Snackbar.make(this.findViewById(R.id.weather_view), message, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.grant_snackbar, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            requestPermissions();
+                        }
+                    })
+                    .show();
+        } else {
+            requestPermissions();
+        }
+    }
+
+    private boolean hasPermissions() {
+        int check = 0;
+        String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION};
+        for (String permission : permissions) {
+            check = ContextCompat.checkSelfPermission(this, permission);
+            if (check == PackageManager.PERMISSION_DENIED)
+                return false;
+        }
+        return true;
+    }
+
+    private void requestPermissions() {
+        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(permissions, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    void showNoLocationPermissionSnackbar() {
+        Snackbar.make(this.findViewById(R.id.weather_view), R.string.location_permission_not_granated, Snackbar.LENGTH_LONG)
+                .setAction(R.string.settings_snackbar, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openApplicationSettings();
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                R.string.grant_location_permission, Toast.LENGTH_SHORT);
+                        ToastUtils.showToast(toast);
+                    }
+                }).show();
+    }
+
+    private void openApplicationSettings() {
+        Intent appSettingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:" + getPackageName()));
+        startActivityForResult(appSettingsIntent, PERMISSION_REQUEST_CODE);
+    }
+
+
 }
+
