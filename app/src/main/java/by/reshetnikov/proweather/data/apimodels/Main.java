@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Main {
 
-    // Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.
+    // Temperature. Unit Default: KELVIN, Metric: CELSIUS, Imperial: FAHRENHEIT.
     @SerializedName("temp")
     @Expose
     public double temperature;

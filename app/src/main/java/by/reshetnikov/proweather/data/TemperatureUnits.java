@@ -6,7 +6,7 @@ package by.reshetnikov.proweather.data;
 
 public enum TemperatureUnits {
 
-    Kelvin,
-    Celsius,
-    Fahrenheit
+    KELVIN,
+    CELSIUS,
+    FAHRENHEIT
 }

@@ -1,21 +1,19 @@
 package by.reshetnikov.proweather.data;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
 import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
+import by.reshetnikov.proweather.data.appmodels.CityAppModel;
 import by.reshetnikov.proweather.data.db.AppLocalData;
 import by.reshetnikov.proweather.data.remote.AppRemoteData;
 import by.reshetnikov.proweather.utils.NetworkUtils;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-/**
- * Created by SacRahl on 5/31/2017.
- */
 
 public class DataRepository implements AppDataContract {
 
@@ -49,12 +47,32 @@ public class DataRepository implements AppDataContract {
     }
 
     @Override
-    public Single<Map<String, String>> getSettings() {
+    public Single<List<CityAppModel>> getSavedCities() {
         return null;
     }
 
     @Override
-    public void saveSettings(Map<String, String> strings) {
+    public void saveCity(CityAppModel city) {
 
+    }
+
+    @Override
+    public boolean canUseCurrentLocation() {
+        return appLocalData.canUseCurrentLocation();
+    }
+
+    @Override
+    public TemperatureUnits getTemperatureUnit() {
+        return appLocalData.getTemperatureUnit();
+    }
+
+    @Override
+    public DistanceUnits getDistanceUnit() {
+        return appLocalData.getDistanceUnit();
+    }
+
+    @Override
+    public WindSpeedUnits getWindSpeedUnit() {
+        return appLocalData.getWindSpeedUnit();
     }
 }

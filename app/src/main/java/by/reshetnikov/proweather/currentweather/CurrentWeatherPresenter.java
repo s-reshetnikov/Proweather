@@ -29,8 +29,8 @@ public class CurrentWeatherPresenter implements CurrentWeatherContract.CurrentWe
 
     public CurrentWeatherPresenter(Context context) {
         this.context = context;
-        compositeDisposable = new CompositeDisposable();
         ((ProWeatherApp) context.getApplicationContext()).getAppComponent().inject(this);
+        compositeDisposable = new CompositeDisposable();
     }
 
     @Override

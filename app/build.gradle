@@ -78,7 +78,6 @@ dependencies {
     compile "io.reactivex.rxjava2:rxjava:${rxJavaVersion}"
     compile "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}"
 
-
     // Network
     compile "com.squareup.okhttp3:okhttp:${okhttpVersion}"
     compile "com.squareup.okhttp3:logging-interceptor:${okhttpVersion}"

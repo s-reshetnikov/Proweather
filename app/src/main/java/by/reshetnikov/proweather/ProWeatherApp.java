@@ -2,6 +2,7 @@ package by.reshetnikov.proweather;
 
 import android.app.Application;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import by.reshetnikov.proweather.dagger.component.AppComponent;
@@ -41,8 +42,17 @@ public class ProWeatherApp extends Application {
                 .dataModule(new DataModule(baseURL))
                 .build();
 
+        setPreferenceDefaultValues(false);
+
+
         Log.d(TAG, "onCreate() end");
 
+    }
+
+    private void setPreferenceDefaultValues(boolean canReadAgain) {
+        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_location, canReadAgain);
+        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_units, canReadAgain);
+        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_notification, canReadAgain);
     }
 
     public AppComponent getAppComponent() {

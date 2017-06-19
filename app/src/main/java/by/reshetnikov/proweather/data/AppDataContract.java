@@ -1,15 +1,13 @@
 package by.reshetnikov.proweather.data;
 
-import java.util.Map;
+import java.util.List;
 
 import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
 import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
+import by.reshetnikov.proweather.data.appmodels.CityAppModel;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-/**
- * Created by SacRahl on 6/6/2017.
- */
 
 public interface AppDataContract {
 
@@ -17,8 +15,16 @@ public interface AppDataContract {
 
     Observable<ForecastWeather> getForecastWeather(ForecastType forecastType);
 
-    Single<Map<String, String>> getSettings();
+    Single<List<CityAppModel>> getSavedCities();
 
-    void saveSettings(Map<String, String> strings);
+    void saveCity(CityAppModel city);
+
+    boolean canUseCurrentLocation();
+
+    TemperatureUnits getTemperatureUnit();
+
+    DistanceUnits getDistanceUnit();
+
+    WindSpeedUnits getWindSpeedUnit();
 
 }

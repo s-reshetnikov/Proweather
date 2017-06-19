@@ -1,15 +1,12 @@
 package by.reshetnikov.proweather.data.appmodels;
 
-import by.reshetnikov.proweather.data.MeasureUnits;
+import by.reshetnikov.proweather.data.DistanceUnits;
 import by.reshetnikov.proweather.data.TemperatureUnits;
 import by.reshetnikov.proweather.data.WindDirection;
 import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
 import by.reshetnikov.proweather.data.apimodels.Wind;
 import by.reshetnikov.proweather.utils.UnitUtils;
 
-/**
- * Created by SacRahl on 6/12/2017.
- */
 
 public class CurrentWeatherAppModel {
 
@@ -23,25 +20,25 @@ public class CurrentWeatherAppModel {
 
     public CurrentWeatherAppModel(CurrentWeather weather) {
 
-        MeasureUnits measureUnits = MeasureUnits.Meter;
-        TemperatureUnits temperatureUnits = TemperatureUnits.Celsius;
+        DistanceUnits distanceUnits = DistanceUnits.METER;
+        TemperatureUnits temperatureUnits = TemperatureUnits.CELSIUS;
 
         humidity = String.valueOf(weather.main.humidity) + "%";
         windDirection = getWindDirection(weather.wind).name();
 
-        if (MeasureUnits.Meter == measureUnits) {
+        if (DistanceUnits.METER == distanceUnits) {
             wind = String.valueOf(weather.wind.speed);
         }
-        if (MeasureUnits.Mile == measureUnits) {
+        if (DistanceUnits.MILE == distanceUnits) {
             wind = String.valueOf(weather.wind.speed);
         }
-        if (TemperatureUnits.Kelvin == temperatureUnits) {
+        if (TemperatureUnits.KELVIN == temperatureUnits) {
             temperature = String.valueOf(weather.main.temperature) + KELVINS;
         }
-        if (TemperatureUnits.Celsius == temperatureUnits) {
+        if (TemperatureUnits.CELSIUS == temperatureUnits) {
             temperature = String.valueOf(UnitUtils.kelvinsToCelsius(weather.main.temperature)) + CELSIUS;
         }
-        if (TemperatureUnits.Fahrenheit == temperatureUnits) {
+        if (TemperatureUnits.FAHRENHEIT == temperatureUnits) {
             temperature = String.valueOf(UnitUtils.kelvinsToCelsius(weather.main.temperature)) + FAHRENHEITS;
         }
     }
@@ -109,7 +106,5 @@ public class CurrentWeatherAppModel {
             return WindDirection.NW;
 
         return WindDirection.NNW;
-
-
     }
 }
