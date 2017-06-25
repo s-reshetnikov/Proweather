@@ -8,6 +8,6 @@ public class Rain {
     // Rain volume for the last 3 hours
     @SerializedName("3h")
     @Expose
-    public int rainVolume;
+    public double rainVolume;
 
 }

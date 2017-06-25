@@ -2,9 +2,11 @@ package by.reshetnikov.proweather.data.remote;
 
 import java.util.Map;
 
+import by.reshetnikov.proweather.data.apimodels.CitiesListModel.CitiesList;
 import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
 import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.QueryMap;
 
@@ -16,5 +18,8 @@ public interface WeatherApi {
 
     @GET("data/2.5/forecast")
     Observable<ForecastWeather> getForecastWeather(@QueryMap Map<String, String> options);
+
+    @GET("data/2.5/find")
+    Single<CitiesList> getCities(@QueryMap Map<String, String> options);
 
 }

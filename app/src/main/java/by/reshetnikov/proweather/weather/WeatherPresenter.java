@@ -1,30 +1,45 @@
 package by.reshetnikov.proweather.weather;
 
-import by.reshetnikov.proweather.BasePresenter;
+import javax.inject.Inject;
 
-/**
- * Created by SacRahl on 6/6/2017.
- */
+import by.reshetnikov.proweather.ProWeatherApp;
+import by.reshetnikov.proweather.data.DataRepository;
 
-public class WeatherPresenter implements BasePresenter, WeatherContract.WeatherPresenter {
+
+public class WeatherPresenter implements WeatherContract.Presenter {
+
+    @Inject
+    DataRepository repository;
+
+    WeatherContract.View view;
+
+    WeatherPresenter() {
+        ProWeatherApp.getProWeatherApp().getAppComponent().inject(this);
+    }
+
 
     @Override
-    public void resume() {
+    public void onCreate() {
 
     }
 
     @Override
-    public void pause() {
+    public void onResume() {
 
     }
 
     @Override
-    public void stop() {
+    public void onPause() {
 
     }
 
     @Override
-    public void destroy() {
+    public void onStop() {
+
+    }
+
+    @Override
+    public void onDestroy() {
 
     }
 
@@ -33,13 +48,33 @@ public class WeatherPresenter implements BasePresenter, WeatherContract.WeatherP
 
     }
 
+
     @Override
     public void getCitiesList() {
 
     }
 
     @Override
-    public void setView(WeatherContract.View view) {
+    public void updateLocation() {
+//        if (repository.canUseCurrentLocation()) {
+        if (!view.hasLocationPermissions()) {
+            view.requestLocationPermission();
+        }
+        if (view.hasLocationPermissions()) {
+            view.updateCurrentLocation();
+        }
+//        }
+    }
 
+    @Override
+    public void onLocationPermissionsGranted() {
+        repository.getCurrentLocation();
+        view.updateCurrentLocation();
+    }
+
+
+    @Override
+    public void setView(WeatherContract.View view) {
+        this.view = view;
     }
 }

@@ -17,18 +17,11 @@ import butterknife.OnClick;
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.data.appmodels.CurrentWeatherAppModel;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CurrentWeatherFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CurrentWeatherFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class CurrentWeatherFragment extends Fragment implements CurrentWeatherContract.View {
 
-    //@Inject
     CurrentWeatherPresenter presenter;
+
     @BindView(R.id.tv_feels_like_temp)
     TextView tvFeelsLikeTemperature;
     @BindView(R.id.tv_humidity)
@@ -57,14 +50,14 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new CurrentWeatherPresenter(this.getContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_current_weather, container, false);
+        //ProWeatherApp.getProWeatherApp().getAppComponent().inject(this);
+        presenter = new CurrentWeatherPresenter();
         ButterKnife.bind(this, view);
         return view;
     }
@@ -73,6 +66,7 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+        presenter.initialize();
         presenter.loadCurrentWeather();
     }
 
@@ -98,39 +92,23 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        presenter.destroy();
+        presenter.onDestroy();
     }
 
     @OnClick(R.id.btn_weather_details)
     public void onClick(View v) {
         onFragmentPressed("Button clicked");
-
-    }
-
-    @Override
-    public void setPresenter(CurrentWeatherContract.CurrentWeatherPresenter presenter) {
-
     }
 
     @Override
     public void showCurrentWeather(CurrentWeatherAppModel currentWeather) {
-        tvHumidity.setText(currentWeather.getHumidity());
-        tvTemperature.setText(currentWeather.getTemperature());
-        //tvPrecipitation.setText();
-        //tvFeelsLikeTemperature.setText();
-        tvWind.setText(currentWeather.getWind() + ", " + currentWeather.getWindDirection());
+        if (currentWeather != null) {
+            tvHumidity.setText(currentWeather.getHumidityText());
+            tvTemperature.setText(currentWeather.getTemperatureText());
+            tvWind.setText(currentWeather.getWindSpeedText() + ", " + currentWeather.getWindDirectionText());
+        }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         void onCurrentWeatherFragmentInteraction(String message);
     }

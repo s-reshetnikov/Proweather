@@ -1,54 +1,52 @@
 package by.reshetnikov.proweather.weatherForecast;
 
-import android.content.Context;
+import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
 
-import by.reshetnikov.proweather.weather.WeatherContract;
 
-/**
- * Created by SacRahl on 6/12/2017.
- */
+public class WeatherForecastPresenter implements WeatherForecastContract.Presenter {
 
-public class WeatherForecastPresenter implements WeatherContract.WeatherPresenter {
+    private WeatherForecastContract.View view;
 
-    private Context context;
-    private WeatherForecastFragment view;
-
-    public WeatherForecastPresenter(Context context, WeatherForecastContract.View view) {
-        this.context = context;
-        this.view = (WeatherForecastFragment) view;
+    public WeatherForecastPresenter() {
     }
 
     @Override
-    public void resume() {
+    public void onCreate() {
 
     }
 
     @Override
-    public void pause() {
+    public void onResume() {
 
     }
 
     @Override
-    public void stop() {
+    public void onPause() {
 
     }
 
     @Override
-    public void destroy() {
+    public void onStop() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+
     }
 
     @Override
     public void onError() {
-
     }
 
     @Override
-    public void getCitiesList() {
-
+    public ForecastWeather getForecastWeather() {
+        return null;
     }
 
     @Override
-    public void setView(WeatherContract.View view) {
-
+    public void setView(WeatherForecastContract.View view) {
+        this.view = view;
     }
+
 }

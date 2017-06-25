@@ -1,6 +1,8 @@
 package by.reshetnikov.proweather;
 
 import android.app.Application;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -24,6 +26,10 @@ public class ProWeatherApp extends Application {
         return proWeatherApp;
     }
 
+    public static Context getAppContext() {
+        return proWeatherApp.getApplicationContext();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -42,20 +48,30 @@ public class ProWeatherApp extends Application {
                 .dataModule(new DataModule(baseURL))
                 .build();
 
-        setPreferenceDefaultValues(false);
 
-
+        SetDefaultPreferencesAsyncTask task = new SetDefaultPreferencesAsyncTask();
+        task.execute();
         Log.d(TAG, "onCreate() end");
 
     }
 
-    private void setPreferenceDefaultValues(boolean canReadAgain) {
-        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_location, canReadAgain);
-        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_units, canReadAgain);
-        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_notification, canReadAgain);
-    }
 
     public AppComponent getAppComponent() {
         return appComponent;
+    }
+
+    class SetDefaultPreferencesAsyncTask extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            setPreferenceDefaultValues(true);
+            return null;
+        }
+
+        private void setPreferenceDefaultValues(boolean canReadAgain) {
+            PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_location, canReadAgain);
+            PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_units, canReadAgain);
+            PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_notification, canReadAgain);
+        }
     }
 }

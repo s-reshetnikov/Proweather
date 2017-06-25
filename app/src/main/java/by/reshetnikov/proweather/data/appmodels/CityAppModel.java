@@ -5,4 +5,9 @@ package by.reshetnikov.proweather.data.appmodels;
  */
 
 public class CityAppModel {
+    private String cityId;
+    private String cityName;
+    private String countryCode;
+    private double latitude;
+    private double longitude;
 }

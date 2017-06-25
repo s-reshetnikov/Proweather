@@ -11,12 +11,12 @@ import by.reshetnikov.proweather.data.appmodels.CurrentWeatherAppModel;
 
 public interface CurrentWeatherContract {
 
-    interface View extends BaseView<CurrentWeatherPresenter> {
+    interface View extends BaseView<Presenter> {
 
         void showCurrentWeather(CurrentWeatherAppModel currentWeather);
     }
 
-    interface CurrentWeatherPresenter extends BasePresenter {
+    interface Presenter extends BasePresenter {
         void loadCurrentWeather();
 
         void setView(CurrentWeatherContract.View view);

@@ -1,18 +1,17 @@
 package by.reshetnikov.proweather;
 
-/**
- * Created by SacRahl on 5/29/2017.
- */
 
 public interface BasePresenter {
 
-    void resume();
+    void onCreate();
 
-    void pause();
+    void onResume();
 
-    void stop();
+    void onPause();
 
-    void destroy();
+    void onStop();
+
+    void onDestroy();
 
     void onError();
 }

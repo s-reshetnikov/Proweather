@@ -1,10 +1,9 @@
 package by.reshetnikov.proweather.data.appmodels;
 
-import by.reshetnikov.proweather.data.DistanceUnits;
-import by.reshetnikov.proweather.data.TemperatureUnits;
+import by.reshetnikov.proweather.data.TemperatureUnit;
 import by.reshetnikov.proweather.data.WindDirection;
+import by.reshetnikov.proweather.data.WindSpeedUnit;
 import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
-import by.reshetnikov.proweather.data.apimodels.Wind;
 import by.reshetnikov.proweather.utils.UnitUtils;
 
 
@@ -13,96 +12,99 @@ public class CurrentWeatherAppModel {
     private static final String KELVINS = " \u212A";
     private static final String CELSIUS = " \u2103";
     private static final String FAHRENHEITS = " \u2109";
-    private String temperature;
-    private String humidity;
-    private String wind;
-    private String windDirection;
+    private final double windDegrees;
+    private double temperature;
+    private int humidity;
+    private double windSpeed;
+    private UnitsAppModel units;
 
     public CurrentWeatherAppModel(CurrentWeather weather) {
 
-        DistanceUnits distanceUnits = DistanceUnits.METER;
-        TemperatureUnits temperatureUnits = TemperatureUnits.CELSIUS;
-
-        humidity = String.valueOf(weather.main.humidity) + "%";
-        windDirection = getWindDirection(weather.wind).name();
-
-        if (DistanceUnits.METER == distanceUnits) {
-            wind = String.valueOf(weather.wind.speed);
-        }
-        if (DistanceUnits.MILE == distanceUnits) {
-            wind = String.valueOf(weather.wind.speed);
-        }
-        if (TemperatureUnits.KELVIN == temperatureUnits) {
-            temperature = String.valueOf(weather.main.temperature) + KELVINS;
-        }
-        if (TemperatureUnits.CELSIUS == temperatureUnits) {
-            temperature = String.valueOf(UnitUtils.kelvinsToCelsius(weather.main.temperature)) + CELSIUS;
-        }
-        if (TemperatureUnits.FAHRENHEIT == temperatureUnits) {
-            temperature = String.valueOf(UnitUtils.kelvinsToCelsius(weather.main.temperature)) + FAHRENHEITS;
-        }
+        humidity = weather.main.humidity;
+        windSpeed = weather.wind.speed;
+        windDegrees = weather.wind.degrees;
+        temperature = weather.main.temperature;
     }
 
-    public String getTemperature() {
-        return temperature;
+    public void applyUnits(UnitsAppModel units) {
+        this.units = units;
     }
 
-    public String getHumidity() {
-        return humidity;
+    public String getTemperatureText() {
+        if (units == null)
+            return String.valueOf(UnitUtils.kelvinsToCelsius(temperature) + CELSIUS);
+
+        if (units.getTemperature() == TemperatureUnit.KELVIN) {
+            return String.valueOf(temperature) + KELVINS;
+        }
+        if (units.getTemperature() == TemperatureUnit.FAHRENHEIT) {
+            return String.valueOf(UnitUtils.kelvinsToFahrenheits(temperature)) + FAHRENHEITS;
+        }
+        return String.valueOf(UnitUtils.kelvinsToCelsius(temperature) + CELSIUS);
     }
 
-    public String getWind() {
-        return wind;
+    public String getWindSpeedText() {
+        if (units == null) {
+            return String.valueOf(windSpeed) + "m/s";
+        }
+        if (units.getWindSpeed() == WindSpeedUnit.MILES_PER_HOUR) {
+            return String.valueOf(UnitUtils.metesPerSecondToMilesPerHour(windSpeed)) + "mph";
+        }
+        return String.valueOf(windSpeed) + "m/s";
     }
 
-    public String getWindDirection() {
-        return windDirection;
+    public String getWindDirectionText() {
+        return getWindDirection(windDegrees).name();
     }
 
-    private WindDirection getWindDirection(Wind wind) {
-        if (wind.degrees >= 348.75 && wind.degrees < 11.25)
+    public String getHumidityText() {
+        return String.valueOf(humidity) + "%";
+    }
+
+    private WindDirection getWindDirection(double degrees) {
+        if (degrees >= 348.75 && degrees < 11.25)
             return WindDirection.N;
 
-        if (wind.degrees >= 11.25 && wind.degrees < 33.75)
+        if (degrees >= 11.25 && degrees < 33.75)
             return WindDirection.NNE;
 
-        if (wind.degrees >= 33.75 && wind.degrees < 56.25)
+        if (degrees >= 33.75 && degrees < 56.25)
             return WindDirection.NE;
 
-        if (wind.degrees >= 56.25 && wind.degrees < 78.75)
+        if (degrees >= 56.25 && degrees < 78.75)
             return WindDirection.ENE;
 
-        if (wind.degrees > 78.75 && wind.degrees < 101.25)
+        if (degrees > 78.75 && degrees < 101.25)
             return WindDirection.E;
 
-        if (wind.degrees >= 101.25 && wind.degrees < 123.75)
+        if (degrees >= 101.25 && degrees < 123.75)
             return WindDirection.ESE;
 
-        if (wind.degrees >= 123.75 && wind.degrees < 146.25)
+        if (degrees >= 123.75 && degrees < 146.25)
             return WindDirection.SE;
 
-        if (wind.degrees >= 146.25 && wind.degrees < 168.75)
+        if (degrees >= 146.25 && degrees < 168.75)
             return WindDirection.SSE;
 
-        if (wind.degrees >= 168.75 && wind.degrees < 191.25)
+        if (degrees >= 168.75 && degrees < 191.25)
             return WindDirection.S;
 
-        if (wind.degrees >= 191.25 && wind.degrees < 213.75)
+        if (degrees >= 191.25 && degrees < 213.75)
             return WindDirection.SSW;
 
-        if (wind.degrees >= 213.75 && wind.degrees < 236.25)
+        if (degrees >= 213.75 && degrees < 236.25)
             return WindDirection.SW;
 
-        if (wind.degrees >= 236.25 && wind.degrees < 258.75)
+        if (degrees >= 236.25 && degrees < 258.75)
             return WindDirection.WSW;
 
-        if (wind.degrees >= 258.75 && wind.degrees < 281.25)
+        if (degrees >= 258.75 && degrees < 281.25)
             return WindDirection.W;
 
-        if (wind.degrees >= 281.25 && wind.degrees < 303.75)
+        if (degrees >= 281.25 && degrees < 303.75)
             return WindDirection.WNW;
 
-        if (wind.degrees >= 303.75 && wind.degrees < 326.25)
+        if (degrees >= 303.75 && degrees < 326.25)
             return WindDirection.NW;
 
         return WindDirection.NNW;

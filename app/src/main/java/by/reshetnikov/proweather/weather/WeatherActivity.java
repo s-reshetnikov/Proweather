@@ -24,11 +24,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import javax.inject.Inject;
-
+import by.reshetnikov.proweather.BuildConfig;
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.currentweather.CurrentWeatherFragment;
-import by.reshetnikov.proweather.data.DataRepository;
 import by.reshetnikov.proweather.settings.SettingsActivity;
 import by.reshetnikov.proweather.utils.FragmentUtils;
 import by.reshetnikov.proweather.utils.ToastUtils;
@@ -40,18 +38,21 @@ public class WeatherActivity extends AppCompatActivity
 
     private final String TAG = WeatherActivity.class.getSimpleName();
     private final int PERMISSION_REQUEST_CODE = 1409;
-    // @Inject
-    WeatherContract.WeatherPresenter presenter;
+    private final String locationPermission = Manifest.permission.ACCESS_COARSE_LOCATION;
 
-    @Inject
-    DataRepository dataRepository;
+
+    private WeatherPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate start");
-        setContentView(R.layout.activity_weather);
-        //((ProWeatherApp)this.getApplication()).
+        setContentView(R.layout.drawer_weather);
+
+
+        presenter = new WeatherPresenter();
+        presenter.setView(this);
+        presenter.updateLocation();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,19 +69,11 @@ public class WeatherActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.weather_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        if (hasPermissions()) {
-            createLocationSevice();
-
-        } else {
-            //our app doesn't have permissions, So i m requesting permissions.
-            requestPermissionWithRationale();
-        }
 
         if (findViewById(R.id.weather_fragment_placeholder) != null) {
 
@@ -92,7 +85,6 @@ public class WeatherActivity extends AppCompatActivity
                     R.id.weather_fragment_placeholder,
                     CurrentWeatherFragment.newInstance());
         }
-
         Log.d(TAG, "onCreate end");
     }
 
@@ -111,7 +103,6 @@ public class WeatherActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.weather, menu);
         return true;
     }
@@ -124,7 +115,6 @@ public class WeatherActivity extends AppCompatActivity
             startSettingsActivity();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -134,7 +124,7 @@ public class WeatherActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         switch (id) {
@@ -154,15 +144,9 @@ public class WeatherActivity extends AppCompatActivity
     }
 
     @Override
-    public void setPresenter(WeatherContract.WeatherPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
     public void showProgress() {
         Toast loadingToast = Toast.makeText(this, "Loading ...", Toast.LENGTH_LONG);
         ToastUtils.showToast(loadingToast);
-
     }
 
     @Override
@@ -178,33 +162,30 @@ public class WeatherActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        boolean allowed = true;
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            for (int result : grantResults)
-                allowed = allowed && result == PackageManager.PERMISSION_GRANTED;
-        }
+    public boolean hasLocationPermissions() {
+        int permissionStatus = ContextCompat.checkSelfPermission(this, locationPermission);
+        if (permissionStatus == PackageManager.PERMISSION_GRANTED)
+            return true;
+        return false;
+    }
 
-        if (allowed) {
-            createLocationSevice();
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    Toast warning = Toast.makeText(this, R.string.location_permission_denied, Toast.LENGTH_SHORT);
-                    ToastUtils.showToast(warning);
 
-                } else {
-                    showNoLocationPermissionSnackbar();
-                }
+    private void requestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                Toast warning = Toast.makeText(this, R.string.location_permission_denied, Toast.LENGTH_SHORT);
+                ToastUtils.showToast(warning);
+
+            } else {
+                showNoLocationPermissionSnackbar();
             }
         }
-    }
 
-    private void createLocationSevice() {
 
     }
 
-    private void requestPermissionWithRationale() {
+    @Override
+    public void requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION)) {
             final String message = getString(R.string.location_needed_to_locate_position);
@@ -221,25 +202,32 @@ public class WeatherActivity extends AppCompatActivity
         }
     }
 
-    private boolean hasPermissions() {
-        int check = 0;
-        String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION};
-        for (String permission : permissions) {
-            check = ContextCompat.checkSelfPermission(this, permission);
-            if (check == PackageManager.PERMISSION_DENIED)
-                return false;
-        }
-        return true;
+    @Override
+    public void updateCurrentLocation() {
+
     }
 
-    private void requestPermissions() {
-        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(permissions, PERMISSION_REQUEST_CODE);
+    @Override
+    public void showSavedCities() {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        boolean allowed = true;
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            for (int result : grantResults)
+                allowed = allowed && result == PackageManager.PERMISSION_GRANTED;
+        }
+        if (allowed) {
+            presenter.onLocationPermissionsGranted();
+        } else {
+
         }
     }
 
-    void showNoLocationPermissionSnackbar() {
+
+    public void showNoLocationPermissionSnackbar() {
         Snackbar.make(this.findViewById(R.id.weather_view), R.string.location_permission_not_granated, Snackbar.LENGTH_LONG)
                 .setAction(R.string.settings_snackbar, new View.OnClickListener() {
                     @Override
@@ -256,6 +244,11 @@ public class WeatherActivity extends AppCompatActivity
         Intent appSettingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.parse("package:" + getPackageName()));
         startActivityForResult(appSettingsIntent, PERMISSION_REQUEST_CODE);
+        Intent intent = new Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package",
+                BuildConfig.APPLICATION_ID, null));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(intent, PERMISSION_REQUEST_CODE);
     }
 
 

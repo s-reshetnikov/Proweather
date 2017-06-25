@@ -10,7 +10,7 @@ import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.DataRepository;
-import by.reshetnikov.proweather.data.db.AppLocalData;
+import by.reshetnikov.proweather.data.local.AppLocalData;
 import by.reshetnikov.proweather.data.remote.AppRemoteData;
 import dagger.Module;
 import dagger.Provides;

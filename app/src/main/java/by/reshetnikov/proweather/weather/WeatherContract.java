@@ -3,21 +3,32 @@ package by.reshetnikov.proweather.weather;
 import by.reshetnikov.proweather.BasePresenter;
 import by.reshetnikov.proweather.BaseView;
 
-/**
- * Created by SacRahl on 6/6/2017.
- */
 
 public interface WeatherContract {
-    interface View extends BaseView<WeatherPresenter> {
+    interface View extends BaseView<Presenter> {
+
         void showProgress();
 
         void hideProgress();
 
         void showError(String message);
+
+        boolean hasLocationPermissions();
+
+        void requestLocationPermission();
+
+        void updateCurrentLocation();
+
+        void showSavedCities();
+
     }
 
-    interface WeatherPresenter extends BasePresenter {
+    interface Presenter extends BasePresenter {
         void getCitiesList();
+
+        void updateLocation();
+
+        void onLocationPermissionsGranted();
 
         void setView(WeatherContract.View view);
     }
