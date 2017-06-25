@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
 
 def getProperty(String filename, String propName) {
     def propsFile = rootProject.file(filename)
@@ -60,6 +61,7 @@ ext {
     constraintLayoutVersion = '1.0.2'
     gsonVersion = '2.8.0'
     converterGsonVersion = '2.3.0'
+    daoVersion = '3.2.2'
 }
 
 dependencies {
@@ -73,6 +75,7 @@ dependencies {
     compile "com.android.support:support-v4:${supportLibVersion}"
     compile "com.android.support:support-vector-drawable:${supportLibVersion}"
     compile "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
+    compile 'com.google.android.gms:play-services-location:11.0.1'
 
     // Reactive Java
     compile "io.reactivex.rxjava2:rxjava:${rxJavaVersion}"
@@ -88,6 +91,9 @@ dependencies {
     // Dependency Injection
     compile "com.google.dagger:dagger:${daggerVersion}"
     annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"
+
+    // Green DAO
+    compile "org.greenrobot:greendao:${daoVersion}"
 
     // Other
     compile "com.jakewharton:butterknife:${butterKnifeVersion}"
