@@ -61,6 +61,7 @@ ext {
     constraintLayoutVersion = '1.0.2'
     gsonVersion = '2.8.0'
     converterGsonVersion = '2.3.0'
+    playServicesVerion = '11.0.1'
     daoVersion = '3.2.2'
 }
 
@@ -69,13 +70,15 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
     // Support libs
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"
     compile "com.android.support:support-vector-drawable:${supportLibVersion}"
+    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
     compile "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
-    compile 'com.google.android.gms:play-services-location:11.0.1'
+    compile "com.google.android.gms:play-services-location:${playServicesVerion}"
 
     // Reactive Java
     compile "io.reactivex.rxjava2:rxjava:${rxJavaVersion}"
@@ -98,8 +101,6 @@ dependencies {
     // Other
     compile "com.jakewharton:butterknife:${butterKnifeVersion}"
     annotationProcessor "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:support-vector-drawable:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
+
     testCompile 'junit:junit:4.12'
 }
