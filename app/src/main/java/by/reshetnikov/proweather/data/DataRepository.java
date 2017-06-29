@@ -1,23 +1,24 @@
 package by.reshetnikov.proweather.data;
 
+import android.location.Location;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
-import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
 import by.reshetnikov.proweather.data.appmodels.CityAppModel;
 import by.reshetnikov.proweather.data.appmodels.CurrentWeatherAppModel;
 import by.reshetnikov.proweather.data.appmodels.ForecastWeatherAppModel;
-import by.reshetnikov.proweather.data.appmodels.LocationAppModel;
 import by.reshetnikov.proweather.data.appmodels.UnitsAppModel;
 import by.reshetnikov.proweather.data.local.AppLocalData;
+import by.reshetnikov.proweather.data.local.db.entities.CityEntity;
 import by.reshetnikov.proweather.data.remote.AppRemoteData;
 import by.reshetnikov.proweather.utils.NetworkUtils;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 
@@ -37,31 +38,43 @@ public class DataRepository implements AppDataContract {
     }
 
     @Override
-    public Observable<CurrentWeatherAppModel> getCurrentWeather() {
-        if (NetworkUtils.isNetworkConnected(weatherApp)) {
-            Observable<CurrentWeather> weatherObservable = appRemoteData.getCurrentWeather();
-            return weatherObservable.map(new Function<CurrentWeather, CurrentWeatherAppModel>() {
-                @Override
-                public CurrentWeatherAppModel apply(@NonNull CurrentWeather weather) throws Exception {
-                    return new CurrentWeatherAppModel(weather);
-                }
-            });
+    public Single<CurrentWeatherAppModel> getCurrentWeather() {
+        if (appLocalData.canUseCurrentLocation()) {
+            Location currentLocation = appLocalData.getCurrentLocation();
+            if (currentLocation != null && NetworkUtils.isNetworkConnected(weatherApp)) {
+                Single<CurrentWeather> weatherSingle =
+                        appRemoteData.getCurrentWeather(currentLocation.getLatitude(), currentLocation.getLongitude());
+                saveToDb(weatherSingle);
+                return getCurrentWeatherAppModelFromCurrentWeatherApi(weatherSingle);
+            }
         }
-        return appLocalData.getCurrentWeather();
+
+        CityEntity cityEntity = appLocalData.getChosenCity();
+        if (cityEntity == null)
+            return null;
+
+        Single<CurrentWeather> weatherSingle = appRemoteData.getCurrentWeather(cityEntity.getCityId());
+        saveToDb(weatherSingle);
+        return getCurrentWeatherAppModelFromCurrentWeatherApi(weatherSingle);
     }
 
     @Override
-    public Observable<ForecastWeatherAppModel> getForecastWeather(ForecastType forecastType) {
-        if (NetworkUtils.isNetworkConnected(weatherApp)) {
-            Observable<ForecastWeather> forecast = appRemoteData.getForecastWeather(forecastType);
-            return forecast.map(new Function<ForecastWeather, ForecastWeatherAppModel>() {
-                @Override
-                public ForecastWeatherAppModel apply(@NonNull ForecastWeather forecastWeather) throws Exception {
-                    return new ForecastWeatherAppModel(forecastWeather);
-                }
-            });
-        }
-        return appLocalData.getForecastWeather(forecastType);
+    public Single<ForecastWeatherAppModel> getForecastWeather() {
+//        if (appLocalData.canUseCurrentLocation()) {
+//            Location currentLocation = appLocalData.getCurrentLocation();
+//            if (currentLocation != null && NetworkUtils.isNetworkConnected(weatherApp)) {
+//                Single<CurrentWeather> weatherSingle =
+//                        appRemoteData.getCurrentWeather(currentLocation.getLatitude(), currentLocation.getLongitude());
+//                saveToDb(weatherSingle);
+//                return getCurrentWeatherAppModelFromCurrentWeatherApi(weatherSingle);
+//            }
+//        }
+//
+//        CityEntity cityEntity = appLocalData.getChosenCity();
+//        Single<CurrentWeather> weatherSingle = appRemoteData.getCurrentWeather(cityEntity.getCityId());
+//        saveToDb(weatherSingle);
+//        return getCurrentWeatherAppModelFromCurrentWeatherApi(weatherSingle);
+        return null;
     }
 
     @Override
@@ -81,13 +94,27 @@ public class DataRepository implements AppDataContract {
 
 
     @Override
-    public LocationAppModel getCurrentLocation() {
-        return appLocalData.getCurrentLocation();
+    public Single<UnitsAppModel> getUnits() {
+        return appLocalData.getUnits();
     }
 
-    @Override
-    public Observable<UnitsAppModel> getUnits() {
-        return appLocalData.getUnits();
+
+    private Single<CurrentWeatherAppModel> getCurrentWeatherAppModelFromCurrentWeatherApi(Single<CurrentWeather> weatherSingle) {
+        return weatherSingle.map(new Function<CurrentWeather, CurrentWeatherAppModel>() {
+            @Override
+            public CurrentWeatherAppModel apply(@NonNull CurrentWeather currentWeather) throws Exception {
+                return AppDataModelsBuilder.createCurrentWeatherModel(currentWeather);
+            }
+        });
+    }
+
+    private void saveToDb(Single<CurrentWeather> currentWeatherObservable) {
+        currentWeatherObservable.doOnSuccess(new Consumer<CurrentWeather>() {
+            @Override
+            public void accept(@NonNull CurrentWeather currentWeather) throws Exception {
+                appLocalData.saveCurrentWeather(AppDataModelsBuilder.createWeatherEntity(currentWeather));
+            }
+        });
     }
 
 }

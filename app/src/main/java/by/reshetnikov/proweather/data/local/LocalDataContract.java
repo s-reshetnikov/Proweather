@@ -1,24 +1,36 @@
 package by.reshetnikov.proweather.data.local;
 
 
+import android.location.Location;
+
 import java.util.List;
 
-import by.reshetnikov.proweather.data.AppDataContract;
-import by.reshetnikov.proweather.data.appmodels.CityAppModel;
-import by.reshetnikov.proweather.data.appmodels.LocationAppModel;
 import by.reshetnikov.proweather.data.appmodels.UnitsAppModel;
+import by.reshetnikov.proweather.data.local.db.entities.CityEntity;
+import by.reshetnikov.proweather.data.local.db.entities.ForecastEntity;
+import by.reshetnikov.proweather.data.local.db.entities.WeatherEntity;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-public interface LocalDataContract extends AppDataContract {
+public interface LocalDataContract {
 
-    Single<List<CityAppModel>> getSavedCities();
+    Observable<WeatherEntity> getCurrentWeather(String cityId);
 
-    void saveCity(CityAppModel city);
+    Observable<ForecastEntity> getForecastWeather(String cityId);
+
+    Observable<List<CityEntity>> getCities();
+
+    Single<UnitsAppModel> getUnits();
+
+    CityEntity getChosenCity();
+
+    Location getCurrentLocation();
+
+    void saveCity(CityEntity city);
+
+    void saveCurrentWeather(WeatherEntity currentWeather);
+
+    void saveForecastWeather(ForecastEntity forecastWeather);
 
     boolean canUseCurrentLocation();
-
-    LocationAppModel getCurrentLocation();
-
-    Observable<UnitsAppModel> getUnits();
 }

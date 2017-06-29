@@ -2,7 +2,7 @@ package by.reshetnikov.proweather.weatherForecast;
 
 import by.reshetnikov.proweather.BasePresenter;
 import by.reshetnikov.proweather.BaseView;
-import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
+import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.HourlyForecastWeather;
 
 
 public interface WeatherForecastContract {
@@ -13,7 +13,7 @@ public interface WeatherForecastContract {
     }
 
     interface Presenter extends BasePresenter {
-        ForecastWeather getForecastWeather();
+        HourlyForecastWeather getForecastWeather();
 
         void setView(View view);
     }

@@ -25,7 +25,7 @@ public class LocationUpdatesBroadcastReceiver extends BroadcastReceiver {
                 LocationResult result = LocationResult.extractResult(intent);
                 if (result != null) {
                     List<Location> locations = result.getLocations();
-                    SharedPreferencesStorage storage = SharedPreferencesStorage.getInstance();
+                    SharedPreferencesStorage storage = SharedPreferencesStorage.getInstance(context);
                     storage.setCurrentLocationPreference(locations.get(0));
                 }
             }

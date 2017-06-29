@@ -228,7 +228,7 @@ public class WeatherActivity extends AppCompatActivity
 
 
     public void showNoLocationPermissionSnackbar() {
-        Snackbar.make(this.findViewById(R.id.weather_view), R.string.location_permission_not_granated, Snackbar.LENGTH_LONG)
+        Snackbar.make(this.findViewById(R.id.weather_view), R.string.location_permission_not_granated, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.settings_snackbar, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

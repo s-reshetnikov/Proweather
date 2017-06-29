@@ -1,6 +1,6 @@
 package by.reshetnikov.proweather.weatherForecast;
 
-import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
+import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.HourlyForecastWeather;
 
 
 public class WeatherForecastPresenter implements WeatherForecastContract.Presenter {
@@ -40,7 +40,7 @@ public class WeatherForecastPresenter implements WeatherForecastContract.Present
     }
 
     @Override
-    public ForecastWeather getForecastWeather() {
+    public HourlyForecastWeather getForecastWeather() {
         return null;
     }
 

@@ -12,9 +12,9 @@ import by.reshetnikov.proweather.data.DistanceUnits;
 import by.reshetnikov.proweather.data.TemperatureUnit;
 import by.reshetnikov.proweather.data.WindSpeedUnit;
 import by.reshetnikov.proweather.data.appmodels.UnitsAppModel;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.subjects.PublishSubject;
 
@@ -57,7 +57,7 @@ public class SharedPreferencesStorage implements SharedPreferences.OnSharedPrefe
     }
 
 
-    private Location getCurrentLocationPreference() {
+    public Location getCurrentLocationPreference() {
         String json = preferences.getString(CURRENT_LOCATION_KEY, null);
         return json == null ? null : new Gson().fromJson(json, Location.class);
     }
@@ -121,14 +121,12 @@ public class SharedPreferencesStorage implements SharedPreferences.OnSharedPrefe
         return new UnitsAppModel(temperature, distance, windSpeed);
     }
 
-    public Observable<UnitsAppModel> getChosenUnits() {
-        return Observable.create(new ObservableOnSubscribe<UnitsAppModel>() {
+    public Single<UnitsAppModel> getChosenUnits() {
+        return Single.create(new SingleOnSubscribe<UnitsAppModel>() {
             @Override
-            public void subscribe(@NonNull ObservableEmitter<UnitsAppModel> e) throws Exception {
-                if (!e.isDisposed()) {
-                    e.onNext(getUnits());
-                    e.onComplete();
-                }
+            public void subscribe(@NonNull SingleEmitter<UnitsAppModel> e) throws Exception {
+                if (!e.isDisposed())
+                    e.onSuccess(getUnits());
             }
         });
     }

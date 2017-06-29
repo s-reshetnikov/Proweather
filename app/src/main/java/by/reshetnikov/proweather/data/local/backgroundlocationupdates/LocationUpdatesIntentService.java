@@ -32,7 +32,6 @@ public class LocationUpdatesIntentService extends IntentService {
                     SharedPreferencesStorage storage = SharedPreferencesStorage.getInstance();
                     if (storage != null) {
                         storage.setCurrentLocationPreference(locations.get(0));
-//                        Log.i(TAG, storage.getLocation().toString());
                     } else {
                         Log.i(TAG, "Storage has no context yet");
                     }

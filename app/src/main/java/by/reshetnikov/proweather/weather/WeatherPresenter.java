@@ -68,8 +68,8 @@ public class WeatherPresenter implements WeatherContract.Presenter {
 
     @Override
     public void onLocationPermissionsGranted() {
-        repository.getCurrentLocation();
-        view.updateCurrentLocation();
+//        repository.getCurrentLocation();
+//        view.updateCurrentLocation();
     }
 
 

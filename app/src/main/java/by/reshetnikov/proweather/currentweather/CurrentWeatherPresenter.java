@@ -11,10 +11,11 @@ import by.reshetnikov.proweather.data.DataRepository;
 import by.reshetnikov.proweather.data.appmodels.CurrentWeatherAppModel;
 import by.reshetnikov.proweather.data.appmodels.UnitsAppModel;
 import by.reshetnikov.proweather.utils.ToastUtils;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -69,11 +70,12 @@ public class CurrentWeatherPresenter implements CurrentWeatherContract.Presenter
         compositeDisposable.add(dataRepository.getUnits()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<UnitsAppModel>() {
+                .subscribeWith(new DisposableSingleObserver<UnitsAppModel>() {
+
 
                     @Override
-                    public void onNext(@NonNull UnitsAppModel unitsModel) {
-                        units = unitsModel;
+                    public void onSuccess(@NonNull UnitsAppModel unitsAppModel) {
+                        units = unitsAppModel;
                         Toast toast = Toast.makeText(appContext, "preferences loaded", Toast.LENGTH_SHORT);
                         ToastUtils.showToast(toast);
                     }
@@ -81,12 +83,6 @@ public class CurrentWeatherPresenter implements CurrentWeatherContract.Presenter
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.d(CurrentWeatherPresenter.class.getSimpleName(), e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Toast toast = Toast.makeText(appContext, "Units completed", Toast.LENGTH_SHORT);
-                        ToastUtils.showToast(toast);
                     }
                 }));
     }
@@ -98,27 +94,28 @@ public class CurrentWeatherPresenter implements CurrentWeatherContract.Presenter
     }
 
     public void getWeather() {
+        Single<CurrentWeatherAppModel> currentWeather = dataRepository.getCurrentWeather();
+        if (currentWeather == null) {
+            Toast toast = Toast.makeText(appContext, "Internet connection required", Toast.LENGTH_SHORT);
+            ToastUtils.showToast(toast);
+            return;
+        }
         compositeDisposable.add(dataRepository.getCurrentWeather()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<CurrentWeatherAppModel>() {
+                .subscribeWith(new DisposableSingleObserver<CurrentWeatherAppModel>() {
+
 
                     @Override
-                    public void onNext(@NonNull CurrentWeatherAppModel currentWeatherAppModel) {
+                    public void onSuccess(@NonNull CurrentWeatherAppModel appModel) {
                         Toast toast = Toast.makeText(appContext, "Current weather request completed", Toast.LENGTH_SHORT);
                         ToastUtils.showToast(toast);
-                        view.showCurrentWeather(currentWeatherAppModel);
+                        view.showCurrentWeather(appModel);
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.d(CurrentWeatherPresenter.class.getSimpleName(), e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Toast toast = Toast.makeText(appContext, "Current weather request completed", Toast.LENGTH_SHORT);
-                        ToastUtils.showToast(toast);
                     }
                 }));
     }

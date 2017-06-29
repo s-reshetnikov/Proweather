@@ -2,10 +2,9 @@ package by.reshetnikov.proweather.data.remote;
 
 import java.util.Map;
 
-import by.reshetnikov.proweather.data.apimodels.CitiesListModel.CitiesList;
+import by.reshetnikov.proweather.data.apimodels.CityModels.CityForecast;
 import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
-import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.ForecastWeather;
-import io.reactivex.Observable;
+import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.HourlyForecastWeather;
 import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.QueryMap;
@@ -14,12 +13,14 @@ import retrofit2.http.QueryMap;
 public interface WeatherApi {
 
     @GET("data/2.5/weather")
-    Observable<CurrentWeather> getCurrentWeather(@QueryMap Map<String, String> options);
+    Single<CurrentWeather> getCurrentWeather(@QueryMap Map<String, String> options);
 
     @GET("data/2.5/forecast")
-    Observable<ForecastWeather> getForecastWeather(@QueryMap Map<String, String> options);
+    Single<HourlyForecastWeather> getHourlyForecastWeather(@QueryMap Map<String, String> options);
+
+    @GET("/data/2.5/forecast/daily")
+    Single<HourlyForecastWeather> getDailyForecastWeather(@QueryMap Map<String, String> options);
 
     @GET("data/2.5/find")
-    Single<CitiesList> getCities(@QueryMap Map<String, String> options);
-
+    Single<CityForecast> getCities(@QueryMap Map<String, String> options);
 }
