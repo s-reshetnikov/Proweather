@@ -3,6 +3,8 @@ package by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 import by.reshetnikov.proweather.data.apimodels.Clouds;
 import by.reshetnikov.proweather.data.apimodels.Main;
 import by.reshetnikov.proweather.data.apimodels.Snow;
@@ -10,7 +12,7 @@ import by.reshetnikov.proweather.data.apimodels.Sys;
 import by.reshetnikov.proweather.data.apimodels.Weather;
 import by.reshetnikov.proweather.data.apimodels.Wind;
 
-public class ForecastList {
+public class ForecastByHours {
 
     // Time of data forecasted, unix, UTC
     @SerializedName("dt")
@@ -23,7 +25,7 @@ public class ForecastList {
 
     @SerializedName("weather")
     @Expose
-    public java.util.List<Weather> weather = null;
+    public List<Weather> weather;
 
     @SerializedName("clouds")
     @Expose

@@ -9,6 +9,7 @@ import by.reshetnikov.proweather.data.apimodels.Clouds;
 import by.reshetnikov.proweather.data.apimodels.Coordinates;
 import by.reshetnikov.proweather.data.apimodels.Main;
 import by.reshetnikov.proweather.data.apimodels.Rain;
+import by.reshetnikov.proweather.data.apimodels.Snow;
 import by.reshetnikov.proweather.data.apimodels.Sys;
 import by.reshetnikov.proweather.data.apimodels.Weather;
 import by.reshetnikov.proweather.data.apimodels.Wind;
@@ -21,7 +22,7 @@ public class CurrentWeather {
 
     @SerializedName("weather")
     @Expose
-    public List<Weather> weather = null;
+    public List<Weather> weather;
 
     @SerializedName("main")
     @Expose
@@ -38,6 +39,10 @@ public class CurrentWeather {
     @SerializedName("rain")
     @Expose
     public Rain rain;
+
+    @SerializedName("snow")
+    @Expose
+    public Snow snow;
 
     //  Time of data calculation, unix, UTC
     @SerializedName("dt")

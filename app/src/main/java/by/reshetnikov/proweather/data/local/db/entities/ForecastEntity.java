@@ -12,7 +12,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import java.util.Date;
 
 @Entity(active = true)
-public class WeatherForecastEntity {
+public class ForecastEntity {
     @Id(autoincrement = true)
     private long Id;
     @Index
@@ -26,10 +26,10 @@ public class WeatherForecastEntity {
     @Unique
     private Date date;
     private int weatherConditionId;
-    private String weatherMain;
     private String weatherDescription;
     private String iconCode;
     private double snow;
+    private double rain;
     /**
      * Used to resolve relations
      */
@@ -38,15 +38,14 @@ public class WeatherForecastEntity {
     /**
      * Used for active entity operations.
      */
-    @Generated(hash = 196281143)
-    private transient WeatherForecastEntityDao myDao;
+    @Generated(hash = 1534676844)
+    private transient ForecastEntityDao myDao;
 
-    @Generated(hash = 1749487465)
-    public WeatherForecastEntity(long Id, @NotNull String cityId,
-                                 double temperature, int humidity, int pressure, double windSpeed,
-                                 double windDegrees, Date date, int weatherConditionId,
-                                 String weatherMain, String weatherDescription, String iconCode,
-                                 double snow) {
+    @Generated(hash = 558360909)
+    public ForecastEntity(long Id, @NotNull String cityId, double temperature,
+                          int humidity, int pressure, double windSpeed, double windDegrees,
+                          Date date, int weatherConditionId, String weatherDescription,
+                          String iconCode, double snow, double rain) {
         this.Id = Id;
         this.cityId = cityId;
         this.temperature = temperature;
@@ -56,14 +55,14 @@ public class WeatherForecastEntity {
         this.windDegrees = windDegrees;
         this.date = date;
         this.weatherConditionId = weatherConditionId;
-        this.weatherMain = weatherMain;
         this.weatherDescription = weatherDescription;
         this.iconCode = iconCode;
         this.snow = snow;
+        this.rain = rain;
     }
 
-    @Generated(hash = 629385542)
-    public WeatherForecastEntity() {
+    @Generated(hash = 1837371382)
+    public ForecastEntity() {
     }
 
     public long getId() {
@@ -138,14 +137,6 @@ public class WeatherForecastEntity {
         this.weatherConditionId = weatherConditionId;
     }
 
-    public String getWeatherMain() {
-        return this.weatherMain;
-    }
-
-    public void setWeatherMain(String weatherMain) {
-        this.weatherMain = weatherMain;
-    }
-
     public String getWeatherDescription() {
         return this.weatherDescription;
     }
@@ -168,6 +159,14 @@ public class WeatherForecastEntity {
 
     public void setSnow(double snow) {
         this.snow = snow;
+    }
+
+    public double getRain() {
+        return rain;
+    }
+
+    public void setRain(double rain) {
+        this.rain = rain;
     }
 
     /**
@@ -209,10 +208,9 @@ public class WeatherForecastEntity {
     /**
      * called by internal mechanisms, do not call yourself.
      */
-    @Generated(hash = 1787193760)
+    @Generated(hash = 581314384)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getWeatherForecastEntityDao()
-                : null;
+        myDao = daoSession != null ? daoSession.getForecastEntityDao() : null;
     }
 }

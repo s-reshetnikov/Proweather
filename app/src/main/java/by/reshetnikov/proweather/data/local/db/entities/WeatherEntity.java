@@ -11,7 +11,7 @@ import java.util.Date;
 
 
 @Entity
-public class CurrentWeatherEntity {
+public class WeatherEntity {
 
     @Id(autoincrement = true)
     private long Id;
@@ -24,7 +24,6 @@ public class CurrentWeatherEntity {
     @Unique
     private Date date;
     private int weatherConditionId;
-    private String weatherMain;
     private String weatherDescription;
     private String iconCode;
     private double windSpeed;
@@ -32,11 +31,12 @@ public class CurrentWeatherEntity {
     private double rain;
     private double snow;
 
-    @Generated(hash = 50537360)
-    public CurrentWeatherEntity(long Id, @NotNull String cityId, double temperature,
-                                int humidity, int pressure, Date date, int weatherConditionId,
-                                String weatherMain, String weatherDescription, String iconCode,
-                                double windSpeed, double windDegrees, double rain, double snow) {
+
+    @Generated(hash = 11453382)
+    public WeatherEntity(long Id, @NotNull String cityId, double temperature,
+                         int humidity, int pressure, Date date, int weatherConditionId,
+                         String weatherDescription, String iconCode, double windSpeed,
+                         double windDegrees, double rain, double snow) {
         this.Id = Id;
         this.cityId = cityId;
         this.temperature = temperature;
@@ -44,7 +44,6 @@ public class CurrentWeatherEntity {
         this.pressure = pressure;
         this.date = date;
         this.weatherConditionId = weatherConditionId;
-        this.weatherMain = weatherMain;
         this.weatherDescription = weatherDescription;
         this.iconCode = iconCode;
         this.windSpeed = windSpeed;
@@ -53,9 +52,10 @@ public class CurrentWeatherEntity {
         this.snow = snow;
     }
 
-    @Generated(hash = 1937976266)
-    public CurrentWeatherEntity() {
+    @Generated(hash = 1598697471)
+    public WeatherEntity() {
     }
+
 
     public long getId() {
         return this.Id;
@@ -111,14 +111,6 @@ public class CurrentWeatherEntity {
 
     public void setWeatherConditionId(int weatherConditionId) {
         this.weatherConditionId = weatherConditionId;
-    }
-
-    public String getWeatherMain() {
-        return this.weatherMain;
-    }
-
-    public void setWeatherMain(String weatherMain) {
-        this.weatherMain = weatherMain;
     }
 
     public String getWeatherDescription() {

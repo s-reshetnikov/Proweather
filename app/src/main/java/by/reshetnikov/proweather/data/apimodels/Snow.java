@@ -8,6 +8,6 @@ public class Snow {
     // Snow volume for the last 3 hours
     @SerializedName("3h")
     @Expose
-    public double SnowVolume;
+    public double snowVolume;
 
 }

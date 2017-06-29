@@ -3,7 +3,6 @@ package by.reshetnikov.proweather.data.appmodels;
 import by.reshetnikov.proweather.data.TemperatureUnit;
 import by.reshetnikov.proweather.data.WindDirection;
 import by.reshetnikov.proweather.data.WindSpeedUnit;
-import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
 import by.reshetnikov.proweather.utils.UnitUtils;
 
 
@@ -12,18 +11,83 @@ public class CurrentWeatherAppModel {
     private static final String KELVINS = " \u212A";
     private static final String CELSIUS = " \u2103";
     private static final String FAHRENHEITS = " \u2109";
-    private final double windDegrees;
     private double temperature;
     private int humidity;
     private double windSpeed;
+    private double windDegrees;
+    private double rain;
+    private double snow;
+    private int pressure;
+    private int weatherConditionId;
+    private String weatherDescription;
+    private String iconCode;
     private UnitsAppModel units;
 
-    public CurrentWeatherAppModel(CurrentWeather weather) {
+    public CurrentWeatherAppModel() {
+    }
 
-        humidity = weather.main.humidity;
-        windSpeed = weather.wind.speed;
-        windDegrees = weather.wind.degrees;
-        temperature = weather.main.temperature;
+    public double getRain() {
+        return rain;
+    }
+
+    public void setRain(double rain) {
+        this.rain = rain;
+    }
+
+    public double getSnow() {
+        return snow;
+    }
+
+    public void setSnow(double snow) {
+        this.snow = snow;
+    }
+
+    public int getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(int pressure) {
+        this.pressure = pressure;
+    }
+
+    public int getWeatherConditionId() {
+        return weatherConditionId;
+    }
+
+    public void setWeatherConditionId(int weatherConditionId) {
+        this.weatherConditionId = weatherConditionId;
+    }
+
+    public String getWeatherDescription() {
+        return weatherDescription;
+    }
+
+    public void setWeatherDescription(String weatherDescription) {
+        this.weatherDescription = weatherDescription;
+    }
+
+    public String getIconCode() {
+        return iconCode;
+    }
+
+    public void setIconCode(String iconCode) {
+        this.iconCode = iconCode;
+    }
+
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
+    }
+
+    public void setWindSpeed(double windSpeed) {
+        this.windSpeed = windSpeed;
+    }
+
+    public void setWindDegrees(double windDegrees) {
+        this.windDegrees = windDegrees;
     }
 
     public void applyUnits(UnitsAppModel units) {

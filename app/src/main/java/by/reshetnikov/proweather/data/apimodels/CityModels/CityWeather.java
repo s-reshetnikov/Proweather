@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.data.apimodels.CitiesListModel;
+package by.reshetnikov.proweather.data.apimodels.CityModels;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -14,7 +14,7 @@ import by.reshetnikov.proweather.data.apimodels.Sys;
 import by.reshetnikov.proweather.data.apimodels.Weather;
 import by.reshetnikov.proweather.data.apimodels.Wind;
 
-public class CitiesList {
+public class CityWeather {
 
     @SerializedName("id")
     @Expose
