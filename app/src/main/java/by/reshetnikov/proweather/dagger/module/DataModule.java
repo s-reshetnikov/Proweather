@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.DataRepository;
 import by.reshetnikov.proweather.data.local.AppLocalData;
+import by.reshetnikov.proweather.data.local.db.entities.DaoSession;
 import by.reshetnikov.proweather.data.remote.AppRemoteData;
 import dagger.Module;
 import dagger.Provides;
@@ -72,8 +73,8 @@ public class DataModule {
 
     @Singleton
     @Provides
-    AppLocalData provideLocalData(ProWeatherApp context) {
-        return new AppLocalData(context);
+    AppLocalData provideLocalData(ProWeatherApp context, DaoSession daoSession) {
+        return new AppLocalData(context, daoSession);
     }
 
     @Singleton

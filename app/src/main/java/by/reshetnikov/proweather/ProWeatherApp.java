@@ -48,14 +48,14 @@ public class ProWeatherApp extends Application {
 
         proWeatherApp = this;
 
-        appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .dataModule(new DataModule(baseURL))
-                .build();
-
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "proweather-db");
         Database db = helper.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
+
+        appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this, daoSession))
+                .dataModule(new DataModule(baseURL))
+                .build();
 
         SetDefaultPreferencesAsyncTask task = new SetDefaultPreferencesAsyncTask();
         task.execute();
