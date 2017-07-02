@@ -3,7 +3,7 @@ package by.reshetnikov.proweather.presenter;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.ProWeatherApp;
-import by.reshetnikov.proweather.contracts.WeatherContract;
+import by.reshetnikov.proweather.contract.WeatherContract;
 import by.reshetnikov.proweather.data.DataRepository;
 
 

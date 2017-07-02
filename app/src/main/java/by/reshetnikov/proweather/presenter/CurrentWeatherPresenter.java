@@ -7,7 +7,7 @@ import android.widget.Toast;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.ProWeatherApp;
-import by.reshetnikov.proweather.contracts.CurrentWeatherContract;
+import by.reshetnikov.proweather.contract.CurrentWeatherContract;
 import by.reshetnikov.proweather.data.DataRepository;
 import by.reshetnikov.proweather.model.appmodels.CurrentWeatherAppModel;
 import by.reshetnikov.proweather.model.appmodels.UnitsAppModel;

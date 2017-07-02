@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.contracts;
+package by.reshetnikov.proweather.contract;
 
 import by.reshetnikov.proweather.model.apimodels.ForecastWeatherModels.HourlyForecastWeather;
 

@@ -7,7 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.ProWeatherApp;
-import by.reshetnikov.proweather.contracts.AppDataContract;
+import by.reshetnikov.proweather.contract.AppDataContract;
 import by.reshetnikov.proweather.data.local.AppLocalData;
 import by.reshetnikov.proweather.data.remote.AppRemoteData;
 import by.reshetnikov.proweather.model.apimodels.CurrentWeatherModels.CurrentWeather;

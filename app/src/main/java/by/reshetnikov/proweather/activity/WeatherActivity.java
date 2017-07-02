@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import by.reshetnikov.proweather.BuildConfig;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.contracts.WeatherContract;
+import by.reshetnikov.proweather.contract.WeatherContract;
 import by.reshetnikov.proweather.fragment.CurrentWeatherFragment;
 import by.reshetnikov.proweather.presenter.WeatherPresenter;
 import by.reshetnikov.proweather.utils.FragmentUtils;

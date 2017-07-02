@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.contracts.WeatherForecastContract;
+import by.reshetnikov.proweather.contract.WeatherForecastContract;
 import by.reshetnikov.proweather.presenter.WeatherForecastPresenter;
 
 

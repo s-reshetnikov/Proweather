@@ -15,7 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.contracts.CurrentWeatherContract;
+import by.reshetnikov.proweather.contract.CurrentWeatherContract;
 import by.reshetnikov.proweather.model.appmodels.CurrentWeatherAppModel;
 import by.reshetnikov.proweather.presenter.CurrentWeatherPresenter;
 
