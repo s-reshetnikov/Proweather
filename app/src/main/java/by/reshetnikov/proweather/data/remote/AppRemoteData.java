@@ -5,9 +5,9 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.ProWeatherApp;
-import by.reshetnikov.proweather.data.apimodels.CityModels.CityForecast;
-import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
-import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.HourlyForecastWeather;
+import by.reshetnikov.proweather.model.apimodels.CityModels.CityForecast;
+import by.reshetnikov.proweather.model.apimodels.CurrentWeatherModels.CurrentWeather;
+import by.reshetnikov.proweather.model.apimodels.ForecastWeatherModels.HourlyForecastWeather;
 import by.reshetnikov.proweather.utils.ApiQuery;
 import io.reactivex.Single;
 import retrofit2.Retrofit;

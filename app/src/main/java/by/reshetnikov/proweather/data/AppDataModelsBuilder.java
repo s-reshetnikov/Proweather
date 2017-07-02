@@ -1,8 +1,8 @@
 package by.reshetnikov.proweather.data;
 
-import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
-import by.reshetnikov.proweather.data.appmodels.CurrentWeatherAppModel;
-import by.reshetnikov.proweather.data.local.db.entities.WeatherEntity;
+import by.reshetnikov.proweather.model.apimodels.CurrentWeatherModels.CurrentWeather;
+import by.reshetnikov.proweather.model.appmodels.CurrentWeatherAppModel;
+import by.reshetnikov.proweather.model.dbmodels.WeatherEntity;
 
 
 public class AppDataModelsBuilder {

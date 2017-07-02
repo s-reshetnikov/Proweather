@@ -9,14 +9,14 @@ import com.google.android.gms.location.LocationServices;
 import java.util.List;
 
 import by.reshetnikov.proweather.ProWeatherApp;
-import by.reshetnikov.proweather.data.appmodels.UnitsAppModel;
-import by.reshetnikov.proweather.data.local.db.entities.CityEntity;
-import by.reshetnikov.proweather.data.local.db.entities.CityEntityDao;
-import by.reshetnikov.proweather.data.local.db.entities.DaoSession;
-import by.reshetnikov.proweather.data.local.db.entities.ForecastEntity;
-import by.reshetnikov.proweather.data.local.db.entities.WeatherEntity;
-import by.reshetnikov.proweather.data.local.db.entities.WeatherEntityDao;
+import by.reshetnikov.proweather.data.local.dbmodels.entities.CityEntityDao;
+import by.reshetnikov.proweather.data.local.dbmodels.entities.DaoSession;
+import by.reshetnikov.proweather.data.local.dbmodels.entities.WeatherEntityDao;
 import by.reshetnikov.proweather.data.local.preferences.SharedPreferencesStorage;
+import by.reshetnikov.proweather.model.appmodels.UnitsAppModel;
+import by.reshetnikov.proweather.model.dbmodels.CityEntity;
+import by.reshetnikov.proweather.model.dbmodels.ForecastEntity;
+import by.reshetnikov.proweather.model.dbmodels.WeatherEntity;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -62,7 +62,8 @@ public class AppLocalData implements LocalDataContract {
         CityEntityDao cityDao = daoSession.getCityEntityDao();
         CityEntity cityEntity = cityDao.queryBuilder()
                 .where(CityEntityDao.Properties.IsCurrent.eq(true))
-                .build().unique();
+                .build()
+                .unique();
         return cityEntity;
     }
 

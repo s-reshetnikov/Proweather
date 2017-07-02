@@ -5,10 +5,10 @@ import android.location.Location;
 
 import java.util.List;
 
-import by.reshetnikov.proweather.data.appmodels.UnitsAppModel;
-import by.reshetnikov.proweather.data.local.db.entities.CityEntity;
-import by.reshetnikov.proweather.data.local.db.entities.ForecastEntity;
-import by.reshetnikov.proweather.data.local.db.entities.WeatherEntity;
+import by.reshetnikov.proweather.model.appmodels.UnitsAppModel;
+import by.reshetnikov.proweather.model.dbmodels.CityEntity;
+import by.reshetnikov.proweather.model.dbmodels.ForecastEntity;
+import by.reshetnikov.proweather.model.dbmodels.WeatherEntity;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 

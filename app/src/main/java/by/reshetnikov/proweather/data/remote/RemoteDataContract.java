@@ -1,8 +1,8 @@
 package by.reshetnikov.proweather.data.remote;
 
-import by.reshetnikov.proweather.data.apimodels.CityModels.CityForecast;
-import by.reshetnikov.proweather.data.apimodels.CurrentWeatherModels.CurrentWeather;
-import by.reshetnikov.proweather.data.apimodels.ForecastWeatherModels.HourlyForecastWeather;
+import by.reshetnikov.proweather.model.apimodels.CityModels.CityForecast;
+import by.reshetnikov.proweather.model.apimodels.CurrentWeatherModels.CurrentWeather;
+import by.reshetnikov.proweather.model.apimodels.ForecastWeatherModels.HourlyForecastWeather;
 import io.reactivex.Single;
 
 

@@ -9,12 +9,12 @@ import android.util.Log;
 
 import org.greenrobot.greendao.database.Database;
 
-import by.reshetnikov.proweather.dagger.component.AppComponent;
-import by.reshetnikov.proweather.dagger.component.DaggerAppComponent;
-import by.reshetnikov.proweather.dagger.module.AppModule;
-import by.reshetnikov.proweather.dagger.module.DataModule;
-import by.reshetnikov.proweather.data.local.db.entities.DaoMaster;
-import by.reshetnikov.proweather.data.local.db.entities.DaoSession;
+import by.reshetnikov.proweather.data.local.dbmodels.entities.DaoMaster;
+import by.reshetnikov.proweather.data.local.dbmodels.entities.DaoSession;
+import by.reshetnikov.proweather.injector.component.AppComponent;
+import by.reshetnikov.proweather.injector.component.DaggerAppComponent;
+import by.reshetnikov.proweather.injector.module.AppModule;
+import by.reshetnikov.proweather.injector.module.DataModule;
 
 
 public class ProWeatherApp extends Application {
