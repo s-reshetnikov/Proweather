@@ -117,4 +117,10 @@ public class DataRepository implements AppDataContract {
         });
     }
 
+    @Override
+    public void dispose() {
+        appRemoteData = null;
+        appLocalData = null;
+    }
+
 }

@@ -8,10 +8,10 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 
-import by.reshetnikov.proweather.data.DistanceUnits;
-import by.reshetnikov.proweather.data.TemperatureUnit;
-import by.reshetnikov.proweather.data.WindSpeedUnit;
 import by.reshetnikov.proweather.data.appmodels.UnitsAppModel;
+import by.reshetnikov.proweather.data.units.DistanceUnits;
+import by.reshetnikov.proweather.data.units.TemperatureUnit;
+import by.reshetnikov.proweather.data.units.WindSpeedUnit;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;

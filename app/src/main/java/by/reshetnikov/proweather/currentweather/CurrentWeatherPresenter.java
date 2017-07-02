@@ -63,7 +63,6 @@ public class CurrentWeatherPresenter implements CurrentWeatherContract.Presenter
 
     @Override
     public void onError() {
-
     }
 
     private void getUnits() {
@@ -92,6 +91,7 @@ public class CurrentWeatherPresenter implements CurrentWeatherContract.Presenter
         getUnits();
         getWeather();
     }
+
 
     public void getWeather() {
         Single<CurrentWeatherAppModel> currentWeather = dataRepository.getCurrentWeather();

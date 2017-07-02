@@ -22,4 +22,6 @@ public interface AppDataContract {
     Single<CurrentWeatherAppModel> getCurrentWeather();
 
     Single<ForecastWeatherAppModel> getForecastWeather();
+
+    void dispose();
 }
