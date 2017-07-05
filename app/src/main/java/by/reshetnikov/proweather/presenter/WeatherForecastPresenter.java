@@ -1,7 +1,7 @@
 package by.reshetnikov.proweather.presenter;
 
 import by.reshetnikov.proweather.contract.WeatherForecastContract;
-import by.reshetnikov.proweather.model.apimodels.ForecastWeatherModels.HourlyForecastWeather;
+import by.reshetnikov.proweather.model.apimodels.forecastweather.HourlyForecastWeather;
 
 
 public class WeatherForecastPresenter implements WeatherForecastContract.Presenter {

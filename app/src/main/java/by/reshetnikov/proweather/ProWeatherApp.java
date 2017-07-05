@@ -7,10 +7,6 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import org.greenrobot.greendao.database.Database;
-
-import by.reshetnikov.proweather.data.local.dbmodels.entities.DaoMaster;
-import by.reshetnikov.proweather.data.local.dbmodels.entities.DaoSession;
 import by.reshetnikov.proweather.injector.component.AppComponent;
 import by.reshetnikov.proweather.injector.component.DaggerAppComponent;
 import by.reshetnikov.proweather.injector.module.AppModule;
@@ -24,7 +20,6 @@ public class ProWeatherApp extends Application {
     private static final String baseURL = "http://api.openweathermap.org/";
     private static ProWeatherApp proWeatherApp;
     private static AppComponent appComponent;
-    private DaoSession daoSession;
 
 
     public static ProWeatherApp getProWeatherApp() {
@@ -48,12 +43,8 @@ public class ProWeatherApp extends Application {
 
         proWeatherApp = this;
 
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "proweather-db");
-        Database db = helper.getWritableDb();
-        daoSession = new DaoMaster(db).newSession();
-
         appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this, daoSession))
+                .appModule(new AppModule(this))
                 .dataModule(new DataModule(baseURL))
                 .build();
 
@@ -65,10 +56,6 @@ public class ProWeatherApp extends Application {
 
     public AppComponent getAppComponent() {
         return appComponent;
-    }
-
-    public DaoSession getDaoSession() {
-        return daoSession;
     }
 
     class SetDefaultPreferencesAsyncTask extends AsyncTask {
@@ -85,4 +72,6 @@ public class ProWeatherApp extends Application {
             PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_notification, canReadAgain);
         }
     }
+
+
 }

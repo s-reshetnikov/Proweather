@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.model.apimodels.CityModels;
+package by.reshetnikov.proweather.model.apimodels.currentweather;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -14,35 +14,27 @@ import by.reshetnikov.proweather.model.apimodels.Sys;
 import by.reshetnikov.proweather.model.apimodels.Weather;
 import by.reshetnikov.proweather.model.apimodels.Wind;
 
-public class CityWeather {
-
-    @SerializedName("id")
-    @Expose
-    public Integer id;
-
-    @SerializedName("name")
-    @Expose
-    public String name;
+public class CurrentWeather {
 
     @SerializedName("coord")
     @Expose
     public Coordinates coordinates;
 
+    @SerializedName("weather")
+    @Expose
+    public List<Weather> weather;
+
     @SerializedName("main")
     @Expose
     public Main main;
-
-    @SerializedName("dt")
-    @Expose
-    public int dt;
 
     @SerializedName("wind")
     @Expose
     public Wind wind;
 
-    @SerializedName("sys")
+    @SerializedName("clouds")
     @Expose
-    public Sys sys;
+    public Clouds clouds;
 
     @SerializedName("rain")
     @Expose
@@ -52,12 +44,22 @@ public class CityWeather {
     @Expose
     public Snow snow;
 
-    @SerializedName("clouds")
+    //  Time of data calculation, unix, UTC
+    @SerializedName("dt")
     @Expose
-    public Clouds clouds;
+    public int dt;
 
-    @SerializedName("weather")
+    @SerializedName("sys")
     @Expose
-    public List<Weather> weather = null;
+    public Sys sys;
 
+    // Location ID
+    @SerializedName("id")
+    @Expose
+    public int id;
+
+    // Location name
+    @SerializedName("name")
+    @Expose
+    public String name;
 }

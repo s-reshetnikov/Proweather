@@ -5,9 +5,10 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.ProWeatherApp;
-import by.reshetnikov.proweather.model.apimodels.CityModels.CityForecast;
-import by.reshetnikov.proweather.model.apimodels.CurrentWeatherModels.CurrentWeather;
-import by.reshetnikov.proweather.model.apimodels.ForecastWeatherModels.HourlyForecastWeather;
+import by.reshetnikov.proweather.contract.RemoteDataContract;
+import by.reshetnikov.proweather.model.apimodels.currentweather.CurrentWeather;
+import by.reshetnikov.proweather.model.apimodels.forecastweather.HourlyForecastWeather;
+import by.reshetnikov.proweather.model.apimodels.location.LocationForecast;
 import by.reshetnikov.proweather.utils.ApiQuery;
 import io.reactivex.Single;
 import retrofit2.Retrofit;
@@ -66,22 +67,22 @@ public class AppRemoteData implements RemoteDataContract {
     }
 
     @Override
-    public Single<CityForecast> getCities(String locationName, int count) {
+    public Single<LocationForecast> getLocations(String locationName, int count) {
         HashMap<String, String> queryMap = new ApiQuery()
                 .addLocationName(locationName)
                 .addCount(count)
                 .searchTypeAccurate()
                 .build();
-        return weatherApi.getCities(queryMap);
+        return weatherApi.getLocations(queryMap);
     }
 
     @Override
-    public Single<CityForecast> getCities(double latitude, double longitude, int count) {
+    public Single<LocationForecast> getLocations(double latitude, double longitude, int count) {
         HashMap<String, String> queryMap = new ApiQuery()
                 .addLatitudeAndLongitude(latitude, longitude)
                 .addCount(count)
                 .build();
-        return weatherApi.getCities(queryMap);
+        return weatherApi.getLocations(queryMap);
     }
 
 }

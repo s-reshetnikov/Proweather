@@ -1,11 +1,11 @@
-package by.reshetnikov.proweather.model.apimodels.CityModels;
+package by.reshetnikov.proweather.model.apimodels.location;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class CityForecast {
+public class LocationForecast {
 
     @SerializedName("message")
     @Expose
@@ -21,6 +21,6 @@ public class CityForecast {
 
     @SerializedName("list")
     @Expose
-    public List<CityForecast> cityForecasts;
+    public List<LocationWeather> locationWeatherList;
 
 }

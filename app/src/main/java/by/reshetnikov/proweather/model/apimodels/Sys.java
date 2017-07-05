@@ -5,22 +5,18 @@ import com.google.gson.annotations.SerializedName;
 
 public class Sys {
 
-    // TODO: description?
     @SerializedName("type")
     @Expose
     public int type;
 
-    // TODO: description?
     @SerializedName("id")
     @Expose
     public int id;
 
-    // TODO: description?
     @SerializedName("message")
     @Expose
     public double message;
 
-    // TODO: description?
     @SerializedName("pod")
     @Expose
     public String pod;

@@ -112,7 +112,7 @@
         android:textSize="30sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/tv_wind_descr"
         app:layout_constraintLeft_toRightOf="@+id/tv_wind_descr"
-        tools:text=" SSW 7m/s" />
+        tools:text="SSW 7m/s" />
 
     <TextView
         android:id="@+id/tv_humidity_descr"

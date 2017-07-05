@@ -1,7 +1,10 @@
 package by.reshetnikov.proweather.data;
 
-import by.reshetnikov.proweather.model.apimodels.CurrentWeatherModels.CurrentWeather;
+import by.reshetnikov.proweather.model.apimodels.currentweather.CurrentWeather;
+import by.reshetnikov.proweather.model.apimodels.location.LocationWeather;
 import by.reshetnikov.proweather.model.appmodels.CurrentWeatherAppModel;
+import by.reshetnikov.proweather.model.appmodels.LocationAppModel;
+import by.reshetnikov.proweather.model.dbmodels.LocationEntity;
 import by.reshetnikov.proweather.model.dbmodels.WeatherEntity;
 
 
@@ -51,4 +54,35 @@ public class AppDataModelsBuilder {
         entity.setSnow(apiModel.snow.snowVolume);
         return entity;
     }
+
+    public static LocationAppModel createLocationAppModel(LocationEntity entity) {
+        LocationAppModel appModel = new LocationAppModel(entity.getLocationId(), entity.getLocationName());
+        appModel.setCoordinates(entity.getLatitude(), entity.getLongitude());
+        if (entity.getCountryCode() != null)
+            appModel.setCountryCode(entity.getCountryCode());
+        appModel.setCurrent(entity.getIsCurrent());
+        return appModel;
+    }
+
+    public static LocationAppModel createLocationAppModel(LocationWeather locationWeather) {
+        LocationAppModel appModel = new LocationAppModel(locationWeather.getLocationId(), locationWeather.getLocationName());
+        appModel.setCoordinates(locationWeather.getCoordinates().getLatitude(), locationWeather.getCoordinates().getLongitude());
+        if (locationWeather.getCountryCode() != null)
+            appModel.setCountryCode(locationWeather.getCountryCode());
+        appModel.setCurrent(false);
+        return appModel;
+    }
+
+    public static LocationEntity createLocationEntity(LocationAppModel appModel) {
+        LocationEntity entity = new LocationEntity();
+        entity.setLocationId(appModel.getLocationId());
+        entity.setLocationName(appModel.getLocationName());
+        if (appModel.getCountryCode() != null)
+            entity.setCountryCode(appModel.getCountryCode());
+        entity.setCoordinates(appModel.getLatitude(), appModel.getLongitude());
+        entity.setCurrent(appModel.isCurrent());
+        return entity;
+    }
+
+
 }

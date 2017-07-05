@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -48,24 +47,15 @@ public class WeatherActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate start");
-        setContentView(R.layout.drawer_weather);
+        setContentView(R.layout.activity_weather);
 
 
         presenter = new WeatherPresenter();
         presenter.setView(this);
         presenter.updateLocation();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.location_toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.weather_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -124,6 +114,11 @@ public class WeatherActivity extends AppCompatActivity
         startActivity(settingsActivityIntent);
     }
 
+    private void startLocationManagerActivity() {
+        Intent locationManagerActivityIntent = new Intent(this, LocationActivity.class);
+        startActivity(locationManagerActivityIntent);
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -131,6 +126,10 @@ public class WeatherActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_settings: {
                 startSettingsActivity();
+                break;
+            }
+            case R.id.nav_location_manager: {
+                startLocationManagerActivity();
                 break;
             }
         }

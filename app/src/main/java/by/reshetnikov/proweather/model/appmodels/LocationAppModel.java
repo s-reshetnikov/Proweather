@@ -3,24 +3,40 @@ package by.reshetnikov.proweather.model.appmodels;
 
 public class LocationAppModel {
 
-    private String id;
-    private String cityName;
+    private String locationId;
+    private String locationName;
     private String countryCode;
-    private String longitude;
-    private String latitude;
+    private double longitude;
+    private double latitude;
+    private boolean isCurrent;
+    private int position;
 
-
-    LocationAppModel(String id, String cityName) {
-        this.id = id;
-        this.cityName = cityName;
+    public LocationAppModel(String locationId, String locationName) {
+        this.locationId = locationId;
+        this.locationName = locationName;
     }
 
-    public String getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LocationAppModel that = (LocationAppModel) o;
+
+        return locationId.equals(that.locationId);
     }
 
-    public String getCityName() {
-        return cityName;
+    @Override
+    public int hashCode() {
+        return locationId.hashCode();
+    }
+
+    public String getLocationId() {
+        return locationId;
+    }
+
+    public String getLocationName() {
+        return locationName;
     }
 
     public String getCountryCode() {
@@ -31,19 +47,32 @@ public class LocationAppModel {
         this.countryCode = countryCode;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setCoordinates(double latitude, double longitude) {
         this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public boolean isCurrent() {
+        return isCurrent;
+    }
+
+    public void setCurrent(boolean current) {
+        isCurrent = current;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

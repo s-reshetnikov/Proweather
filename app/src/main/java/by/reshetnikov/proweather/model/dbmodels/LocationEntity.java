@@ -7,26 +7,22 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 
-import by.reshetnikov.proweather.data.local.dbmodels.entities.CityEntityDao;
-import by.reshetnikov.proweather.data.local.dbmodels.entities.DaoSession;
-
 @Entity(active = true)
-public class CityEntity {
+public class LocationEntity {
 
     @Id(autoincrement = true)
-    private long Id;
+    private Long Id;
     @Index(unique = true)
-    private String cityId;
+    private String locationId;
     @NotNull
-    private String cityName;
-    @NotNull
+    private String locationName;
     private String countryCode;
     @NotNull
-    private String longitude;
+    private double longitude;
     @NotNull
-    private String latitude;
-    @NotNull
+    private double latitude;
     private boolean isCurrent;
+    private int position;
     /**
      * Used to resolve relations
      */
@@ -35,44 +31,41 @@ public class CityEntity {
     /**
      * Used for active entity operations.
      */
-    @Generated(hash = 1928598513)
-    private transient CityEntityDao myDao;
+    @Generated(hash = 2022235245)
+    private transient LocationEntityDao myDao;
 
-    @Generated(hash = 322782472)
-    public CityEntity(long Id, String cityId, @NotNull String cityName,
-                      @NotNull String countryCode, @NotNull String longitude,
-                      @NotNull String latitude, boolean isCurrent) {
+    @Generated(hash = 856729877)
+    public LocationEntity(Long Id, String locationId, @NotNull String locationName,
+                          String countryCode, double longitude, double latitude,
+                          boolean isCurrent, int position) {
         this.Id = Id;
-        this.cityId = cityId;
-        this.cityName = cityName;
+        this.locationId = locationId;
+        this.locationName = locationName;
         this.countryCode = countryCode;
         this.longitude = longitude;
         this.latitude = latitude;
         this.isCurrent = isCurrent;
+        this.position = position;
     }
 
-    @Generated(hash = 2001321047)
-    public CityEntity() {
+    @Generated(hash = 1723987110)
+    public LocationEntity() {
     }
 
-    public String getCityId() {
-        return cityId;
+    public String getLocationId() {
+        return locationId;
     }
 
-    public void setCityId(String cityId) {
-        this.cityId = cityId;
+    public void setLocationId(String locationId) {
+        this.locationId = locationId;
     }
 
-    public void setId(String cityId) {
-        this.cityId = cityId;
+    public String getLocationName() {
+        return locationName;
     }
 
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
     }
 
     public String getCountryCode() {
@@ -83,24 +76,33 @@ public class CityEntity {
         this.countryCode = countryCode;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public long getId() {
+    public void setCoordinates(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public Long getId() {
         return this.Id;
+    }
+
+    public void setId(Long Id) {
+        this.Id = Id;
     }
 
     public void setId(long Id) {
@@ -113,6 +115,18 @@ public class CityEntity {
 
     public void setIsCurrent(boolean isCurrent) {
         this.isCurrent = isCurrent;
+    }
+
+    public void setCurrent(boolean isCurrent) {
+        this.isCurrent = isCurrent;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     /**
@@ -154,9 +168,9 @@ public class CityEntity {
     /**
      * called by internal mechanisms, do not call yourself.
      */
-    @Generated(hash = 564858177)
+    @Generated(hash = 923553686)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getCityEntityDao() : null;
+        myDao = daoSession != null ? daoSession.getLocationEntityDao() : null;
     }
 }

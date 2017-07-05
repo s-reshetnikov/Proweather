@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.model.apimodels.ForecastWeatherModels;
+package by.reshetnikov.proweather.model.apimodels.forecastweather;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -9,14 +9,17 @@ import com.google.android.gms.location.LocationServices;
 import java.util.List;
 
 import by.reshetnikov.proweather.ProWeatherApp;
-import by.reshetnikov.proweather.data.local.dbmodels.entities.CityEntityDao;
-import by.reshetnikov.proweather.data.local.dbmodels.entities.DaoSession;
-import by.reshetnikov.proweather.data.local.dbmodels.entities.WeatherEntityDao;
+import by.reshetnikov.proweather.contract.LocalDataContract;
+import by.reshetnikov.proweather.data.AppDataModelsBuilder;
 import by.reshetnikov.proweather.data.local.preferences.SharedPreferencesStorage;
+import by.reshetnikov.proweather.model.appmodels.LocationAppModel;
 import by.reshetnikov.proweather.model.appmodels.UnitsAppModel;
-import by.reshetnikov.proweather.model.dbmodels.CityEntity;
+import by.reshetnikov.proweather.model.dbmodels.DaoSession;
 import by.reshetnikov.proweather.model.dbmodels.ForecastEntity;
+import by.reshetnikov.proweather.model.dbmodels.LocationEntity;
+import by.reshetnikov.proweather.model.dbmodels.LocationEntityDao;
 import by.reshetnikov.proweather.model.dbmodels.WeatherEntity;
+import by.reshetnikov.proweather.model.dbmodels.WeatherEntityDao;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -37,15 +40,15 @@ public class AppLocalData implements LocalDataContract {
     }
 
     @Override
-    public Observable<WeatherEntity> getCurrentWeather(String cityId) {
-        WeatherEntity weatherEntity = getCurrentWeatherEntity(cityId);
+    public Observable<WeatherEntity> getCurrentWeather(String locationId) {
+        WeatherEntity weatherEntity = getCurrentWeatherEntity(locationId);
         if (weatherEntity == null)
             return null;
         return Observable.just(weatherEntity);
     }
 
     @Override
-    public Observable<ForecastEntity> getForecastWeather(String cityId) {
+    public Observable<ForecastEntity> getForecastWeather(String locationId) {
         return null;
     }
 
@@ -58,33 +61,44 @@ public class AppLocalData implements LocalDataContract {
     }
 
     @Override
-    public CityEntity getChosenCity() {
-        CityEntityDao cityDao = daoSession.getCityEntityDao();
-        CityEntity cityEntity = cityDao.queryBuilder()
-                .where(CityEntityDao.Properties.IsCurrent.eq(true))
+    public LocationEntity getChosenLocation() {
+        LocationEntityDao locationDao = daoSession.getLocationEntityDao();
+        LocationEntity locationEntity = locationDao.queryBuilder()
+                .where(LocationEntityDao.Properties.IsCurrent.eq(true))
                 .build()
                 .unique();
-        return cityEntity;
+        return locationEntity;
     }
 
     @Override
-    public Observable<List<CityEntity>> getCities() {
-        return null;
+    public Single<List<LocationEntity>> getLocations() {
+        LocationEntityDao locationDao = daoSession.getLocationEntityDao();
+        List<LocationEntity> locationEntities = locationDao.queryBuilder()
+                .orderAsc(LocationEntityDao.Properties.Position)
+                .build().list();
+        return Single.just(locationEntities);
     }
 
-    private WeatherEntity getCurrentWeatherEntity(String cityId) {
+    private WeatherEntity getCurrentWeatherEntity(String locationId) {
         WeatherEntityDao weatherDao = daoSession.getWeatherEntityDao();
         return weatherDao.queryBuilder()
-                .where(WeatherEntityDao.Properties.CityId.eq(cityId))
+                .where(WeatherEntityDao.Properties.LocationId.eq(locationId))
                 .orderAsc(WeatherEntityDao.Properties.Date)
                 .limit(1)
                 .build().unique();
     }
 
     @Override
-    public void saveCity(CityEntity city) {
-        CityEntityDao cityDao = daoSession.getCityEntityDao();
-        cityDao.save(city);
+    public void saveLocation(LocationAppModel locationModel) {
+        LocationEntityDao locationDao = daoSession.getLocationEntityDao();
+        LocationEntity locationEntity = AppDataModelsBuilder.createLocationEntity(locationModel);
+        LocationEntity dbEntity = locationDao.queryBuilder()
+                .where(LocationEntityDao.Properties.LocationId.eq(locationModel.getLocationId()))
+                .build().unique();
+        if (dbEntity != null) {
+            locationEntity.setId(dbEntity.getId());
+        }
+        locationDao.save(locationEntity);
     }
 
     @Override

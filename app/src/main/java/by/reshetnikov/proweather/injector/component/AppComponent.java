@@ -3,13 +3,16 @@ package by.reshetnikov.proweather.injector.component;
 import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
+import by.reshetnikov.proweather.activity.LocationActivity;
 import by.reshetnikov.proweather.activity.WeatherActivity;
+import by.reshetnikov.proweather.adapter.AutoCompleteLocationsAdapter;
 import by.reshetnikov.proweather.data.DataRepository;
 import by.reshetnikov.proweather.data.local.AppLocalData;
 import by.reshetnikov.proweather.data.remote.AppRemoteData;
 import by.reshetnikov.proweather.injector.module.AppModule;
 import by.reshetnikov.proweather.injector.module.DataModule;
 import by.reshetnikov.proweather.presenter.CurrentWeatherPresenter;
+import by.reshetnikov.proweather.presenter.LocationManagerPresenter;
 import by.reshetnikov.proweather.presenter.WeatherForecastPresenter;
 import by.reshetnikov.proweather.presenter.WeatherPresenter;
 import dagger.Component;
@@ -22,15 +25,21 @@ public interface AppComponent {
 
     public void inject(WeatherActivity activity);
 
+    public void inject(LocationActivity activity);
+
+    public void inject(CurrentWeatherPresenter presenter);
+
     public void inject(WeatherPresenter presenter);
 
-    public void inject(CurrentWeatherPresenter currentWeatherPresenter);
-
     public void inject(WeatherForecastPresenter presenter);
+
+    public void inject(LocationManagerPresenter presenter);
 
     public void inject(DataRepository dataRepository);
 
     public void inject(AppLocalData localData);
 
     public void inject(AppRemoteData remoteData);
+
+    void inject(AutoCompleteLocationsAdapter adapter);
 }

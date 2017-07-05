@@ -28,18 +28,10 @@
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings" />
 
-        <service
-            android:name=".data.local.backgroundlocationupdates.LocationUpdatesIntentService"
-            android:exported="false" />
-
-        <receiver
-            android:name=".data.local.backgroundlocationupdates.LocationUpdatesBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="by.reshetnikov.proweather.data.local.backgroundlocationupdates.action.PROCESS_UPDATES" />
-            </intent-filter>
-        </receiver>
+        <activity
+            android:name=".activity.LocationActivity"
+            android:label="@string/title_activity_locations"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

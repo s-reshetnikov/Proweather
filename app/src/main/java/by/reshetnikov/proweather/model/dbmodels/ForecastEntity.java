@@ -11,16 +11,14 @@ import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.Date;
 
-import by.reshetnikov.proweather.data.local.dbmodels.entities.DaoSession;
-import by.reshetnikov.proweather.data.local.dbmodels.entities.ForecastEntityDao;
 
 @Entity(active = true)
 public class ForecastEntity {
     @Id(autoincrement = true)
-    private long Id;
+    private Long Id;
     @Index
     @NotNull
-    private String cityId;
+    private String locationId;
     private double temperature;
     private int humidity;
     private int pressure;
@@ -38,19 +36,17 @@ public class ForecastEntity {
      */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 1534676844)
     private transient ForecastEntityDao myDao;
 
-    @Generated(hash = 558360909)
-    public ForecastEntity(long Id, @NotNull String cityId, double temperature,
-                          int humidity, int pressure, double windSpeed, double windDegrees,
-                          Date date, int weatherConditionId, String weatherDescription,
-                          String iconCode, double snow, double rain) {
+    @Generated(hash = 47488609)
+    public ForecastEntity(Long Id, @NotNull String locationId, double temperature,
+                          int humidity, int pressure, double windSpeed, double windDegrees, Date date,
+                          int weatherConditionId, String weatherDescription, String iconCode, double snow,
+                          double rain) {
         this.Id = Id;
-        this.cityId = cityId;
+        this.locationId = locationId;
         this.temperature = temperature;
         this.humidity = humidity;
         this.pressure = pressure;
@@ -68,20 +64,24 @@ public class ForecastEntity {
     public ForecastEntity() {
     }
 
-    public long getId() {
+    public Long getId() {
         return this.Id;
+    }
+
+    public void setId(Long Id) {
+        this.Id = Id;
     }
 
     public void setId(long Id) {
         this.Id = Id;
     }
 
-    public String getCityId() {
-        return this.cityId;
+    public String getLocationId() {
+        return this.locationId;
     }
 
-    public void setCityId(String cityId) {
-        this.cityId = cityId;
+    public void setLocationId(String locationId) {
+        this.locationId = locationId;
     }
 
     public double getTemperature() {
@@ -208,9 +208,7 @@ public class ForecastEntity {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 581314384)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

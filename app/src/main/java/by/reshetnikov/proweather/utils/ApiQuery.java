@@ -13,6 +13,7 @@ public final class ApiQuery {
     private static final String LONGITUDE_PARAM = "lon";
     private static final String ZIP_CODE_PARAM = "zip";
     private static final String RESULT_COUNT_PARAM = "cnt";
+    private static final String SEARCH_TYPE_PARAM = "type";
     private static final String API_KEY_PARAM = "appId";
 
     private HashMap<String, String> query;
@@ -53,12 +54,12 @@ public final class ApiQuery {
     }
 
     public ApiQuery searchTypeAccurate() {
-        query.put(RESULT_COUNT_PARAM, "accurate");
+        query.put(SEARCH_TYPE_PARAM, "accurate");
         return this;
     }
 
     public ApiQuery searchTypeLike() {
-        query.put(RESULT_COUNT_PARAM, "like");
+        query.put(SEARCH_TYPE_PARAM, "like");
         return this;
     }
 

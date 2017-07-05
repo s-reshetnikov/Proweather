@@ -3,19 +3,19 @@ package by.reshetnikov.proweather.model.apimodels;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class City {
+public class Location {
 
-    // City ID
+    // Location ID
     @SerializedName("id")
     @Expose
     public int id;
 
-    // City name
+    // Location name
     @SerializedName("name")
     @Expose
     public String name;
 
-    // City geo location
+    // Location geo location
     @SerializedName("coord")
     @Expose
     public Coordinates coordinates;

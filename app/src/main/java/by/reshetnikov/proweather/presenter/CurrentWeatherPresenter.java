@@ -72,7 +72,6 @@ public class CurrentWeatherPresenter implements CurrentWeatherContract.Presenter
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSingleObserver<UnitsAppModel>() {
 
-
                     @Override
                     public void onSuccess(@NonNull UnitsAppModel unitsAppModel) {
                         units = unitsAppModel;

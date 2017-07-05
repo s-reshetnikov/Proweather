@@ -1,8 +1,8 @@
-package by.reshetnikov.proweather.data.remote;
+package by.reshetnikov.proweather.contract;
 
-import by.reshetnikov.proweather.model.apimodels.CityModels.CityForecast;
-import by.reshetnikov.proweather.model.apimodels.CurrentWeatherModels.CurrentWeather;
-import by.reshetnikov.proweather.model.apimodels.ForecastWeatherModels.HourlyForecastWeather;
+import by.reshetnikov.proweather.model.apimodels.currentweather.CurrentWeather;
+import by.reshetnikov.proweather.model.apimodels.forecastweather.HourlyForecastWeather;
+import by.reshetnikov.proweather.model.apimodels.location.LocationForecast;
 import io.reactivex.Single;
 
 
@@ -28,8 +28,8 @@ public interface RemoteDataContract {
 
     // cities
 
-    Single<CityForecast> getCities(String locationName, int count);
+    Single<LocationForecast> getLocations(String locationName, int count);
 
-    Single<CityForecast> getCities(double latitude, double longitude, int count);
+    Single<LocationForecast> getLocations(double latitude, double longitude, int count);
 
 }
