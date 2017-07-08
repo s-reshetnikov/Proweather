@@ -45,8 +45,8 @@ public class ProWeatherApp extends Application {
         proWeatherApp = this;
 
         appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this, dbName))
-                .dataModule(new DataModule(baseURL))
+                .appModule(new AppModule(this))
+                .dataModule(new DataModule(baseURL, dbName))
                 .build();
 
         SetDefaultPreferencesAsyncTask task = new SetDefaultPreferencesAsyncTask();

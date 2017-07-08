@@ -1,8 +1,12 @@
 package by.reshetnikov.proweather.injector.module;
 
+import android.content.Context;
+
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.greenrobot.greendao.database.Database;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,8 +14,13 @@ import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.DataRepository;
+import by.reshetnikov.proweather.data.db.AppDbData;
+import by.reshetnikov.proweather.data.db.AppDbOpenHelper;
+import by.reshetnikov.proweather.data.db.model.DaoMaster;
+import by.reshetnikov.proweather.data.db.model.DaoSession;
 import by.reshetnikov.proweather.data.network.AppWeatherApiData;
 import by.reshetnikov.proweather.data.network.WeatherApiService;
+import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
@@ -25,10 +34,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DataModule {
 
     private static final int TIME_OUT = 3; //in seconds
-    private String baseUrl;
+    private final String baseUrl;
+    private final String dbName;
 
-    public DataModule(String baseUrl) {
+
+    public DataModule(String baseUrl, String dbName) {
         this.baseUrl = baseUrl;
+        this.dbName = dbName;
     }
 
     @Singleton
@@ -70,16 +82,41 @@ public class DataModule {
                 .build();
     }
 
-
     @Singleton
     @Provides
     WeatherApiService provideApiService(Retrofit retrofit) {
         return retrofit.create(WeatherApiService.class);
     }
 
+    @Provides
+    @Singleton
+    DaoSession provideDaoSession(Context context) {
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, dbName);
+        Database db = helper.getWritableDb();
+        return new DaoMaster(db).newSession();
+    }
+
     @Singleton
     @Provides
-    AppWeatherApiData provideAppRemoteData() {
+    AppDbOpenHelper provideAppDbOpenHelper(Context context) {
+        return new AppDbOpenHelper(context, dbName);
+    }
+
+    @Singleton
+    @Provides
+    AppDbData provideApDbData(AppDbOpenHelper openHelper) {
+        return new AppDbData(openHelper);
+    }
+
+    @Singleton
+    @Provides
+    AppSharedPreferencesData provideSharedPreferencesData(Context context) {
+        return new AppSharedPreferencesData(context);
+    }
+
+    @Singleton
+    @Provides
+    AppWeatherApiData provideAppWeatherApiData() {
         return new AppWeatherApiData();
     }
 
