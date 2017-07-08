@@ -102,11 +102,11 @@ public class LocationEntity {
         return this.Id;
     }
 
-    public void setId(long Id) {
+    public void setId(Long Id) {
         this.Id = Id;
     }
 
-    public void setId(Long Id) {
+    public void setId(long Id) {
         this.Id = Id;
     }
 

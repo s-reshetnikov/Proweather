@@ -14,7 +14,7 @@ import java.util.Date;
 
 
 @Entity(active = true)
-public class ForecastEntity {
+public class DailyForecastEntity {
     @Id(autoincrement = true)
     private Long Id;
     @Index
@@ -38,14 +38,14 @@ public class ForecastEntity {
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
     /** Used for active entity operations. */
-    @Generated(hash = 1534676844)
-    private transient ForecastEntityDao myDao;
+    @Generated(hash = 1638140434)
+    private transient DailyForecastEntityDao myDao;
 
-    @Generated(hash = 47488609)
-    public ForecastEntity(Long Id, @NotNull String locationId, double temperature,
-                          int humidity, int pressure, double windSpeed, double windDegrees, Date date,
-                          int weatherConditionId, String weatherDescription, String iconCode, double snow,
-                          double rain) {
+    @Generated(hash = 602722938)
+    public DailyForecastEntity(Long Id, @NotNull String locationId,
+                               double temperature, int humidity, int pressure, double windSpeed,
+                               double windDegrees, Date date, int weatherConditionId,
+                               String weatherDescription, String iconCode, double snow, double rain) {
         this.Id = Id;
         this.locationId = locationId;
         this.temperature = temperature;
@@ -61,19 +61,19 @@ public class ForecastEntity {
         this.rain = rain;
     }
 
-    @Generated(hash = 1837371382)
-    public ForecastEntity() {
+    @Generated(hash = 994273881)
+    public DailyForecastEntity() {
     }
 
     public Long getId() {
         return this.Id;
     }
 
-    public void setId(long Id) {
+    public void setId(Long Id) {
         this.Id = Id;
     }
 
-    public void setId(Long Id) {
+    public void setId(long Id) {
         this.Id = Id;
     }
 
@@ -209,10 +209,12 @@ public class ForecastEntity {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 581314384)
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 2106318919)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getForecastEntityDao() : null;
+        myDao = daoSession != null ? daoSession.getDailyForecastEntityDao() : null;
     }
 }

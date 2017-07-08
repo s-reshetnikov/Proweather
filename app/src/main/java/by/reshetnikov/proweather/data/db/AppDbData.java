@@ -5,11 +5,12 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
+import by.reshetnikov.proweather.data.db.model.DailyForecastEntityDao;
 import by.reshetnikov.proweather.data.db.model.DaoMaster;
 import by.reshetnikov.proweather.data.db.model.DaoSession;
-import by.reshetnikov.proweather.data.db.model.ForecastEntity;
-import by.reshetnikov.proweather.data.db.model.ForecastEntityDao;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
+import by.reshetnikov.proweather.data.db.model.LocationEntityDao;
 import by.reshetnikov.proweather.data.db.model.WeatherEntity;
 import by.reshetnikov.proweather.data.db.model.WeatherEntityDao;
 import io.reactivex.Observable;
@@ -18,10 +19,16 @@ import io.reactivex.Observable;
 public class AppDbData implements DbContract {
 
     private final DaoSession daoSession;
+    private final WeatherEntityDao weatherDao;
+    private final DailyForecastEntityDao forecastDao;
+    private final LocationEntityDao locationDao;
 
     @Inject
-    AppDbData(AppDbOpenHelper dbHelper) {
+    public AppDbData(AppDbOpenHelper dbHelper) {
         daoSession = new DaoMaster(dbHelper.getWritableDb()).newSession();
+        weatherDao = daoSession.getWeatherEntityDao();
+        forecastDao = daoSession.getDailyForecastEntityDao();
+        locationDao = daoSession.getLocationEntityDao();
     }
 
     @Override
@@ -45,17 +52,17 @@ public class AppDbData implements DbContract {
     }
 
     @Override
-    public Observable<ForecastEntity> getForecastWeather(final String locationId) {
-        return Observable.fromCallable(new Callable<ForecastEntity>() {
+    public Observable<DailyForecastEntity> getForecastWeather(final String locationId) {
+        return Observable.fromCallable(new Callable<DailyForecastEntity>() {
             @Override
-            public ForecastEntity call() throws Exception {
+            public DailyForecastEntity call() throws Exception {
                 return getForecastWeatherEntity(locationId);
             }
         });
     }
 
     @Override
-    public Observable<Boolean> saveForecastWeather(final ForecastEntity forecastWeather) {
+    public Observable<Boolean> saveForecastWeather(final DailyForecastEntity forecastWeather) {
         return Observable.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -89,7 +96,7 @@ public class AppDbData implements DbContract {
         return Observable.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return saveNewLocationEntity(locationEntity);
+                return saveOrUpdateLocationEntity(locationEntity);
             }
         });
     }
@@ -99,7 +106,7 @@ public class AppDbData implements DbContract {
         return Observable.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return updateLocationEntity(locationEntity);
+                return saveOrUpdateLocationEntity(locationEntity);
             }
         });
     }
@@ -115,7 +122,6 @@ public class AppDbData implements DbContract {
     }
 
     private WeatherEntity getCurrentWeatherEntity(String locationId) {
-        WeatherEntityDao weatherDao = daoSession.getWeatherEntityDao();
         return weatherDao.queryBuilder()
                 .where(WeatherEntityDao.Properties.LocationId.eq(locationId))
                 .orderAsc(WeatherEntityDao.Properties.Date)
@@ -125,39 +131,38 @@ public class AppDbData implements DbContract {
     }
 
     private Boolean saveCurrentWeatherEntity(WeatherEntity currentWeather) {
-        WeatherEntityDao weatherDao = daoSession.getWeatherEntityDao();
         weatherDao.save(currentWeather);
         return true;
     }
 
-    private ForecastEntity getForecastWeatherEntity(String locationId) {
-        ForecastEntityDao forecastDao = daoSession.getForecastEntityDao();
+    private DailyForecastEntity getForecastWeatherEntity(String locationId) {
         return forecastDao.queryBuilder()
-                .where(ForecastEntityDao.Properties.LocationId.eq(locationId))
+                .where(DailyForecastEntityDao.Properties.LocationId.eq(locationId))
                 .build().unique();
     }
 
-    private Boolean saveForecastWeatherEntity(ForecastEntity forecastWeather) {
-        return null;
+    private Boolean saveForecastWeatherEntity(DailyForecastEntity forecastWeather) {
+        forecastDao.save(forecastWeather);
+        return true;
     }
 
     private LocationEntity getChosenLocationEntity() {
-        return null;
+        return locationDao.queryBuilder()
+                .where(LocationEntityDao.Properties.IsCurrent.eq(true))
+                .build().unique();
     }
 
     private List<LocationEntity> getSavedLocationEntities() {
-        return null;
+        return locationDao.loadAll();
     }
 
-    private Boolean saveNewLocationEntity(LocationEntity locationEntity) {
-        return null;
-    }
-
-    private Boolean updateLocationEntity(LocationEntity locationEntity) {
-        return null;
+    private Boolean saveOrUpdateLocationEntity(LocationEntity locationEntity) {
+        locationDao.save(locationEntity);
+        return true;
     }
 
     private Boolean removeLocationEntity(LocationEntity locationEntity) {
-        return null;
+        locationDao.delete(locationEntity);
+        return true;
     }
 }

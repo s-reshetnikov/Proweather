@@ -4,8 +4,13 @@ import android.location.Location;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import by.reshetnikov.proweather.ProWeatherApp;
+import by.reshetnikov.proweather.data.db.AppDbData;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
+import by.reshetnikov.proweather.data.network.AppWeatherApiData;
+import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
 import by.reshetnikov.proweather.model.appmodels.CurrentWeatherAppModel;
 import by.reshetnikov.proweather.model.appmodels.DailyForecastWeatherAppModel;
 import by.reshetnikov.proweather.model.appmodels.HourlyForecastWeatherAppModel;
@@ -17,6 +22,13 @@ import io.reactivex.Observable;
 public class DataRepository implements DataContract {
 
     private static final String TAG = DataRepository.class.getSimpleName();
+
+    @Inject
+    AppDbData dbData;
+    @Inject
+    AppWeatherApiData apiData;
+    @Inject
+    AppSharedPreferencesData sharedPreferencesData;
 
     public DataRepository() {
         ProWeatherApp.getProWeatherApp().getAppComponent().inject(this);
