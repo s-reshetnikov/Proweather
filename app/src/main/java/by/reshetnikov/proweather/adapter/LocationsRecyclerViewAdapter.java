@@ -4,29 +4,49 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import by.reshetnikov.proweather.contract.LocationManagerContract;
 import by.reshetnikov.proweather.contract.LocationsAdapterContract;
 import by.reshetnikov.proweather.model.appmodels.LocationAppModel;
-import by.reshetnikov.proweather.viewholder.ViewHolder;
+import by.reshetnikov.proweather.viewholder.LocationViewHolder;
+import io.reactivex.disposables.CompositeDisposable;
 
-public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> implements LocationsAdapterContract {
+public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationViewHolder> implements LocationsAdapterContract {
 
-    private List<LocationAppModel> locations;
+    private WeakReference<LocationManagerContract.Presenter> presenterRef;
+    private List<LocationAppModel> locations = new ArrayList<>();
+    private CompositeDisposable compositeDisposable;
 
+    public LocationsRecyclerViewAdapter(LocationManagerContract.Presenter presenter) {
+        presenterRef = new WeakReference<>(presenter);
+        compositeDisposable = new CompositeDisposable();
+        loadLocations();
+    }
 
-    public LocationsRecyclerViewAdapter(List<LocationAppModel> locations) {
-        this.locations = locations;
+    private void loadLocations() {
+        List<LocationAppModel> locations = getPresenter().getLocations();
+        if (locations.size() == 0) {
+            locations.addAll(locations);
+            return;
+        }
+
+        for (LocationAppModel location : locations) {
+            if (!locations.contains(location))
+                locations.add(location);
+        }
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
+    public LocationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new LocationViewHolder(LayoutInflater.from(parent.getContext()), parent);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(LocationViewHolder holder, int position) {
         LocationAppModel location = locations.get(position);
         holder.setLocationName(location.getLocationName());
         holder.setCountryCode(location.getCountryCode());
@@ -40,10 +60,16 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<ViewHolde
     }
 
     @Override
+    public void updateView(List<LocationAppModel> locations) {
+
+    }
+
+    @Override
     public void removeLocation(int position) {
-        locations.remove(position);
+        getPresenter().removeLocation(getLocation(position));
+        // locations.remove(position);
         notifyItemRemoved(position);
-        notifyItemRangeChanged(0, locations.size());
+        notifyItemRangeChanged(position, locations.size());
     }
 
     @Override
@@ -63,5 +89,11 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<ViewHolde
     @Override
     public LocationAppModel getLocation(int position) {
         return locations.get(position);
+    }
+
+    private LocationManagerContract.Presenter getPresenter() {
+        if (presenterRef != null)
+            return presenterRef.get();
+        throw new NullPointerException("Presenter was disposed!!!");
     }
 }

@@ -1,9 +1,12 @@
 package by.reshetnikov.proweather.contract;
 
+import java.util.List;
+
 import by.reshetnikov.proweather.model.appmodels.LocationAppModel;
 
 
 public interface LocationsAdapterContract {
+    void updateView(List<LocationAppModel> locations);
 
     void addLocation(LocationAppModel location);
 
@@ -12,4 +15,6 @@ public interface LocationsAdapterContract {
     void removeLocation(int position);
 
     void onLocationItemMove(int fromPosition, int toPosition);
+
+
 }

@@ -1,6 +1,6 @@
 package by.reshetnikov.proweather.contract;
 
-import by.reshetnikov.proweather.model.apimodels.forecastweather.HourlyForecastWeather;
+import by.reshetnikov.proweather.data.network.model.forecastweather.HourlyForecastWeather;
 
 
 public interface WeatherForecastContract {

@@ -1,6 +1,7 @@
 package by.reshetnikov.proweather.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,51 +10,53 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import org.greenrobot.greendao.annotation.NotNull;
-
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.data.DataRepository;
+import by.reshetnikov.proweather.contract.LocationManagerContract;
 import by.reshetnikov.proweather.model.appmodels.LocationAppModel;
+import io.reactivex.disposables.CompositeDisposable;
 
 public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filterable {
 
     private static final String TAG = AutoCompleteLocationsAdapter.class.getSimpleName();
-    private static final int MAX_RESULTS = 7;
-
-    @Inject
-    DataRepository dataRepository;
+    private static int maxResults = 7;
 
     @BindView(R.id.tv_dropdown_location)
     TextView tvLocation;
     @BindView(R.id.tv_dropdown_country_code)
     TextView tvCountyCode;
-
-    private int threshold;
+    CompositeDisposable compositeDisposable;
+    LocationManagerContract.Presenter presenter;
     private WeakReference<Context> contextRef;
-    private List<LocationAppModel> resultList;
+    private List<LocationAppModel> results = new ArrayList<>();
 
-    public AutoCompleteLocationsAdapter(@NotNull Context context, int threshold) {
+    public AutoCompleteLocationsAdapter(Context context, LocationManagerContract.Presenter presenter) {
         this.contextRef = new WeakReference<>(context);
-        this.threshold = threshold;
-        ((ProWeatherApp) context.getApplicationContext()).getAppComponent().inject(this);
+        this.presenter = presenter;
+        compositeDisposable = new CompositeDisposable();
+    }
+
+    private void loadLocations(String locationName) {
+        List<LocationAppModel> locations = presenter.getLocationsByName(locationName, maxResults);
+        AutoCompleteLocationsAdapter.this.results.clear();
+        AutoCompleteLocationsAdapter.this.results.addAll(locations);
+        notifyDataSetChanged();
+
     }
 
     @Override
     public int getCount() {
-        return resultList.size();
+        return results.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return resultList.get(position);
+        return results.get(position);
     }
 
     @Override
@@ -63,9 +66,8 @@ public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filtera
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null && contextRef != null) {
-            LayoutInflater inflater = (LayoutInflater) contextRef.get()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.location_dropdown_item, parent, false);
         }
         ButterKnife.bind(this, convertView);
@@ -80,22 +82,21 @@ public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filtera
         Filter filter = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
+                Log.d(TAG, "performFiltering() in getFilter(): " + constraint.toString());
                 FilterResults filterResults = new FilterResults();
-                if (constraint != null && constraint.length() >= threshold) {
-                    List<LocationAppModel> locations = findLocations(constraint.toString());
-                    filterResults.values = locations;
-                    if (locations == null)
-                        filterResults.count = 0;
-                    else
-                        filterResults.count = locations.size();
+                if (constraint != null) {
+                    AutoCompleteLocationsAdapter.this.loadLocations(constraint.toString());
+                    filterResults.values = results;
+                    filterResults.count = results.size();
                 }
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
+                Log.d(TAG, "performFiltering() in getFilter(): " + constraint.toString());
                 if (results != null && results.count > 0) {
-                    resultList = (List<LocationAppModel>) results.values;
+                    AutoCompleteLocationsAdapter.this.results = (List<LocationAppModel>) results.values;
                     notifyDataSetChanged();
                 } else {
                     notifyDataSetInvalidated();
@@ -105,8 +106,11 @@ public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filtera
         return filter;
     }
 
-    private List<LocationAppModel> findLocations(String search) {
-        return dataRepository.getAllLocationsByName(search, MAX_RESULTS).blockingGet();
+    private Context getContext() {
+        if (contextRef != null) {
+            return contextRef.get();
+        }
+        throw new NullPointerException("Context is null!!!");
     }
 }
 

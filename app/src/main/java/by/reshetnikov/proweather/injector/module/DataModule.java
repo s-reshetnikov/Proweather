@@ -10,9 +10,8 @@ import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.DataRepository;
-import by.reshetnikov.proweather.data.local.AppLocalData;
-import by.reshetnikov.proweather.data.remote.AppRemoteData;
-import by.reshetnikov.proweather.model.dbmodels.DaoSession;
+import by.reshetnikov.proweather.data.network.AppWeatherApiData;
+import by.reshetnikov.proweather.data.network.WeatherApiService;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
@@ -71,16 +70,17 @@ public class DataModule {
                 .build();
     }
 
+
     @Singleton
     @Provides
-    AppLocalData provideLocalData(ProWeatherApp context, DaoSession daoSession) {
-        return new AppLocalData(context, daoSession);
+    WeatherApiService provideApiService(Retrofit retrofit) {
+        return retrofit.create(WeatherApiService.class);
     }
 
     @Singleton
     @Provides
-    AppRemoteData provideAppRemoteData() {
-        return new AppRemoteData();
+    AppWeatherApiData provideAppRemoteData() {
+        return new AppWeatherApiData();
     }
 
     @Singleton

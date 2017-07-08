@@ -7,8 +7,7 @@ import by.reshetnikov.proweather.activity.LocationActivity;
 import by.reshetnikov.proweather.activity.WeatherActivity;
 import by.reshetnikov.proweather.adapter.AutoCompleteLocationsAdapter;
 import by.reshetnikov.proweather.data.DataRepository;
-import by.reshetnikov.proweather.data.local.AppLocalData;
-import by.reshetnikov.proweather.data.remote.AppRemoteData;
+import by.reshetnikov.proweather.data.network.AppWeatherApiData;
 import by.reshetnikov.proweather.injector.module.AppModule;
 import by.reshetnikov.proweather.injector.module.DataModule;
 import by.reshetnikov.proweather.presenter.CurrentWeatherPresenter;
@@ -21,25 +20,23 @@ import dagger.Component;
 @Component(modules = {AppModule.class, DataModule.class})
 public interface AppComponent {
 
-    public ProWeatherApp getProWeatherApp();
+    ProWeatherApp getProWeatherApp();
 
-    public void inject(WeatherActivity activity);
+    void inject(WeatherActivity activity);
 
-    public void inject(LocationActivity activity);
+    void inject(LocationActivity activity);
 
-    public void inject(CurrentWeatherPresenter presenter);
+    void inject(CurrentWeatherPresenter presenter);
 
-    public void inject(WeatherPresenter presenter);
+    void inject(WeatherPresenter presenter);
 
-    public void inject(WeatherForecastPresenter presenter);
+    void inject(WeatherForecastPresenter presenter);
 
-    public void inject(LocationManagerPresenter presenter);
+    void inject(LocationManagerPresenter presenter);
 
-    public void inject(DataRepository dataRepository);
+    void inject(DataRepository dataRepository);
 
-    public void inject(AppLocalData localData);
-
-    public void inject(AppRemoteData remoteData);
+    void inject(AppWeatherApiData remoteData);
 
     void inject(AutoCompleteLocationsAdapter adapter);
 }

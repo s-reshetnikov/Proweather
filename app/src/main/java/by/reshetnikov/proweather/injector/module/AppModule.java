@@ -7,19 +7,21 @@ import org.greenrobot.greendao.database.Database;
 import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
-import by.reshetnikov.proweather.model.dbmodels.DaoMaster;
-import by.reshetnikov.proweather.model.dbmodels.DaoSession;
+import by.reshetnikov.proweather.data.db.model.DaoMaster;
+import by.reshetnikov.proweather.data.db.model.DaoSession;
 import dagger.Module;
 import dagger.Provides;
 
 @Module
 public class AppModule {
 
+    private final String dbName;
     private Context context;
     private DaoSession daoSession;
 
-    public AppModule(Context context) {
+    public AppModule(Context context, String dbName) {
         this.context = context;
+        this.dbName = dbName;
     }
 
     @Singleton
@@ -31,7 +33,7 @@ public class AppModule {
     @Provides
     @Singleton
     DaoSession provideDaoSession() {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "proweather-db");
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, dbName);
         Database db = helper.getWritableDb();
         return new DaoMaster(db).newSession();
     }

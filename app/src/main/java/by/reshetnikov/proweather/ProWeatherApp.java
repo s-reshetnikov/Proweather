@@ -18,6 +18,7 @@ public class ProWeatherApp extends Application {
     private static final String TAG = ProWeatherApp.class.getSimpleName();
 
     private static final String baseURL = "http://api.openweathermap.org/";
+    private static final String dbName = "proweatherDb";
     private static ProWeatherApp proWeatherApp;
     private static AppComponent appComponent;
 
@@ -44,7 +45,7 @@ public class ProWeatherApp extends Application {
         proWeatherApp = this;
 
         appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
+                .appModule(new AppModule(this, dbName))
                 .dataModule(new DataModule(baseURL))
                 .build();
 

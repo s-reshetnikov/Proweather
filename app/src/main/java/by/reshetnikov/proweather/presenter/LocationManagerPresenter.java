@@ -2,6 +2,8 @@ package by.reshetnikov.proweather.presenter;
 
 import android.content.Context;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,6 +22,8 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
     DataRepository dataRepository;
 
     private LocationManagerContract.View view;
+    private List<LocationAppModel> savedLocations = new ArrayList<>();
+    private List<LocationAppModel> autocompleteLocations = new ArrayList<>();
     private CompositeDisposable compositeDisposable;
     private Context appContext;
 
@@ -63,12 +67,14 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
 
     @Override
     public List<LocationAppModel> getLocations() {
-        return dataRepository.getSavedLocations().blockingGet();
+        // return dataRepository.getSavedLocations();
+        return new ArrayList<>();
     }
 
     @Override
-    public List<LocationAppModel> getLocationsByName(String searchText, int count) {
-        return null;
+    public List<LocationAppModel> getLocationsByName(String searchText, int resultsCount) {
+        return new ArrayList<>();
+        //dataRepository.getAllLocationsByName(searchText, resultsCount);
     }
 
     @Override
@@ -78,7 +84,12 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
 
     @Override
     public void saveLocation(LocationAppModel location) {
-        dataRepository.saveLocation(location);
+        dataRepository.saveNewLocation(location);
+    }
+
+    @Override
+    public void removeLocation(int position) {
+        //dataRepository.removeLocation(position);
     }
 
     @Override
@@ -89,6 +100,34 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
     @Override
     public void makeDefault(LocationAppModel location) {
 
+    }
+
+    @Override
+    public void onLocationItemMoved(int position, int oldPosition) {
+        Collections.swap(savedLocations, position, oldPosition);
+        // TODO: async
+        //dataRepository.saveLocation(savedLocations.get(position));
+        //dataRepository.saveLocation(savedLocations.get(oldPosition));
+
+        view.refreshSavedLocations(savedLocations);
+    }
+
+    @Override
+    public void onLocationItemDeleted(int position) {
+
+    }
+
+    private void updateSavedLocations(List<LocationAppModel> locations) {
+        savedLocations = Collections.synchronizedList(savedLocations);
+        synchronized (savedLocations) {
+            savedLocations.clear();
+            savedLocations.addAll(locations);
+            view.refreshSavedLocations(savedLocations);
+        }
+    }
+
+    private void saveLocations(List<LocationAppModel> locations) {
+        //dataRepository.saveLocations(locations);
     }
 
 }
