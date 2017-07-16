@@ -7,7 +7,7 @@ import java.util.List;
 
 import by.reshetnikov.proweather.data.network.model.Location;
 
-public class DailyForecastWeather {
+public class DailyForecastWeatherApiModel {
 
     @SerializedName("cod")
     @Expose
@@ -24,10 +24,38 @@ public class DailyForecastWeather {
 
     @SerializedName("list")
     @Expose
-    public List<DayForecast> dayForecasts;
+    public List<DayForecastApiModel> dayForecasts;
 
     @SerializedName("location")
     @Expose
     public Location location;
+
+    @SerializedName("dt")
+    @Expose
+    public int dt;
+
+    @SerializedName("pressure")
+    @Expose
+    public float pressure;
+
+    @SerializedName("humidity")
+    @Expose
+    public int humidity;
+
+    @SerializedName("speed")
+    @Expose
+    public double windSpeed;
+
+    @SerializedName("deg")
+    @Expose
+    public int degrees;
+
+    @SerializedName("clouds")
+    @Expose
+    public int clouds;
+
+    @SerializedName("rain")
+    @Expose
+    public float rain;
 
 }

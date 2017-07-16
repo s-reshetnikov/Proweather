@@ -1,8 +1,8 @@
-package by.reshetnikov.proweather.model.appmodels;
+package by.reshetnikov.proweather.data.model;
 
-import by.reshetnikov.proweather.model.units.DistanceUnits;
-import by.reshetnikov.proweather.model.units.TemperatureUnit;
-import by.reshetnikov.proweather.model.units.WindSpeedUnit;
+import by.reshetnikov.proweather.data.preferences.units.DistanceUnits;
+import by.reshetnikov.proweather.data.preferences.units.TemperatureUnit;
+import by.reshetnikov.proweather.data.preferences.units.WindSpeedUnit;
 import io.reactivex.subjects.PublishSubject;
 
 

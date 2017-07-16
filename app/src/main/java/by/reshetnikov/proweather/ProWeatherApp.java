@@ -35,7 +35,7 @@ public class ProWeatherApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Log.d(TAG, "onCreate() start");
+        Log.d(TAG, "stop() start");
 
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
@@ -49,9 +49,11 @@ public class ProWeatherApp extends Application {
                 .dataModule(new DataModule(baseURL, dbName))
                 .build();
 
+        //TODO: move settings default values some where else
         SetDefaultPreferencesAsyncTask task = new SetDefaultPreferencesAsyncTask();
         task.execute();
-        Log.d(TAG, "onCreate() end");
+
+        Log.d(TAG, "stop() end");
     }
 
 

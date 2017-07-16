@@ -1,22 +1,34 @@
 package by.reshetnikov.proweather.data;
 
-import android.location.Location;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.db.AppDbData;
+import by.reshetnikov.proweather.data.db.model.CurrentWeatherEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
+import by.reshetnikov.proweather.data.model.AppModelFactory;
+import by.reshetnikov.proweather.data.model.CurrentWeatherModel;
+import by.reshetnikov.proweather.data.model.DailyForecastWeatherModel;
+import by.reshetnikov.proweather.data.model.HourlyForecastWeatherModel;
+import by.reshetnikov.proweather.data.model.LocationAdapterModel;
+import by.reshetnikov.proweather.data.model.UnitsAppModel;
 import by.reshetnikov.proweather.data.network.AppWeatherApiData;
+import by.reshetnikov.proweather.data.network.model.currentweather.CurrentWeatherApiModel;
+import by.reshetnikov.proweather.data.network.model.location.LocationForecastApiModel;
+import by.reshetnikov.proweather.data.network.model.location.LocationWeatherApiModel;
 import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
-import by.reshetnikov.proweather.model.appmodels.CurrentWeatherAppModel;
-import by.reshetnikov.proweather.model.appmodels.DailyForecastWeatherAppModel;
-import by.reshetnikov.proweather.model.appmodels.HourlyForecastWeatherAppModel;
-import by.reshetnikov.proweather.model.appmodels.LocationAppModel;
-import by.reshetnikov.proweather.model.appmodels.UnitsAppModel;
+import by.reshetnikov.proweather.exception.NoNetworkException;
+import by.reshetnikov.proweather.utils.NetworkUtils;
 import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class DataRepository implements DataContract {
@@ -35,191 +47,132 @@ public class DataRepository implements DataContract {
     }
 
     @Override
-    public Observable<CurrentWeatherAppModel> getCurrentWeather(String locationId) {
+    public Observable<CurrentWeatherModel> getCurrentWeather(String locationId) {
+        if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
+            return apiData.getCurrentWeather(locationId).map(new Function<CurrentWeatherApiModel, CurrentWeatherModel>() {
+                @Override
+                public CurrentWeatherModel apply(@NonNull CurrentWeatherApiModel apiModel) throws Exception {
+                    return AppModelFactory.create(apiModel);
+                }
+            });
+        }
+        return dbData.getCurrentWeather(locationId).map(new Function<CurrentWeatherEntity, CurrentWeatherModel>() {
+            @Override
+            public CurrentWeatherModel apply(@NonNull CurrentWeatherEntity currentWeatherEntity) throws Exception {
+                return AppModelFactory.create(currentWeatherEntity);
+            }
+        });
+    }
+
+    @Override
+    public Observable<HourlyForecastWeatherModel> getHourlyForecastWeather(String locationId) {
         return null;
     }
 
     @Override
-    public Observable<HourlyForecastWeatherAppModel> getHourlyForecastWeather(String locationId) {
+    public Observable<DailyForecastWeatherModel> getDailyForecastWeather(String locationId) {
         return null;
     }
 
     @Override
-    public Observable<DailyForecastWeatherAppModel> getDailyForecastWeather(String locationId) {
-        return null;
+    public Observable<List<LocationAdapterModel>> getAllLocationsByName(String locationName, int resultsCount) {
+        if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
+            return apiData.getLocationsByName(locationName, resultsCount)
+                    .map(new Function<LocationForecastApiModel, List<LocationAdapterModel>>() {
+                        @Override
+                        public List<LocationAdapterModel> apply(@NonNull LocationForecastApiModel locations) throws Exception {
+                            List<LocationAdapterModel> locationAdapters = new ArrayList<>();
+                            for (LocationWeatherApiModel apiModel : locations.locationApiModelList) {
+                                locationAdapters.add(AppModelFactory.create(apiModel));
+                            }
+                            return locationAdapters;
+                        }
+                    });
+        }
+        ;
+        return Observable.error(new NoNetworkException());
     }
 
     @Override
-    public Observable<LocationAppModel> getAllLocationsByName(String locationName) {
-        return null;
-    }
-
-    @Override
-    public Observable<LocationEntity> getChosenLocation() {
-        return null;
-    }
-
-    @Override
-    public Observable<List<LocationAppModel>> getSavedLocations() {
-        return null;
-    }
-
-    @Override
-    public Observable<Boolean> saveNewLocation(LocationAppModel location) {
-        return null;
-    }
-
-    @Override
-    public Observable<Boolean> updateLocation(LocationAppModel location) {
-        return null;
-    }
-
-    @Override
-    public Observable<Boolean> removeLocation(LocationAppModel location) {
-        return null;
-    }
-
-    @Override
-    public void setCurrentLocationPreference(Location location) {
+    public Observable<LocationAdapterModel> getChosenLocation() {
+        return dbData.getChosenLocation().map(new Function<LocationEntity, LocationAdapterModel>() {
+            @Override
+            public LocationAdapterModel apply(@NonNull LocationEntity locationEntity) throws Exception {
+                return AppModelFactory.create(locationEntity);
+            }
+        });
 
     }
 
     @Override
-    public boolean getLocationUpdateRequestedPreference() {
-        return false;
+    public Observable<List<LocationAdapterModel>> getSavedLocations() {
+
+        return dbData.getSavedLocations().map(new Function<List<LocationEntity>, List<LocationAdapterModel>>() {
+            @Override
+            public List<LocationAdapterModel> apply(@NonNull List<LocationEntity> locationEntities) throws Exception {
+                List<LocationAdapterModel> locationAdapters = new ArrayList<>();
+                for (LocationEntity locationEntity : locationEntities) {
+                    locationAdapters.add(AppModelFactory.create(locationEntity));
+                }
+                return locationAdapters;
+            }
+        });
     }
 
     @Override
-    public void setLocationUpdateRequestedPreference(boolean value) {
+    public Observable<Boolean> saveNewLocation(LocationAdapterModel locationAdapter) {
+        return dbData.saveNewLocation(locationAdapter.getAdaptee());
+    }
 
+    @Override
+    public Observable<Boolean> updateLocationPosition(final int oldPosition, final int newPosition) {
+        final List<LocationEntity> locations = dbData.getSavedLocations().blockingSingle();
+        return Observable.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                return updateEntitiesOrderPosition(locations, oldPosition, newPosition);
+            }
+        });
+    }
+
+    @Override
+    public Observable<Boolean> removeLocation(LocationAdapterModel locationAdapter) {
+        return dbData.removeLocation(locationAdapter.getAdaptee());
     }
 
     @Override
     public boolean getCanUseCurrentLocationPreference() {
-        return false;
+        return sharedPreferencesData.getCanUseCurrentLocationPreference();
     }
 
     @Override
     public UnitsAppModel getUnits() {
-        return null;
+        return sharedPreferencesData.getUnits();
     }
 
-//    @Override
-//    public CurrentWeatherAppModel getCurrentWeather() {
-//        if (NetworkUtils.isNetworkConnected(weatherApp)) {
-//            CurrentWeather weather = appRemoteData.getCurrentWeather(getChosenLocation().getLocationId());
-//            saveToDb(weather);
-//            return ModelsConverter.createCurrentWeatherModel(weather);
-//        }
-//
-//        LocationEntity locationEntity = appLocalData.getChosenLocation();
-//        if (locationEntity == null)
-//            throw new NoSuchElementException("no location set");
-//
-//        CurrentWeather weather = appRemoteData.getCurrentWeather(locationEntity.getLocationId());
-//        saveToDb(weather);
-//        return ModelsConverter.createCurrentWeatherModel(weather);
-//    }
+    private Boolean updateEntitiesOrderPosition(List<LocationEntity> locations, int oldPosition, int newPosition) {
+        updateCollectionItemsOrder(locations, oldPosition, newPosition);
+        boolean areAnyLocationUpdated = false;
+        for (LocationEntity entity : locations) {
+            int newIndex = locations.indexOf(entity);
+            if (newIndex != entity.getPosition()) {
+                areAnyLocationUpdated = true;
+                entity.setPosition(newIndex);
+                dbData.updateLocation(entity).subscribeOn(Schedulers.io()).subscribe();
+            }
+        }
+        return areAnyLocationUpdated;
+    }
 
-//    @Override
-//    public CurrentWeatherAppModel getCurrentWeather(double latitude, double longitude) {
-//        return null;
-//    }
-//
-//    @Override
-//    public HourlyForecastWeatherAppModel getHourlyForecastWeather() {
-//        return null;
-//    }
-//
-//    @Override
-//    public HourlyForecastWeatherAppModel getHourlyForecastWeather(double latitude, double longitude) {
-//        return null;
-//    }
-//
-//    @Override
-//    public DailyForecastWeatherAppModel getDailyForecastWeather() {
-//        return null;
-//    }
-//
-//    @Override
-//    public DailyForecastWeatherAppModel getDailyForecastWeather(double latitude, double longitude) {
-//        return null;
-//    }
-//
-//    @Override
-//    public boolean canUseCurrentLocation() {
-//        return appLocalData.canUseCurrentLocation();
-//    }
-//
-//    @Override
-//    public LocationAppModel getChosenLocation() {
-//        return ModelsConverter.createLocationAppModel(appLocalData.getChosenLocation());
-//    }
-//
-//    @Override
-//    public List<LocationAppModel> getSavedLocations() {
-//        List<LocationAppModel> locations = new ArrayList<>();
-//
-//        for (LocationEntity entity : appLocalData.getSavedLocations()) {
-//            locations.add(ModelsConverter.createLocationAppModel(entity));
-//        }
-//        return locations;
-//    }
-//
-//    @Override
-//    public List<LocationAppModel> getAllLocationsByName(String locationName, int count) {
-//        LocationForecast locationForecast = appRemoteData.getLocations(locationName, count);
-//
-//        List<LocationAppModel> locationAppModels = new ArrayList<>(locationForecast.locationWeatherList.size());
-//        for (LocationWeather locationWeather : locationForecast.locationWeatherList) {
-//            locationAppModels.add(ModelsConverter.createLocationAppModel(locationWeather));
-//        }
-//
-//        return locationAppModels;
-//    }
-//
-//    @Override
-//    public List<LocationAppModel> getAllLocationsByCoordinates(double latitude, double longitude, int count) {
-//        return null;
-//    }
-//
-//    @Override
-//    public void saveLocation(LocationAppModel location) {
-//        appLocalData.saveNewLocation(ModelsConverter.createLocationEntity(location));
-//    }
-//
-//    @Override
-//    public void saveLocations(List<LocationAppModel> locations) {
-//        for (LocationAppModel appModel : locations)
-//            saveLocation(appModel);
-//    }
-//
-//    @Override
-//    public void removeLocation(LocationAppModel location) {
-//        appLocalData.removeLocation(ModelsConverter.createLocationEntity(location));
-//    }
-//
-//
-//    @Override
-//    public UnitsAppModel getUnits() {
-//        return appLocalData.getUnits();
-//    }
-//
-//    private void saveToDb(CurrentWeather currentWeather) {
-//        Log.d(TAG, "saveToDb current weather");
-//        appLocalData.saveCurrentWeather(ModelsConverter.createWeatherEntity(currentWeather));
-//    }
-//
-//    @Override
-//    public void dispose() {
-//        appRemoteData = null;
-//        appLocalData = null;
-//    }
-//
-//    @Override
-//    public void removeLocation(int position) {
-//
-//    }
-
+    private void updateCollectionItemsOrder(List<LocationEntity> locations, int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            toPosition++;
+        }
+        Log.d(TAG, "from = " + fromPosition + "; to = " + toPosition);
+        locations.add(toPosition, locations.get(fromPosition));
+        int toRemovePosition = fromPosition > toPosition ? fromPosition + 1 : fromPosition;
+        Log.d(TAG, "Item to remove position is " + toRemovePosition);
+        locations.remove(toRemovePosition);
+    }
 
 }

@@ -20,32 +20,13 @@ public class WeatherPresenter implements WeatherContract.Presenter {
 
 
     @Override
-    public void onCreate() {
+    public void stop() {
 
     }
 
-    @Override
-    public void onResume() {
-
-    }
 
     @Override
-    public void onPause() {
-
-    }
-
-    @Override
-    public void onStop() {
-
-    }
-
-    @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    public void onError() {
+    public void start() {
 
     }
 

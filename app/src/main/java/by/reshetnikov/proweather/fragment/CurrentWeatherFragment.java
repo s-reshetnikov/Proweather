@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.contract.CurrentWeatherContract;
-import by.reshetnikov.proweather.model.appmodels.CurrentWeatherAppModel;
+import by.reshetnikov.proweather.data.model.CurrentWeatherModel;
 import by.reshetnikov.proweather.presenter.CurrentWeatherPresenter;
 
 
@@ -94,7 +94,7 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        presenter.onDestroy();
+        presenter.start();
     }
 
     @OnClick(R.id.btn_weather_details)
@@ -103,13 +103,18 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     }
 
     @Override
-    public void showCurrentWeather(CurrentWeatherAppModel currentWeather) {
-        if (currentWeather != null) {
-            tvHumidity.setText(currentWeather.getHumidityText());
-            tvTemperature.setText(currentWeather.getTemperatureText());
-            tvWind.setText(currentWeather.getWindSpeedText() + ", " + currentWeather.getWindDirectionText());
-        }
+    public void showCurrentWeather(CurrentWeatherModel currentWeather) {
+
     }
+
+//    @Override
+//    public void showCurrentWeather(CurrentWeatherModel currentWeather) {
+//        if (currentWeather != null) {
+//            tvHumidity.setText(currentWeather.getHumidity());
+//            tvTemperature.setText(currentWeather.getTemperature());
+//            tvWind.setText(currentWeather.getWindSpeedText() + ", " + currentWeather.getWindDirectionText());
+//        }
+//    }
 
     public interface OnFragmentInteractionListener {
         void onCurrentWeatherFragmentInteraction(String message);

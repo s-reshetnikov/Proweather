@@ -1,37 +1,26 @@
 package by.reshetnikov.proweather.data.db.model;
 
-
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Index;
-import org.greenrobot.greendao.annotation.NotNull;
-import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.annotation.ToMany;
 
-import java.util.Date;
+import java.util.List;
 
-
-
-@Entity(active = true)
+@Entity
 public class DailyForecastEntity {
+
     @Id(autoincrement = true)
-    private Long Id;
-    @Index
-    @NotNull
+    private long dailyForecastId;
+    @ToMany(referencedJoinProperty = "dayForecastId")
+    private List<DayForecastEntity> dayForecasts;
     private String locationId;
-    private double temperature;
-    private int humidity;
     private int pressure;
-    private double windSpeed;
-    private double windDegrees;
-    @Unique
-    private Date date;
-    private int weatherConditionId;
-    private String weatherDescription;
-    private String iconCode;
-    private double snow;
+    private double humidity;
     private double rain;
+    private double snow;
+    private double clouds;
     /**
      * Used to resolve relations
      */
@@ -41,40 +30,77 @@ public class DailyForecastEntity {
     @Generated(hash = 1638140434)
     private transient DailyForecastEntityDao myDao;
 
-    @Generated(hash = 602722938)
-    public DailyForecastEntity(Long Id, @NotNull String locationId,
-                               double temperature, int humidity, int pressure, double windSpeed,
-                               double windDegrees, Date date, int weatherConditionId,
-                               String weatherDescription, String iconCode, double snow, double rain) {
-        this.Id = Id;
+    @Generated(hash = 1815357949)
+    public DailyForecastEntity(long dailyForecastId, String locationId,
+                               int pressure, double humidity, double rain, double snow,
+                               double clouds) {
+        this.dailyForecastId = dailyForecastId;
         this.locationId = locationId;
-        this.temperature = temperature;
-        this.humidity = humidity;
         this.pressure = pressure;
-        this.windSpeed = windSpeed;
-        this.windDegrees = windDegrees;
-        this.date = date;
-        this.weatherConditionId = weatherConditionId;
-        this.weatherDescription = weatherDescription;
-        this.iconCode = iconCode;
-        this.snow = snow;
+        this.humidity = humidity;
         this.rain = rain;
+        this.snow = snow;
+        this.clouds = clouds;
     }
 
     @Generated(hash = 994273881)
     public DailyForecastEntity() {
     }
 
-    public Long getId() {
-        return this.Id;
+    public long getDailyForecastId() {
+        return dailyForecastId;
     }
 
-    public void setId(Long Id) {
-        this.Id = Id;
+    public void setDailyForecastId(long dailyForecastId) {
+        this.dailyForecastId = dailyForecastId;
     }
 
-    public void setId(long Id) {
-        this.Id = Id;
+    public String getLocation() {
+        return locationId;
+    }
+
+    public void setLocation(String locationId) {
+        this.locationId = locationId;
+    }
+
+    public int getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(int pressure) {
+        this.pressure = pressure;
+    }
+
+    public double getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(double humidity) {
+        this.humidity = humidity;
+    }
+
+    public double getRain() {
+        return rain;
+    }
+
+    public void setRain(double rain) {
+        this.rain = rain;
+    }
+
+    public double getSnow() {
+        return snow;
+    }
+
+    public void setSnow(double snow) {
+        this.snow = snow;
+    }
+
+    public double getClouds() {
+        return clouds;
+    }
+
+    public void setClouds(double clouds) {
+        this.clouds = clouds;
     }
 
     public String getLocationId() {
@@ -85,92 +111,35 @@ public class DailyForecastEntity {
         this.locationId = locationId;
     }
 
-    public double getTemperature() {
-        return this.temperature;
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 2083969154)
+    public List<DayForecastEntity> getDayForecasts() {
+        if (dayForecasts == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            DayForecastEntityDao targetDao = daoSession.getDayForecastEntityDao();
+            List<DayForecastEntity> dayForecastsNew = targetDao
+                    ._queryDailyForecastEntity_DayForecasts(dailyForecastId);
+            synchronized (this) {
+                if (dayForecasts == null) {
+                    dayForecasts = dayForecastsNew;
+                }
+            }
+        }
+        return dayForecasts;
     }
 
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
-    }
-
-    public int getHumidity() {
-        return this.humidity;
-    }
-
-    public void setHumidity(int humidity) {
-        this.humidity = humidity;
-    }
-
-    public int getPressure() {
-        return this.pressure;
-    }
-
-    public void setPressure(int pressure) {
-        this.pressure = pressure;
-    }
-
-    public double getWindSpeed() {
-        return this.windSpeed;
-    }
-
-    public void setWindSpeed(double windSpeed) {
-        this.windSpeed = windSpeed;
-    }
-
-    public double getWindDegrees() {
-        return this.windDegrees;
-    }
-
-    public void setWindDegrees(double windDegrees) {
-        this.windDegrees = windDegrees;
-    }
-
-    public Date getDate() {
-        return this.date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public int getWeatherConditionId() {
-        return this.weatherConditionId;
-    }
-
-    public void setWeatherConditionId(int weatherConditionId) {
-        this.weatherConditionId = weatherConditionId;
-    }
-
-    public String getWeatherDescription() {
-        return this.weatherDescription;
-    }
-
-    public void setWeatherDescription(String weatherDescription) {
-        this.weatherDescription = weatherDescription;
-    }
-
-    public String getIconCode() {
-        return this.iconCode;
-    }
-
-    public void setIconCode(String iconCode) {
-        this.iconCode = iconCode;
-    }
-
-    public double getSnow() {
-        return this.snow;
-    }
-
-    public void setSnow(double snow) {
-        this.snow = snow;
-    }
-
-    public double getRain() {
-        return rain;
-    }
-
-    public void setRain(double rain) {
-        this.rain = rain;
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
+    @Generated(hash = 1095106974)
+    public synchronized void resetDayForecasts() {
+        dayForecasts = null;
     }
 
     /**
@@ -209,9 +178,7 @@ public class DailyForecastEntity {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 2106318919)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

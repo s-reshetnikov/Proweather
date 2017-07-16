@@ -2,7 +2,7 @@ package by.reshetnikov.proweather.contract;
 
 import java.util.List;
 
-import by.reshetnikov.proweather.model.appmodels.LocationAppModel;
+import by.reshetnikov.proweather.data.model.LocationAdapterModel;
 
 public interface LocationManagerContract {
 
@@ -12,27 +12,21 @@ public interface LocationManagerContract {
 
         void hideSearchLocation();
 
-        void refreshSavedLocations(List<LocationAppModel> savedLocations);
+        void refreshSavedLocations(List<LocationAdapterModel> savedLocations);
     }
 
     interface Presenter extends BasePresenter {
 
-        List<LocationAppModel> getLocations();
+        void setView(LocationManagerContract.View viewRef);
 
-        List<LocationAppModel> getLocationsByName(String searchText, int resultsCount);
+        void saveLocation(LocationAdapterModel location);
 
-        void setView(LocationManagerContract.View view);
+        void onLocationItemMoved(int fromPosition, int toPosition);
 
-        void saveLocation(LocationAppModel location);
+        void onLocationItemRemoved(LocationAdapterModel location);
 
-        void removeLocation(int position);
+        void onFabClicked(boolean isAutocompleteVisible);
 
-        void removeLocation(LocationAppModel location);
-
-        void makeDefault(LocationAppModel location);
-
-        void onLocationItemMoved(int position, int oldPosition);
-
-        void onLocationItemDeleted(int position);
+        List<LocationAdapterModel> getLocationsByName(String searchText);
     }
 }

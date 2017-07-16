@@ -14,7 +14,7 @@ import java.util.Date;
 public class WeatherEntity {
 
     @Id(autoincrement = true)
-    private Long Id;
+    private Long weatherId;
     @Index
     @NotNull
     private String locationId;
@@ -31,12 +31,12 @@ public class WeatherEntity {
     private double rain;
     private double snow;
 
-    @Generated(hash = 28662959)
-    public WeatherEntity(Long Id, @NotNull String locationId, double temperature,
-                         int humidity, int pressure, Date date, int weatherConditionId,
-                         String weatherDescription, String iconCode, double windSpeed,
-                         double windDegrees, double rain, double snow) {
-        this.Id = Id;
+    @Generated(hash = 1751359941)
+    public WeatherEntity(Long weatherId, @NotNull String locationId,
+                         double temperature, int humidity, int pressure, Date date,
+                         int weatherConditionId, String weatherDescription, String iconCode,
+                         double windSpeed, double windDegrees, double rain, double snow) {
+        this.weatherId = weatherId;
         this.locationId = locationId;
         this.temperature = temperature;
         this.humidity = humidity;
@@ -55,16 +55,16 @@ public class WeatherEntity {
     public WeatherEntity() {
     }
 
-    public Long getId() {
-        return this.Id;
+    public Long getWeatherId() {
+        return this.weatherId;
     }
 
-    public void setId(long Id) {
-        this.Id = Id;
+    public void setWeatherId(Long weatherId) {
+        this.weatherId = weatherId;
     }
 
-    public void setId(Long Id) {
-        this.Id = Id;
+    public void setWeatherId(long Id) {
+        this.weatherId = Id;
     }
 
     public String getLocationId() {

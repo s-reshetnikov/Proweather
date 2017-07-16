@@ -8,6 +8,14 @@ public class Rain {
     // Rain volume for the last 3 hours
     @SerializedName("3h")
     @Expose
-    public double rainVolume;
+    private double rainVolume;
+
+    public double getRainVolume() {
+        return rainVolume;
+    }
+
+    public void setRainVolume(double rainVolume) {
+        this.rainVolume = rainVolume;
+    }
 
 }

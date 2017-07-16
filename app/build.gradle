@@ -56,7 +56,7 @@ ext {
     okhttpVersion = '3.7.0'
     daggerVersion = '2.11'
     butterKnifeVersion = '8.5.1'
-    rxJavaVersion = '2.1.0'
+    rxJavaVersion = '2.1.1'
     rxAndroidVersion = '2.0.1'
     constraintLayoutVersion = '1.0.2'
     gsonVersion = '2.8.0'
@@ -70,6 +70,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    //debug only
+    debugCompile 'com.amitshekhar.android:debug-db:1.0.1'
 
     // Support libs
     compile "com.android.support:appcompat-v7:${supportLibVersion}"

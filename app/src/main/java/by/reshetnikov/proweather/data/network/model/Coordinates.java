@@ -9,18 +9,25 @@ public class Coordinates {
     // Location geo location, longitude
     @SerializedName("lon")
     @Expose
-    public double longitude;
-
+    private double longitude;
     // Location geo location, latitude
     @SerializedName("lat")
     @Expose
-    public double latitude;
+    private double latitude;
 
     public double getLongitude() {
         return longitude;
     }
 
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     public double getLatitude() {
         return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 }

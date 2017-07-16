@@ -8,6 +8,13 @@ public class Clouds {
     // Cloudiness, %
     @SerializedName("all")
     @Expose
-    public int cloudiness;
+    private int cloudiness;
 
+    public int getCloudiness() {
+        return cloudiness;
+    }
+
+    public void setCloudiness(int cloudiness) {
+        this.cloudiness = cloudiness;
+    }
 }

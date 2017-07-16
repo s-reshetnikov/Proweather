@@ -46,7 +46,7 @@ public class WeatherActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate start");
+        Log.d(TAG, "stop start");
         setContentView(R.layout.activity_weather);
 
 
@@ -76,7 +76,7 @@ public class WeatherActivity extends AppCompatActivity
                     R.id.weather_fragment_placeholder,
                     CurrentWeatherFragment.newInstance());
         }
-        Log.d(TAG, "onCreate end");
+        Log.d(TAG, "stop end");
     }
 
     @Override

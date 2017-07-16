@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.data.network.model.currentweather;
+package by.reshetnikov.proweather.data.network.model.forecastweather;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,60 +6,45 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import by.reshetnikov.proweather.data.network.model.Clouds;
-import by.reshetnikov.proweather.data.network.model.Coordinates;
 import by.reshetnikov.proweather.data.network.model.Main;
-import by.reshetnikov.proweather.data.network.model.Rain;
 import by.reshetnikov.proweather.data.network.model.Snow;
 import by.reshetnikov.proweather.data.network.model.Sys;
 import by.reshetnikov.proweather.data.network.model.Weather;
 import by.reshetnikov.proweather.data.network.model.Wind;
 
-public class CurrentWeather {
+public class ForecastByHoursApiModel {
 
-    @SerializedName("coord")
+    // Time of data forecasted, unix, UTC
+    @SerializedName("dt")
     @Expose
-    public Coordinates coordinates;
-
-    @SerializedName("weather")
-    @Expose
-    public List<Weather> weather;
+    public int dt;
 
     @SerializedName("main")
     @Expose
     public Main main;
 
-    @SerializedName("wind")
+    @SerializedName("weather")
     @Expose
-    public Wind wind;
+    public List<Weather> weather;
 
     @SerializedName("clouds")
     @Expose
     public Clouds clouds;
 
-    @SerializedName("rain")
+    @SerializedName("wind")
     @Expose
-    public Rain rain;
+    public Wind wind;
 
     @SerializedName("snow")
     @Expose
     public Snow snow;
 
-    //  Time of data calculation, unix, UTC
-    @SerializedName("dt")
-    @Expose
-    public int dt;
-
     @SerializedName("sys")
     @Expose
     public Sys sys;
 
-    // Location ID
-    @SerializedName("id")
+    //  Data/time of calculation, UTC
+    @SerializedName("dt_txt")
     @Expose
-    public int id;
-
-    // Location name
-    @SerializedName("name")
-    @Expose
-    public String name;
+    public String dtTxt;
 }

@@ -2,20 +2,23 @@ package by.reshetnikov.proweather.data.db;
 
 import java.util.List;
 
+import by.reshetnikov.proweather.data.db.model.CurrentWeatherEntity;
 import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
+import by.reshetnikov.proweather.data.db.model.HourlyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import by.reshetnikov.proweather.data.db.model.WeatherEntity;
 import io.reactivex.Observable;
 
 public interface DbContract {
 
-    Observable<WeatherEntity> getCurrentWeather(String locationId);
+    Observable<CurrentWeatherEntity> getCurrentWeather(String locationId);
 
-    Observable<Boolean> saveCurrentWeather(WeatherEntity currentWeather);
+    Observable<Boolean> saveCurrentWeather(CurrentWeatherEntity currentWeather);
 
-    Observable<DailyForecastEntity> getForecastWeather(String locationId);
+    Observable<HourlyForecastEntity> getHourlyForecastWeather(String locationId);
 
-    Observable<Boolean> saveForecastWeather(DailyForecastEntity forecastWeather);
+    Observable<DailyForecastEntity> getDailyForecastWeather(String locationId);
+
+    Observable<Boolean> saveHourlyForecastWeather(HourlyForecastEntity forecastWeather);
 
     Observable<LocationEntity> getChosenLocation();
 

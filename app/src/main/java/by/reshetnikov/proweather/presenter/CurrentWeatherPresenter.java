@@ -7,8 +7,6 @@ import javax.inject.Inject;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.contract.CurrentWeatherContract;
 import by.reshetnikov.proweather.data.DataRepository;
-import by.reshetnikov.proweather.model.appmodels.CurrentWeatherAppModel;
-import by.reshetnikov.proweather.model.appmodels.UnitsAppModel;
 import io.reactivex.disposables.CompositeDisposable;
 
 
@@ -19,42 +17,22 @@ public class CurrentWeatherPresenter implements CurrentWeatherContract.Presenter
 
     private CurrentWeatherContract.View view;
     private Context appContext;
-    private CurrentWeatherAppModel currentWeather;
-    private UnitsAppModel units;
     private CompositeDisposable compositeDisposable;
 
     public CurrentWeatherPresenter() {
         this.appContext = ProWeatherApp.getAppContext();
         ((ProWeatherApp) appContext.getApplicationContext()).getAppComponent().inject(this);
+        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
-    public void onCreate() {
-
+    public void stop() {
+        compositeDisposable.dispose();
     }
 
     @Override
-    public void onResume() {
-
-    }
-
-    @Override
-    public void onPause() {
-
-    }
-
-    @Override
-    public void onStop() {
-
-    }
-
-    @Override
-    public void onDestroy() {
+    public void start() {
         compositeDisposable.clear();
-    }
-
-    @Override
-    public void onError() {
     }
 
     private void getUnits() {
@@ -69,7 +47,7 @@ public class CurrentWeatherPresenter implements CurrentWeatherContract.Presenter
 
 
     public void getWeather() {
-        //CurrentWeatherAppModel weather = dataRepository.getCurrentWeather();
+        //CurrentWeatherModel weather = dataRepository.getCurrentWeather();
         //view.showCurrentWeather(weather);
     }
 

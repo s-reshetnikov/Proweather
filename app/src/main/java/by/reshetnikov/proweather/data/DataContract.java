@@ -1,46 +1,36 @@
 package by.reshetnikov.proweather.data;
 
-import android.location.Location;
-
 import java.util.List;
 
-import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import by.reshetnikov.proweather.model.appmodels.CurrentWeatherAppModel;
-import by.reshetnikov.proweather.model.appmodels.DailyForecastWeatherAppModel;
-import by.reshetnikov.proweather.model.appmodels.HourlyForecastWeatherAppModel;
-import by.reshetnikov.proweather.model.appmodels.LocationAppModel;
-import by.reshetnikov.proweather.model.appmodels.UnitsAppModel;
+import by.reshetnikov.proweather.data.model.CurrentWeatherModel;
+import by.reshetnikov.proweather.data.model.DailyForecastWeatherModel;
+import by.reshetnikov.proweather.data.model.HourlyForecastWeatherModel;
+import by.reshetnikov.proweather.data.model.LocationAdapterModel;
+import by.reshetnikov.proweather.data.model.UnitsAppModel;
 import io.reactivex.Observable;
 
 
 public interface DataContract {
 
-    Observable<CurrentWeatherAppModel> getCurrentWeather(String locationId);
+    Observable<CurrentWeatherModel> getCurrentWeather(String locationId);
 
-    Observable<HourlyForecastWeatherAppModel> getHourlyForecastWeather(String locationId);
+    Observable<HourlyForecastWeatherModel> getHourlyForecastWeather(String locationId);
 
-    Observable<DailyForecastWeatherAppModel> getDailyForecastWeather(String locationId);
+    Observable<DailyForecastWeatherModel> getDailyForecastWeather(String locationId);
 
-    Observable<LocationAppModel> getAllLocationsByName(String locationName);
+    Observable<List<LocationAdapterModel>> getAllLocationsByName(String locationName, int resultsCount);
 
-    Observable<LocationEntity> getChosenLocation();
+    Observable<LocationAdapterModel> getChosenLocation();
 
-    Observable<List<LocationAppModel>> getSavedLocations();
+    Observable<List<LocationAdapterModel>> getSavedLocations();
 
-    Observable<Boolean> saveNewLocation(LocationAppModel location);
+    Observable<Boolean> saveNewLocation(LocationAdapterModel location);
 
-    Observable<Boolean> updateLocation(LocationAppModel location);
-
-    Observable<Boolean> removeLocation(LocationAppModel location);
-
-    void setCurrentLocationPreference(Location location);
-
-    boolean getLocationUpdateRequestedPreference();
-
-    void setLocationUpdateRequestedPreference(boolean value);
+    Observable<Boolean> removeLocation(LocationAdapterModel location);
 
     boolean getCanUseCurrentLocationPreference();
 
     UnitsAppModel getUnits();
 
+    Observable<Boolean> updateLocationPosition(int fromPosition, int toPosition);
 }

@@ -65,4 +65,5 @@ public class DelayAutoCompleteTextView extends AppCompatAutoCompleteTextView {
         }
         super.onFilterComplete(count);
     }
+
 }

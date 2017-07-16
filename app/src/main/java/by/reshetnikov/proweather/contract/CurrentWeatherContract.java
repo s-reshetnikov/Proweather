@@ -1,14 +1,14 @@
 package by.reshetnikov.proweather.contract;
 
 
-import by.reshetnikov.proweather.model.appmodels.CurrentWeatherAppModel;
+import by.reshetnikov.proweather.data.model.CurrentWeatherModel;
 
 
 public interface CurrentWeatherContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showCurrentWeather(CurrentWeatherAppModel currentWeather);
+        void showCurrentWeather(CurrentWeatherModel currentWeather);
     }
 
     interface Presenter extends BasePresenter {

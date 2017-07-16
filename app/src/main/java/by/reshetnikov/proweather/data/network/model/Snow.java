@@ -8,6 +8,13 @@ public class Snow {
     // Snow volume for the last 3 hours
     @SerializedName("3h")
     @Expose
-    public double snowVolume;
+    private double snowVolume;
 
+    public double getSnowVolume() {
+        return snowVolume;
+    }
+
+    public void setSnowVolume(double snowVolume) {
+        this.snowVolume = snowVolume;
+    }
 }

@@ -1,6 +1,6 @@
 package by.reshetnikov.proweather.contract;
 
-import by.reshetnikov.proweather.data.network.model.forecastweather.HourlyForecastWeather;
+import by.reshetnikov.proweather.data.network.model.forecastweather.HourlyForecastWeatherApiModel;
 
 
 public interface WeatherForecastContract {
@@ -11,7 +11,7 @@ public interface WeatherForecastContract {
     }
 
     interface Presenter extends BasePresenter {
-        HourlyForecastWeather getForecastWeather();
+        HourlyForecastWeatherApiModel getForecastWeather();
 
         void setView(View view);
     }

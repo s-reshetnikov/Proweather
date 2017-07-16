@@ -7,7 +7,7 @@ import java.util.List;
 
 import by.reshetnikov.proweather.data.network.model.Location;
 
-public class HourlyForecastWeather {
+public class HourlyForecastWeatherApiModel {
 
     @SerializedName("cod")
     @Expose
@@ -24,7 +24,7 @@ public class HourlyForecastWeather {
 
     @SerializedName("list")
     @Expose
-    public List<ForecastByHours> forecasts;
+    public List<ForecastByHoursApiModel> forecasts;
 
     @SerializedName("location")
     @Expose

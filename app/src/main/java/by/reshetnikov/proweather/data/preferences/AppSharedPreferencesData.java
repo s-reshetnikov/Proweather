@@ -8,10 +8,10 @@ import com.google.gson.Gson;
 
 import javax.inject.Inject;
 
-import by.reshetnikov.proweather.model.appmodels.UnitsAppModel;
-import by.reshetnikov.proweather.model.units.DistanceUnits;
-import by.reshetnikov.proweather.model.units.TemperatureUnit;
-import by.reshetnikov.proweather.model.units.WindSpeedUnit;
+import by.reshetnikov.proweather.data.model.UnitsAppModel;
+import by.reshetnikov.proweather.data.preferences.units.DistanceUnits;
+import by.reshetnikov.proweather.data.preferences.units.TemperatureUnit;
+import by.reshetnikov.proweather.data.preferences.units.WindSpeedUnit;
 
 
 public class AppSharedPreferencesData implements PreferencesContract {

@@ -6,23 +6,58 @@ import com.google.gson.annotations.SerializedName;
 public class Location {
 
     // Location ID
-    @SerializedName("id")
+    @SerializedName("locationId")
     @Expose
-    public int id;
+    private int locationId;
 
     // Location name
     @SerializedName("name")
     @Expose
-    public String name;
+    private String name;
 
     // Location geo location
     @SerializedName("coord")
     @Expose
-    public Coordinates coordinates;
+    private Coordinates coordinates;
 
     // Country code (GB, JP etc.)
     @SerializedName("country")
     @Expose
-    public String country;
+    private String country;
 
+    public int getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(int locationId) {
+        this.locationId = locationId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getLatitude() {
+        return coordinates.getLatitude();
+    }
+
+    public double getLongitude() {
+        return coordinates.getLongitude();
+    }
+
+    public void setCoordinates(Coordinates coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 }

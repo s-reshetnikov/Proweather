@@ -1,7 +1,7 @@
 package by.reshetnikov.proweather.presenter;
 
 import by.reshetnikov.proweather.contract.WeatherForecastContract;
-import by.reshetnikov.proweather.data.network.model.forecastweather.HourlyForecastWeather;
+import by.reshetnikov.proweather.data.network.model.forecastweather.HourlyForecastWeatherApiModel;
 
 
 public class WeatherForecastPresenter implements WeatherForecastContract.Presenter {
@@ -12,36 +12,17 @@ public class WeatherForecastPresenter implements WeatherForecastContract.Present
     }
 
     @Override
-    public void onCreate() {
+    public void stop() {
 
     }
 
     @Override
-    public void onResume() {
+    public void start() {
 
     }
 
     @Override
-    public void onPause() {
-
-    }
-
-    @Override
-    public void onStop() {
-
-    }
-
-    @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    public void onError() {
-    }
-
-    @Override
-    public HourlyForecastWeather getForecastWeather() {
+    public HourlyForecastWeatherApiModel getForecastWeather() {
         return null;
     }
 

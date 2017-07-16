@@ -2,7 +2,7 @@ package by.reshetnikov.proweather.data.preferences;
 
 import android.location.Location;
 
-import by.reshetnikov.proweather.model.appmodels.UnitsAppModel;
+import by.reshetnikov.proweather.data.model.UnitsAppModel;
 
 
 public interface PreferencesContract {

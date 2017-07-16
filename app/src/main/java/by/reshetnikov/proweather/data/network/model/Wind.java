@@ -8,11 +8,26 @@ public class Wind {
     //  Wind speed
     @SerializedName("speed")
     @Expose
-    public double speed;
+    private double speed;
 
     // Wind direction, degrees (meteorological)
     @SerializedName("deg")
     @Expose
-    public double degrees;
+    private double degrees;
 
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
+    public double getDegrees() {
+        return degrees;
+    }
+
+    public void setDegrees(double degrees) {
+        this.degrees = degrees;
+    }
 }

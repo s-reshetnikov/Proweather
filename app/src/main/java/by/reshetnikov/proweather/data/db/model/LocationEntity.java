@@ -11,10 +11,10 @@ import org.greenrobot.greendao.annotation.NotNull;
 @Entity(active = true)
 public class LocationEntity {
 
-    @Id(autoincrement = true)
+    @Id
     private Long Id;
     @Index(unique = true)
-    private String locationId;
+    private int locationId;
     @NotNull
     private String locationName;
     private String countryCode;
@@ -22,7 +22,7 @@ public class LocationEntity {
     private double longitude;
     @NotNull
     private double latitude;
-    private boolean isCurrent;
+    private boolean isCurrent = false;
     private int position;
     /**
      * Used to resolve relations
@@ -35,10 +35,10 @@ public class LocationEntity {
     @Generated(hash = 2022235245)
     private transient LocationEntityDao myDao;
 
-    @Generated(hash = 856729877)
-    public LocationEntity(Long Id, String locationId, @NotNull String locationName,
-                          String countryCode, double longitude, double latitude,
-                          boolean isCurrent, int position) {
+    @Generated(hash = 939177862)
+    public LocationEntity(Long Id, int locationId, @NotNull String locationName,
+                          String countryCode, double longitude, double latitude, boolean isCurrent,
+                          int position) {
         this.Id = Id;
         this.locationId = locationId;
         this.locationName = locationName;
@@ -53,11 +53,11 @@ public class LocationEntity {
     public LocationEntity() {
     }
 
-    public String getLocationId() {
+    public int getLocationId() {
         return locationId;
     }
 
-    public void setLocationId(String locationId) {
+    public void setLocationId(int locationId) {
         this.locationId = locationId;
     }
 
@@ -96,18 +96,6 @@ public class LocationEntity {
     public void setCoordinates(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    public Long getId() {
-        return this.Id;
-    }
-
-    public void setId(Long Id) {
-        this.Id = Id;
-    }
-
-    public void setId(long Id) {
-        this.Id = Id;
     }
 
     public boolean getIsCurrent() {
@@ -164,6 +152,14 @@ public class LocationEntity {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
+    }
+
+    public Long getId() {
+        return this.Id;
+    }
+
+    public void setId(Long Id) {
+        this.Id = Id;
     }
 
     /**

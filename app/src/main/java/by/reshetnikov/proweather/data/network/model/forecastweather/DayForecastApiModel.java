@@ -3,7 +3,7 @@ package by.reshetnikov.proweather.data.network.model.forecastweather;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DayForecast {
+public class DayForecastApiModel {
     @SerializedName("day")
     @Expose
     public double day;

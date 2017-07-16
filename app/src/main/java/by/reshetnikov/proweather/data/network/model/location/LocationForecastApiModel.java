@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class LocationForecast {
+public class LocationForecastApiModel {
 
     @SerializedName("message")
     @Expose
@@ -21,6 +21,6 @@ public class LocationForecast {
 
     @SerializedName("list")
     @Expose
-    public List<LocationWeather> locationWeatherList;
+    public List<LocationWeatherApiModel> locationApiModelList;
 
 }

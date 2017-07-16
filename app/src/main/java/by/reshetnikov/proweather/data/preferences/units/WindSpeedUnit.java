@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.model.units;
+package by.reshetnikov.proweather.data.preferences.units;
 
 
 public enum WindSpeedUnit {

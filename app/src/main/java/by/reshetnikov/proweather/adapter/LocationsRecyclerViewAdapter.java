@@ -1,43 +1,29 @@
 package by.reshetnikov.proweather.adapter;
 
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import by.reshetnikov.proweather.contract.LocationManagerContract;
+import by.reshetnikov.proweather.callback.LocationAdapterDiffCallback;
 import by.reshetnikov.proweather.contract.LocationsAdapterContract;
-import by.reshetnikov.proweather.model.appmodels.LocationAppModel;
+import by.reshetnikov.proweather.data.model.LocationAdapterContract;
+import by.reshetnikov.proweather.data.model.LocationAdapterModel;
+import by.reshetnikov.proweather.listener.OnLocationRemovedListener;
+import by.reshetnikov.proweather.listener.OnLocationsOrderChangedListener;
 import by.reshetnikov.proweather.viewholder.LocationViewHolder;
-import io.reactivex.disposables.CompositeDisposable;
 
 public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationViewHolder> implements LocationsAdapterContract {
+    private final static boolean DETECT_MOVES = true;
+    private List<LocationAdapterModel> locations = new ArrayList<>();
+    private OnLocationsOrderChangedListener orderChangedListener = null;
+    private OnLocationRemovedListener locationRemovedListener = null;
 
-    private WeakReference<LocationManagerContract.Presenter> presenterRef;
-    private List<LocationAppModel> locations = new ArrayList<>();
-    private CompositeDisposable compositeDisposable;
-
-    public LocationsRecyclerViewAdapter(LocationManagerContract.Presenter presenter) {
-        presenterRef = new WeakReference<>(presenter);
-        compositeDisposable = new CompositeDisposable();
-        loadLocations();
-    }
-
-    private void loadLocations() {
-        List<LocationAppModel> locations = getPresenter().getLocations();
-        if (locations.size() == 0) {
-            locations.addAll(locations);
-            return;
-        }
-
-        for (LocationAppModel location : locations) {
-            if (!locations.contains(location))
-                locations.add(location);
-        }
+    public LocationsRecyclerViewAdapter() {
     }
 
     @Override
@@ -47,11 +33,21 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
 
     @Override
     public void onBindViewHolder(LocationViewHolder holder, int position) {
-        LocationAppModel location = locations.get(position);
+
+        LocationAdapterContract location = getLocationAtPosition(position);//locations.get(position);
         holder.setLocationName(location.getLocationName());
-        holder.setCountryCode(location.getCountryCode());
+        holder.setCircleCountryCode(location.getCountryCode());
         if (location.isCurrent())
             holder.markAsCurrent(true);
+    }
+
+    private LocationAdapterContract getLocationAtPosition(int position) {
+        for (LocationAdapterModel model :
+                locations) {
+            if (model.getPosition() == position)
+                return model;
+        }
+        throw new IndexOutOfBoundsException("Position " + position + " was not found at list");
     }
 
     @Override
@@ -60,26 +56,23 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     }
 
     @Override
-    public void updateView(List<LocationAppModel> locations) {
+    public void updateView(List<LocationAdapterModel> updatedLocations) {
+        LocationAdapterDiffCallback diffCallback = new LocationAdapterDiffCallback(this.locations, updatedLocations);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback, DETECT_MOVES);
 
+        locations.clear();
+        locations.addAll(updatedLocations);
+        diffResult.dispatchUpdatesTo(this);
+        locations = updatedLocations;
     }
 
     @Override
-    public void removeLocation(int position) {
-        getPresenter().removeLocation(getLocation(position));
-        // locations.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, locations.size());
+    public LocationAdapterModel getLocation(int position) {
+        return locations.get(position);
     }
 
     @Override
-    public void onLocationItemMove(int fromPosition, int toPosition) {
-        Collections.swap(locations, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-    }
-
-    @Override
-    public void addLocation(LocationAppModel location) {
+    public void addLocation(LocationAdapterModel location) {
         int position = locations.size();
         locations.add(position, location);
         notifyItemInserted(position);
@@ -87,13 +80,29 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     }
 
     @Override
-    public LocationAppModel getLocation(int position) {
-        return locations.get(position);
+    public void moveLocationItem(int fromPosition, int toPosition, boolean saveChanges) {
+        if (saveChanges && orderChangedListener != null) {
+            orderChangedListener.onOrderChange(fromPosition, toPosition);
+            return;
+        }
+        Collections.swap(locations, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
     }
 
-    private LocationManagerContract.Presenter getPresenter() {
-        if (presenterRef != null)
-            return presenterRef.get();
-        throw new NullPointerException("Presenter was disposed!!!");
+    @Override
+    public void removeLocation(int position) {
+        if (locationRemovedListener != null) {
+            locationRemovedListener.onRemove(locations.get(position));
+        }
+    }
+
+    @Override
+    public void setOnLocationsOrderChangedListener(OnLocationsOrderChangedListener listener) {
+        this.orderChangedListener = listener;
+    }
+
+    @Override
+    public void setOnLocationRemovedListener(OnLocationRemovedListener listener) {
+        this.locationRemovedListener = listener;
     }
 }
