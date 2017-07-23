@@ -5,15 +5,20 @@ import android.util.Log;
 
 import org.greenrobot.greendao.database.Database;
 
+import javax.inject.Inject;
+
 import by.reshetnikov.proweather.data.db.model.DaoMaster;
+import by.reshetnikov.proweather.injector.ApplicationContext;
+import by.reshetnikov.proweather.injector.DatabaseInfo;
 
 
 public class AppDbOpenHelper extends DaoMaster.OpenHelper {
 
     private static final String TAG = AppDbOpenHelper.class.getSimpleName();
 
-    public AppDbOpenHelper(Context context, String name) {
-        super(context, name);
+    @Inject
+    public AppDbOpenHelper(@ApplicationContext Context context, @DatabaseInfo String dbName) {
+        super(context, dbName);
     }
 
     @Override
@@ -21,6 +26,4 @@ public class AppDbOpenHelper extends DaoMaster.OpenHelper {
         super.onUpgrade(db, oldVersion, newVersion);
         Log.d(TAG, "Database " + getDatabaseName() + ", old version is " + oldVersion + ", new version is " + newVersion);
     }
-
-
 }

@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.contract.LocationManagerContract;
 import by.reshetnikov.proweather.data.DataRepository;
 import by.reshetnikov.proweather.data.model.LocationAdapterModel;
@@ -21,23 +20,21 @@ import io.reactivex.schedulers.Schedulers;
 public class LocationManagerPresenter implements LocationManagerContract.Presenter {
 
     private final static String TAG = LocationManagerPresenter.class.getSimpleName();
-    private final static int AUTO_COMPLETE_MAX_RESULTS = 7;
-    @Inject
-    DataRepository dataRepository;
+    private final static int AUTO_COMPLETE_MAX_RESULTS = 10;
 
+    private DataRepository dataRepository;
     private WeakReference<LocationManagerContract.View> viewRef;
     private CompositeDisposable disposables;
-    private Context appContext;
 
-    public LocationManagerPresenter() {
-        this.appContext = ProWeatherApp.getAppContext();
-        ((ProWeatherApp) appContext.getApplicationContext()).getAppComponent().inject(this);
+    @Inject
+    public LocationManagerPresenter(DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
         disposables = new CompositeDisposable();
     }
 
     @Override
     public void start() {
-        updateSavedLocations();
+        getSavedLocations();
     }
 
     @Override
@@ -54,7 +51,7 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
                     @Override
                     public void onNext(@NonNull Boolean isSaved) {
                         Log.d(TAG, "saveLocation onNext " + isSaved);
-                        updateSavedLocations();
+                        getSavedLocations();
                     }
 
                     @Override
@@ -88,7 +85,7 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
                     @Override
                     public void onComplete() {
                         Log.d(TAG, "onMoveLocationItem onComplete ");
-                        updateSavedLocations();
+                        getSavedLocations();
 
                     }
                 })
@@ -114,7 +111,7 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
                     @Override
                     public void onComplete() {
                         Log.d(TAG, "onLocationItemRemoved, onComplete");
-                        updateSavedLocations();
+                        getSavedLocations();
                     }
                 }));
     }
@@ -128,30 +125,33 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
     }
 
     @Override
-    public List<LocationAdapterModel> getLocationsByName(String searchText) {
-        return dataRepository.getAllLocationsByName(searchText, AUTO_COMPLETE_MAX_RESULTS).blockingSingle();
+    public void onLocationByNameSearch(String searchText) {
+        List<LocationAdapterModel> locations =
+                dataRepository.getAllLocationsByName(searchText, AUTO_COMPLETE_MAX_RESULTS).blockingSingle();
+        getView().refreshSearchedLocations(locations);
     }
 
-    private void updateSavedLocations() {
-        Log.d(TAG, "updateSavedLocations();");
+    @Override
+    public void getSavedLocations() {
+        Log.d(TAG, "getSavedLocations()");
         disposables.add(dataRepository.getSavedLocations()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<LocationAdapterModel>>() {
                     @Override
                     public void onNext(@NonNull List<LocationAdapterModel> locations) {
-                        Log.d(TAG, "updateSavedLocations(); onNext");
+                        Log.d(TAG, "getSavedLocations(); onNext");
                         getView().refreshSavedLocations(locations);
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        Log.d(TAG, "updateSavedLocations(); onError");
+                        Log.d(TAG, "getSavedLocations(); onError");
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d(TAG, "updateSavedLocations(); onComplete");
+                        Log.d(TAG, "getSavedLocations(); onComplete");
                     }
                 }));
     }

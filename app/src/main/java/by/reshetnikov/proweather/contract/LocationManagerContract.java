@@ -13,9 +13,13 @@ public interface LocationManagerContract {
         void hideSearchLocation();
 
         void refreshSavedLocations(List<LocationAdapterModel> savedLocations);
+
+        void refreshSearchedLocations(List<LocationAdapterModel> savedLocations);
     }
 
     interface Presenter extends BasePresenter {
+
+        void getSavedLocations();
 
         void setView(LocationManagerContract.View viewRef);
 
@@ -27,6 +31,6 @@ public interface LocationManagerContract {
 
         void onFabClicked(boolean isAutocompleteVisible);
 
-        List<LocationAdapterModel> getLocationsByName(String searchText);
+        void onLocationByNameSearch(String searchText);
     }
 }

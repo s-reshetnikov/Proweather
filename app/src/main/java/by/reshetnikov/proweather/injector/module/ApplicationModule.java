@@ -1,26 +1,31 @@
 package by.reshetnikov.proweather.injector.module;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.greenrobot.greendao.database.Database;
-
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
+import by.reshetnikov.proweather.data.DataContract;
 import by.reshetnikov.proweather.data.DataRepository;
 import by.reshetnikov.proweather.data.db.AppDbData;
 import by.reshetnikov.proweather.data.db.AppDbOpenHelper;
+import by.reshetnikov.proweather.data.db.DbContract;
 import by.reshetnikov.proweather.data.db.model.DaoMaster;
 import by.reshetnikov.proweather.data.db.model.DaoSession;
 import by.reshetnikov.proweather.data.network.AppWeatherApiData;
+import by.reshetnikov.proweather.data.network.WeatherApiDataContract;
 import by.reshetnikov.proweather.data.network.WeatherApiService;
 import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
+import by.reshetnikov.proweather.injector.ApplicationContext;
+import by.reshetnikov.proweather.injector.DatabaseInfo;
+import by.reshetnikov.proweather.utils.AppConstants;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
@@ -31,26 +36,32 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
-public class DataModule {
+public class ApplicationModule {
 
-    private static final int TIME_OUT = 3; //in seconds
-    private final String baseUrl;
-    private final String dbName;
+    private final Application application;
 
-
-    public DataModule(String baseUrl, String dbName) {
-        this.baseUrl = baseUrl;
-        this.dbName = dbName;
+    public ApplicationModule(Application application) {
+        this.application = application;
     }
 
-    @Singleton
     @Provides
-    Cache provideHttpCache(ProWeatherApp app) {
-        int cacheSize = 10 * 1024 * 1024;
-        return new Cache(app.getCacheDir(), cacheSize);
+    @ApplicationContext
+    Context provideContext() {
+        return application.getApplicationContext();
     }
 
-    @Singleton
+    @Provides
+    Application provideApplication() {
+        return application;
+    }
+
+    // network
+    @Provides
+    Cache provideHttpCache() {
+        int cacheSize = 10 * 1024 * 1024;
+        return new Cache(application.getCacheDir(), cacheSize);
+    }
+
     @Provides
     Gson provideGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -58,7 +69,6 @@ public class DataModule {
         return gsonBuilder.create();
     }
 
-    @Singleton
     @Provides
     OkHttpClient provideOkHttpClient(Cache cache) {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -66,63 +76,63 @@ public class DataModule {
 
         return new OkHttpClient.Builder()
                 .cache(cache)
-                .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
+                .connectTimeout(AppConstants.CONNECTION_TIME_OUT, TimeUnit.SECONDS)
                 .addInterceptor(loggingInterceptor)
                 .build();
     }
 
-    @Singleton
     @Provides
     Retrofit provideRetrofit(Gson gson, OkHttpClient client) {
         return new Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl(AppConstants.OPEN_WEATHER_API_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(client)
                 .build();
     }
 
-    @Singleton
     @Provides
     WeatherApiService provideApiService(Retrofit retrofit) {
         return retrofit.create(WeatherApiService.class);
     }
 
+    // db
     @Provides
-    @Singleton
-    DaoSession provideDaoSession(Context context) {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, dbName);
-        Database db = helper.getWritableDb();
-        return new DaoMaster(db).newSession();
+    @DatabaseInfo
+    String provideDatabaseName() {
+        return AppConstants.DB_NAME;
     }
 
-    @Singleton
     @Provides
-    AppDbOpenHelper provideAppDbOpenHelper(Context context) {
-        return new AppDbOpenHelper(context, dbName);
+    DaoSession provideDaoSession(AppDbOpenHelper dbHelper) {
+        return new DaoMaster(dbHelper.getWritableDb()).newSession();
     }
 
-    @Singleton
     @Provides
-    AppDbData provideApDbData(AppDbOpenHelper openHelper) {
-        return new AppDbData(openHelper);
+    DaoMaster.OpenHelper provideAppDbOpenHelper(AppDbOpenHelper appDbHelper) {
+        return appDbHelper;
     }
 
-    @Singleton
     @Provides
-    AppSharedPreferencesData provideSharedPreferencesData(Context context) {
+    DbContract provideDbContract(AppDbData dbData) {
+        return dbData;
+    }
+
+    @Provides
+    WeatherApiDataContract provideWeatherApiDataContract(AppWeatherApiData api) {
+        return api;
+    }
+
+    // shared preferences
+    @Provides
+    AppSharedPreferencesData provideSharedPreferencesData(@ApplicationContext Context context) {
         return new AppSharedPreferencesData(context);
     }
 
+    // repository
     @Singleton
     @Provides
-    AppWeatherApiData provideAppWeatherApiData() {
-        return new AppWeatherApiData();
-    }
-
-    @Singleton
-    @Provides
-    DataRepository provideDataRepository() {
-        return new DataRepository();
+    DataContract proDataRepository(DataRepository repository) {
+        return repository;
     }
 }

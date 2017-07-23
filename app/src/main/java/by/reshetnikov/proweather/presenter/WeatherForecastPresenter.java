@@ -1,14 +1,20 @@
 package by.reshetnikov.proweather.presenter;
 
+import javax.inject.Inject;
+
 import by.reshetnikov.proweather.contract.WeatherForecastContract;
+import by.reshetnikov.proweather.data.DataRepository;
 import by.reshetnikov.proweather.data.network.model.forecastweather.HourlyForecastWeatherApiModel;
 
 
 public class WeatherForecastPresenter implements WeatherForecastContract.Presenter {
 
     private WeatherForecastContract.View view;
+    private DataRepository dataRepository;
 
-    public WeatherForecastPresenter() {
+    @Inject
+    public WeatherForecastPresenter(DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
     }
 
     @Override

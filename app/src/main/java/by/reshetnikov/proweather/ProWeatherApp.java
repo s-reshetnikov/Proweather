@@ -2,26 +2,23 @@ package by.reshetnikov.proweather;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import by.reshetnikov.proweather.injector.component.AppComponent;
-import by.reshetnikov.proweather.injector.component.DaggerAppComponent;
-import by.reshetnikov.proweather.injector.module.AppModule;
-import by.reshetnikov.proweather.injector.module.DataModule;
+import java.util.concurrent.Callable;
+
+import by.reshetnikov.proweather.injector.component.ApplicationComponent;
+import by.reshetnikov.proweather.injector.component.DaggerApplicationComponent;
+import by.reshetnikov.proweather.injector.module.ApplicationModule;
+import io.reactivex.Observable;
 
 
 public class ProWeatherApp extends Application {
 
     private static final String TAG = ProWeatherApp.class.getSimpleName();
-
-    private static final String baseURL = "http://api.openweathermap.org/";
-    private static final String dbName = "proweatherDb";
     private static ProWeatherApp proWeatherApp;
-    private static AppComponent appComponent;
-
+    private static ApplicationComponent applicationComponent;
 
     public static ProWeatherApp getProWeatherApp() {
         return proWeatherApp;
@@ -35,46 +32,32 @@ public class ProWeatherApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Log.d(TAG, "stop() start");
+        Log.d(TAG, "start application");
 
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
         }
 
+        applicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this)).build();
         proWeatherApp = this;
 
-        appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .dataModule(new DataModule(baseURL, dbName))
-                .build();
-
         //TODO: move settings default values some where else
-        SetDefaultPreferencesAsyncTask task = new SetDefaultPreferencesAsyncTask();
-        task.execute();
-
+        Observable.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                setPreferenceDefaultValues(true);
+                return true;
+            }
+        });
         Log.d(TAG, "stop() end");
     }
 
-
-    public AppComponent getAppComponent() {
-        return appComponent;
+    private void setPreferenceDefaultValues(boolean canReadAgain) {
+        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_location, canReadAgain);
+        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_units, canReadAgain);
+        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_notification, canReadAgain);
     }
-
-    class SetDefaultPreferencesAsyncTask extends AsyncTask {
-
-        @Override
-        protected Object doInBackground(Object[] params) {
-            setPreferenceDefaultValues(true);
-            return null;
-        }
-
-        private void setPreferenceDefaultValues(boolean canReadAgain) {
-            PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_location, canReadAgain);
-            PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_units, canReadAgain);
-            PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_notification, canReadAgain);
-        }
-    }
-
 
 }

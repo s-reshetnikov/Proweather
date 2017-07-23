@@ -4,11 +4,9 @@
     <item android:title="Locations">
         <menu>
             <item
-                android:id="@+id/nav_current_location"
                 android:icon="@drawable/ic_my_location"
                 android:title="Current Position" />
             <item
-                android:id="@+id/nav_add_location"
                 android:icon="@drawable/ic_add_location"
                 android:title="Add Location" />
         </menu>
@@ -23,7 +21,6 @@
             android:icon="@drawable/ic_menu_manage"
             android:title="Settings" />
         <item
-            android:id="@+id/nav_share"
             android:icon="@drawable/ic_menu_share"
             android:title="Share" />
     </group>

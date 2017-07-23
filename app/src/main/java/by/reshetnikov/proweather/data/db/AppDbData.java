@@ -22,15 +22,14 @@ import io.reactivex.Observable;
 public class AppDbData implements DbContract {
 
     private static final String TAG = AppDbData.class.getSimpleName();
-    private final DaoSession daoSession;
+
     private final CurrentWeatherEntityDao currentWeatherDao;
     private final HourlyForecastEntityDao hourlyForecastDao;
     private final DailyForecastEntityDao dailyForecastDao;
     private final LocationEntityDao locationDao;
 
     @Inject
-    public AppDbData(AppDbOpenHelper dbHelper) {
-        daoSession = new DaoMaster(dbHelper.getWritableDb()).newSession();
+    public AppDbData(DaoSession daoSession) {
         currentWeatherDao = daoSession.getCurrentWeatherEntityDao();
         hourlyForecastDao = daoSession.getHourlyForecastEntityDao();
         dailyForecastDao = daoSession.getDailyForecastEntityDao();

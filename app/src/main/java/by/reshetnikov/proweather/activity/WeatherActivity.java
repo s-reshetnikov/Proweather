@@ -48,11 +48,11 @@ public class WeatherActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         Log.d(TAG, "stop start");
         setContentView(R.layout.activity_weather);
-
-
-        presenter = new WeatherPresenter();
-        presenter.setView(this);
-        presenter.updateLocation();
+//
+//
+//        presenter = new WeatherPresenter();
+//        presenter.setView(this);
+//        presenter.updateLocation();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.location_toolbar);
         setSupportActionBar(toolbar);

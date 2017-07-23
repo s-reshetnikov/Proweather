@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import by.reshetnikov.proweather.callback.LocationAdapterDiffCallback;
+import by.reshetnikov.proweather.callback.LocationsDiffUtilCallback;
 import by.reshetnikov.proweather.contract.LocationsAdapterContract;
 import by.reshetnikov.proweather.data.model.LocationAdapterContract;
 import by.reshetnikov.proweather.data.model.LocationAdapterModel;
@@ -34,7 +34,7 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     @Override
     public void onBindViewHolder(LocationViewHolder holder, int position) {
 
-        LocationAdapterContract location = getLocationAtPosition(position);//locations.get(position);
+        LocationAdapterContract location = getLocationAtPosition(position);
         holder.setLocationName(location.getLocationName());
         holder.setCircleCountryCode(location.getCountryCode());
         if (location.isCurrent())
@@ -57,7 +57,7 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
 
     @Override
     public void updateView(List<LocationAdapterModel> updatedLocations) {
-        LocationAdapterDiffCallback diffCallback = new LocationAdapterDiffCallback(this.locations, updatedLocations);
+        LocationsDiffUtilCallback diffCallback = new LocationsDiffUtilCallback(this.locations, updatedLocations);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback, DETECT_MOVES);
 
         locations.clear();

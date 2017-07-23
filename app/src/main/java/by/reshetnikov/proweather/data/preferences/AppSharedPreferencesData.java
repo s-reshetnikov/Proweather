@@ -12,6 +12,7 @@ import by.reshetnikov.proweather.data.model.UnitsAppModel;
 import by.reshetnikov.proweather.data.preferences.units.DistanceUnits;
 import by.reshetnikov.proweather.data.preferences.units.TemperatureUnit;
 import by.reshetnikov.proweather.data.preferences.units.WindSpeedUnit;
+import by.reshetnikov.proweather.injector.ApplicationContext;
 
 
 public class AppSharedPreferencesData implements PreferencesContract {
@@ -28,7 +29,7 @@ public class AppSharedPreferencesData implements PreferencesContract {
     private final android.content.SharedPreferences preferences;
 
     @Inject
-    public AppSharedPreferencesData(Context context) {
+    public AppSharedPreferencesData(@ApplicationContext Context context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 

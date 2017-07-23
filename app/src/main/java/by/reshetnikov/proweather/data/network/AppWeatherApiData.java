@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.network.model.currentweather.CurrentWeatherApiModel;
 import by.reshetnikov.proweather.data.network.model.forecastweather.DailyForecastWeatherApiModel;
 import by.reshetnikov.proweather.data.network.model.forecastweather.HourlyForecastWeatherApiModel;
@@ -19,12 +18,12 @@ public class AppWeatherApiData implements WeatherApiDataContract {
 
     private static final String TAG = AppWeatherApiData.class.getSimpleName();
 
-    @Inject
-    WeatherApiService api;
+    private WeatherApiService api;
 
-    public AppWeatherApiData() {
+    @Inject
+    public AppWeatherApiData(WeatherApiService api) {
         Log.d(TAG, "create AppWeatherApiData");
-        ProWeatherApp.getProWeatherApp().getAppComponent().inject(this);
+        this.api = api;
     }
 
     @Override

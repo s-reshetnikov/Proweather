@@ -202,9 +202,7 @@ public class HourlyForecastEntity {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 384525640)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

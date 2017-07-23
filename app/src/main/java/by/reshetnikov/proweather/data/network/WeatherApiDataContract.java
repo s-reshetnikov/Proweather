@@ -9,7 +9,6 @@ import io.reactivex.Observable;
 
 public interface WeatherApiDataContract {
 
-
     Observable<CurrentWeatherApiModel> getCurrentWeather(String locationId);
 
     Observable<HourlyForecastWeatherApiModel> getHourlyForecastWeather(String locationId);

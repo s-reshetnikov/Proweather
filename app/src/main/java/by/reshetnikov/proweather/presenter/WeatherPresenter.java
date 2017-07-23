@@ -2,20 +2,19 @@ package by.reshetnikov.proweather.presenter;
 
 import javax.inject.Inject;
 
-import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.contract.WeatherContract;
 import by.reshetnikov.proweather.data.DataRepository;
 
 
 public class WeatherPresenter implements WeatherContract.Presenter {
 
-    @Inject
-    DataRepository repository;
+    DataRepository dataRepository;
 
     WeatherContract.View view;
 
-    public WeatherPresenter() {
-        ProWeatherApp.getProWeatherApp().getAppComponent().inject(this);
+    @Inject
+    public WeatherPresenter(DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
     }
 
 

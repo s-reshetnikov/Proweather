@@ -22,8 +22,6 @@ import by.reshetnikov.proweather.presenter.CurrentWeatherPresenter;
 
 public class CurrentWeatherFragment extends Fragment implements CurrentWeatherContract.View {
 
-    CurrentWeatherPresenter presenter;
-
     @BindView(R.id.tv_feels_like_temp)
     TextView tvFeelsLikeTemperature;
     @BindView(R.id.tv_humidity)
@@ -38,10 +36,10 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     TextView tvWind;
     @BindView(R.id.btn_weather_details)
     Button btnWeatherDetails;
+    private CurrentWeatherPresenter presenter;
     @BindView(R.id.img_weather)
     ImageView imgWeather;
     private OnFragmentInteractionListener mListener;
-
     public CurrentWeatherFragment() {
     }
 
@@ -58,8 +56,6 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_current_weather, container, false);
-        //ProWeatherApp.getProWeatherApp().getAppComponent().inject(this);
-        presenter = new CurrentWeatherPresenter();
         ButterKnife.bind(this, view);
         return view;
     }

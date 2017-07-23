@@ -17,7 +17,6 @@ import by.reshetnikov.proweather.presenter.WeatherForecastPresenter;
 
 public class WeatherForecastFragment extends Fragment implements WeatherForecastContract.View {
 
-    @Inject
     WeatherForecastPresenter presenter;
 
     private OnFragmentInteractionListener mListener;

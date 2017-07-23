@@ -106,6 +106,9 @@ dependencies {
 
     // Dependency Injection
     compile "com.google.dagger:dagger:${daggerVersion}"
+    compile "com.google.dagger:dagger-android:'${daggerVersion}"
+    compile "com.google.dagger:dagger-android-support:${daggerVersion}"
+    annotationProcessor "com.google.dagger:dagger-android-processor:${daggerVersion}"
     annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"
 
     // Green DAO

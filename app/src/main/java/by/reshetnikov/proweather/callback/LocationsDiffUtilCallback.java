@@ -8,12 +8,12 @@ import by.reshetnikov.proweather.data.model.LocationAdapterContract;
 import by.reshetnikov.proweather.data.model.LocationAdapterModel;
 
 
-public class LocationAdapterDiffCallback extends DiffUtil.Callback {
+public class LocationsDiffUtilCallback extends DiffUtil.Callback {
 
     private final List<LocationAdapterModel> oldLocations;
     private final List<LocationAdapterModel> newLocations;
 
-    public LocationAdapterDiffCallback(List<LocationAdapterModel> oldList, List<LocationAdapterModel> newList) {
+    public LocationsDiffUtilCallback(List<LocationAdapterModel> oldList, List<LocationAdapterModel> newList) {
         this.oldLocations = oldList;
         this.newLocations = newList;
     }

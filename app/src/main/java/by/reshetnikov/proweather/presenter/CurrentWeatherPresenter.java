@@ -1,10 +1,7 @@
 package by.reshetnikov.proweather.presenter;
 
-import android.content.Context;
-
 import javax.inject.Inject;
 
-import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.contract.CurrentWeatherContract;
 import by.reshetnikov.proweather.data.DataRepository;
 import io.reactivex.disposables.CompositeDisposable;
@@ -12,16 +9,14 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class CurrentWeatherPresenter implements CurrentWeatherContract.Presenter {
 
-    @Inject
-    DataRepository dataRepository;
+    private DataRepository dataRepository;
 
     private CurrentWeatherContract.View view;
-    private Context appContext;
     private CompositeDisposable compositeDisposable;
 
-    public CurrentWeatherPresenter() {
-        this.appContext = ProWeatherApp.getAppContext();
-        ((ProWeatherApp) appContext.getApplicationContext()).getAppComponent().inject(this);
+    @Inject
+    public CurrentWeatherPresenter(DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
         compositeDisposable = new CompositeDisposable();
     }
 

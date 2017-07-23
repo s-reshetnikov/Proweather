@@ -24,6 +24,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.adapter.AutoCompleteLocationsAdapter;
 import by.reshetnikov.proweather.adapter.LocationsRecyclerViewAdapter;
@@ -32,6 +33,9 @@ import by.reshetnikov.proweather.contract.LocationManagerContract;
 import by.reshetnikov.proweather.contract.LocationsAdapterContract;
 import by.reshetnikov.proweather.data.model.LocationAdapterModel;
 import by.reshetnikov.proweather.decoration.SimpleDividerItemDecoration;
+import by.reshetnikov.proweather.injector.component.ActivityComponent;
+import by.reshetnikov.proweather.injector.module.ActivityModule;
+import by.reshetnikov.proweather.listener.OnAutoCompleteLocationSearchListener;
 import by.reshetnikov.proweather.listener.OnLocationRemovedListener;
 import by.reshetnikov.proweather.listener.OnLocationsOrderChangedListener;
 import by.reshetnikov.proweather.presenter.LocationManagerPresenter;
@@ -60,7 +64,11 @@ public class LocationManagerFragment extends Fragment implements LocationManager
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_location, container, false);
-        presenter = new LocationManagerPresenter();
+//        ActivityComponent activityComponent = DaggerActivityComponent.builder()
+//                .activityModule(new ActivityModule(this))
+//                .applicationComponent(((ProWeatherApp) getActivity().getApplication()))
+//                .build()
+//                .inject(this);
         presenter.setView(this);
         ButterKnife.bind(this, view);
         setupAutoCompleteView();
@@ -109,6 +117,12 @@ public class LocationManagerFragment extends Fragment implements LocationManager
         rvAdapter.updateView(savedLocations);
     }
 
+    @Override
+    public void refreshSearchedLocations(List<LocationAdapterModel> locations) {
+        AutoCompleteLocationsAdapter adapter = (AutoCompleteLocationsAdapter) tvAutoCompleteLocation.getAdapter();
+        adapter.updateSearchResults(locations);
+    }
+
     public void setupLocationsRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         rvLocations.setLayoutManager(layoutManager);
@@ -146,9 +160,20 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     }
 
     private void setupAutoCompleteView() {
-        tvAutoCompleteLocation.setAdapter(new AutoCompleteLocationsAdapter(this.getContext(), presenter));
+        AutoCompleteLocationsAdapter adapter = new AutoCompleteLocationsAdapter(this.getContext());
         tvAutoCompleteLocation.setLoadingIndicator(progressBar);
+        setAutoCompleteTextViewOnPerformSearchListener(adapter);
         setAutoCompleteTextViewOnClickListener();
+        tvAutoCompleteLocation.setAdapter(adapter);
+    }
+
+    private void setAutoCompleteTextViewOnPerformSearchListener(AutoCompleteLocationsAdapter adapter) {
+        adapter.setOnPerformSearchListener(new OnAutoCompleteLocationSearchListener() {
+            @Override
+            public void performSearch(String searchText) {
+                presenter.onLocationByNameSearch(searchText);
+            }
+        });
     }
 
     private void setAutoCompleteTextViewOnClickListener() {

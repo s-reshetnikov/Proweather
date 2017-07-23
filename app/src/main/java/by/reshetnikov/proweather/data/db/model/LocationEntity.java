@@ -162,9 +162,7 @@ public class LocationEntity {
         this.Id = Id;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 923553686)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

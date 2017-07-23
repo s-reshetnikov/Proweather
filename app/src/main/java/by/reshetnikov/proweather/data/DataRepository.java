@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
-import by.reshetnikov.proweather.data.db.AppDbData;
+import by.reshetnikov.proweather.data.db.DbContract;
 import by.reshetnikov.proweather.data.db.model.CurrentWeatherEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.model.AppModelFactory;
@@ -18,7 +19,7 @@ import by.reshetnikov.proweather.data.model.DailyForecastWeatherModel;
 import by.reshetnikov.proweather.data.model.HourlyForecastWeatherModel;
 import by.reshetnikov.proweather.data.model.LocationAdapterModel;
 import by.reshetnikov.proweather.data.model.UnitsAppModel;
-import by.reshetnikov.proweather.data.network.AppWeatherApiData;
+import by.reshetnikov.proweather.data.network.WeatherApiDataContract;
 import by.reshetnikov.proweather.data.network.model.currentweather.CurrentWeatherApiModel;
 import by.reshetnikov.proweather.data.network.model.location.LocationForecastApiModel;
 import by.reshetnikov.proweather.data.network.model.location.LocationWeatherApiModel;
@@ -30,20 +31,20 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-
+@Singleton
 public class DataRepository implements DataContract {
 
     private static final String TAG = DataRepository.class.getSimpleName();
 
-    @Inject
-    AppDbData dbData;
-    @Inject
-    AppWeatherApiData apiData;
-    @Inject
-    AppSharedPreferencesData sharedPreferencesData;
+    private DbContract dbData;
+    private WeatherApiDataContract apiData;
+    private AppSharedPreferencesData sharedPreferencesData;
 
-    public DataRepository() {
-        ProWeatherApp.getProWeatherApp().getAppComponent().inject(this);
+    @Inject
+    public DataRepository(DbContract dbData, WeatherApiDataContract apiData, AppSharedPreferencesData sharedPreferencesData) {
+        this.dbData = dbData;
+        this.apiData = apiData;
+        this.sharedPreferencesData = sharedPreferencesData;
     }
 
     @Override

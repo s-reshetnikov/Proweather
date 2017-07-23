@@ -17,9 +17,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.contract.LocationManagerContract;
 import by.reshetnikov.proweather.data.model.LocationAdapterModel;
-import io.reactivex.disposables.CompositeDisposable;
+import by.reshetnikov.proweather.listener.OnAutoCompleteLocationSearchListener;
 
 public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filterable {
 
@@ -29,22 +28,21 @@ public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filtera
     TextView tvLocation;
     @BindView(R.id.tv_dropdown_country_code)
     TextView tvCountyCode;
-    CompositeDisposable compositeDisposable;
-    LocationManagerContract.Presenter presenter;
     private WeakReference<Context> contextRef;
     private List<LocationAdapterModel> results = new ArrayList<>();
+    private OnAutoCompleteLocationSearchListener listener;
 
-    public AutoCompleteLocationsAdapter(Context context, LocationManagerContract.Presenter presenter) {
+    public AutoCompleteLocationsAdapter(Context context) {
         this.contextRef = new WeakReference<>(context);
-        this.presenter = presenter;
-        compositeDisposable = new CompositeDisposable();
     }
 
-//    private void loadLocations(String locationName) {
-//        results.clear();
-//        results.addAll(locations);
-//        notifyDataSetChanged();
-//    }
+    public void setOnPerformSearchListener(OnAutoCompleteLocationSearchListener listener) {
+        this.listener = listener;
+    }
+
+    public void updateSearchResults(List<LocationAdapterModel> locations) {
+        results = locations;
+    }
 
     @Override
     public int getCount() {
@@ -105,7 +103,9 @@ public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filtera
     }
 
     private void loadLocations(String searchText) {
-        results = presenter.getLocationsByName(searchText);
+        if (listener != null) {
+            listener.performSearch(searchText);
+        }
 
     }
 
