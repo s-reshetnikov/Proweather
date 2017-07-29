@@ -8,7 +8,7 @@ public class LocationAdapterModel implements LocationAdapterContract {
 
     private LocationEntity locationEntity;
 
-    protected LocationAdapterModel(LocationEntity locationEntity) {
+    public LocationAdapterModel(LocationEntity locationEntity) {
         this.locationEntity = locationEntity;
     }
 

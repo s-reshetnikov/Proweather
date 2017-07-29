@@ -15,13 +15,17 @@ public interface LocationManagerContract {
         void refreshSavedLocations(List<LocationAdapterModel> savedLocations);
 
         void refreshSearchedLocations(List<LocationAdapterModel> savedLocations);
+
+        void showError(String errorText);
     }
 
     interface Presenter extends BasePresenter {
 
-        void getSavedLocations();
+        View getView();
 
         void setView(LocationManagerContract.View viewRef);
+
+        void getSavedLocations();
 
         void saveLocation(LocationAdapterModel location);
 
