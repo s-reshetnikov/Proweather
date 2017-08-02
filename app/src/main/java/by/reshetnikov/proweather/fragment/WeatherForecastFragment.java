@@ -69,6 +69,16 @@ public class WeatherForecastFragment extends Fragment implements WeatherForecast
 
     }
 
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    @Override
+    public void onError(String message) {
+
+    }
+
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }

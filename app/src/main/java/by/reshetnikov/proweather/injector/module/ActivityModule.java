@@ -5,9 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 
 import by.reshetnikov.proweather.adapter.AutoCompleteLocationsAdapter;
 import by.reshetnikov.proweather.adapter.LocationsRecyclerViewAdapter;
+import by.reshetnikov.proweather.contract.CurrentWeatherContract;
+import by.reshetnikov.proweather.contract.LocationManagerContract;
+import by.reshetnikov.proweather.contract.WeatherForecastContract;
 import by.reshetnikov.proweather.injector.ActivityContext;
 import by.reshetnikov.proweather.presenter.CurrentWeatherPresenter;
+import by.reshetnikov.proweather.presenter.LocationManagerPresenter;
 import by.reshetnikov.proweather.presenter.WeatherForecastPresenter;
+import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.AppSchedulerProvider;
 import dagger.Module;
 import dagger.Provides;
 
@@ -33,12 +39,17 @@ public class ActivityModule {
     }
 
     @Provides
-    CurrentWeatherPresenter provideCurrentWeatherPresenter(CurrentWeatherPresenter presenter) {
+    CurrentWeatherContract.Presenter provideCurrentWeatherPresenter(CurrentWeatherPresenter presenter) {
         return presenter;
     }
 
     @Provides
-    WeatherForecastPresenter provideWeatherForecastPresenter(WeatherForecastPresenter presenter) {
+    WeatherForecastContract.Presenter provideWeatherForecastPresenter(WeatherForecastPresenter presenter) {
+        return presenter;
+    }
+
+    @Provides
+    LocationManagerContract.Presenter provideLocationManagerPresenter(LocationManagerPresenter presenter) {
         return presenter;
     }
 
@@ -51,5 +62,10 @@ public class ActivityModule {
     @Provides
     LocationsRecyclerViewAdapter provideLocationsRecyclerViewAdapter() {
         return new LocationsRecyclerViewAdapter();
+    }
+
+    @Provides
+    SchedulerProvider provideSchedulerProvider() {
+        return new AppSchedulerProvider();
     }
 }

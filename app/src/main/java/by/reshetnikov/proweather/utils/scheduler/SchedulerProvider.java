@@ -1,27 +1,16 @@
 package by.reshetnikov.proweather.utils.scheduler;
 
 import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by SacRahl on 7/26/2017.
  */
 
-public class SchedulerProvider implements BaseSchedulerProvider {
+public interface SchedulerProvider {
 
-    @Override
-    public Scheduler computation() {
-        return Schedulers.computation();
-    }
+    Scheduler computation();
 
-    @Override
-    public Scheduler io() {
-        return Schedulers.io();
-    }
+    Scheduler io();
 
-    @Override
-    public Scheduler ui() {
-        return AndroidSchedulers.mainThread();
-    }
+    Scheduler ui();
 }

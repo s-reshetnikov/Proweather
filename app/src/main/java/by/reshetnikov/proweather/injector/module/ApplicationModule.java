@@ -25,8 +25,6 @@ import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
 import by.reshetnikov.proweather.injector.ApplicationContext;
 import by.reshetnikov.proweather.injector.DatabaseInfo;
 import by.reshetnikov.proweather.utils.AppConstants;
-import by.reshetnikov.proweather.utils.scheduler.BaseSchedulerProvider;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
@@ -54,12 +52,6 @@ public class ApplicationModule {
     @Provides
     Application provideApplication() {
         return application;
-    }
-
-    @Provides
-    @Singleton
-    BaseSchedulerProvider baseSchedulerProvider() {
-        return new SchedulerProvider();
     }
 
     // network

@@ -1,16 +1,21 @@
 package by.reshetnikov.proweather.data.model;
 
-import by.reshetnikov.proweather.data.db.model.WeatherEntity;
+import by.reshetnikov.proweather.data.db.model.CurrentWeatherEntity;
 
 
-public class CurrentWeatherModel implements CurrentWeatherModelContract {
+public class CurrentWeatherAdapterModel implements CurrentWeatherAdapterContract {
 
-    private final WeatherEntity entity;
+    private final CurrentWeatherEntity entity;
 
     private UnitsAppModel units;
 
-    public CurrentWeatherModel(WeatherEntity entity) {
+    public CurrentWeatherAdapterModel(CurrentWeatherEntity entity) {
         this.entity = entity;
+    }
+
+    @Override
+    public CurrentWeatherEntity getAdaptee() {
+        return entity;
     }
 
     @Override
@@ -45,42 +50,42 @@ public class CurrentWeatherModel implements CurrentWeatherModelContract {
 
     @Override
     public int getWeatherConditionId() {
-        return entity.getWeatherConditionId();
+        return entity.getWeatherEntity().getWeatherConditionId();
     }
 
     @Override
     public void setWeatherConditionId(int weatherConditionId) {
-        entity.setWeatherConditionId(weatherConditionId);
+        entity.getWeatherEntity().setWeatherConditionId(weatherConditionId);
     }
 
     @Override
     public String getWeatherDescription() {
-        return entity.getWeatherDescription();
+        return entity.getWeatherEntity().getWeatherDescription();
     }
 
     @Override
     public void setWeatherDescription(String weatherDescription) {
-        entity.setWeatherDescription(weatherDescription);
+        entity.getWeatherEntity().setWeatherDescription(weatherDescription);
     }
 
     @Override
     public String getIconCode() {
-        return entity.getIconCode();
+        return entity.getWeatherEntity().getIconCode();
     }
 
     @Override
     public void setIconCode(String iconCode) {
-        entity.setIconCode(iconCode);
+        entity.getWeatherEntity().setIconCode(iconCode);
     }
 
     @Override
     public double getWindDegrees() {
-        return entity.getWindDegrees();
+        return entity.getWindDirectionDegrees();
     }
 
     @Override
-    public void setWindDegrees(double windDegrees) {
-        entity.setWindDegrees(windDegrees);
+    public void setWindDegrees(int windDegrees) {
+        entity.setWindDirectionDegrees(windDegrees);
     }
 
     @Override

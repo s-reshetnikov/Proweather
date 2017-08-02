@@ -1,7 +1,7 @@
 package by.reshetnikov.proweather.contract;
 
 
-public interface BasePresenter {
+public interface PresenterContract {
 
     void start();
 

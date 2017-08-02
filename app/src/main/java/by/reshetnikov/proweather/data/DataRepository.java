@@ -14,7 +14,7 @@ import by.reshetnikov.proweather.data.db.DbContract;
 import by.reshetnikov.proweather.data.db.model.CurrentWeatherEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.model.AppModelFactory;
-import by.reshetnikov.proweather.data.model.CurrentWeatherModel;
+import by.reshetnikov.proweather.data.model.CurrentWeatherAdapterModel;
 import by.reshetnikov.proweather.data.model.DailyForecastWeatherModel;
 import by.reshetnikov.proweather.data.model.HourlyForecastWeatherModel;
 import by.reshetnikov.proweather.data.model.LocationAdapterModel;
@@ -26,6 +26,7 @@ import by.reshetnikov.proweather.data.network.model.location.LocationWeatherApiM
 import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
 import by.reshetnikov.proweather.exception.NoNetworkException;
 import by.reshetnikov.proweather.utils.NetworkUtils;
+import by.reshetnikov.proweather.utils.scheduler.AppSchedulerProvider;
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
@@ -39,27 +40,34 @@ public class DataRepository implements DataContract {
     private DbContract dbData;
     private WeatherApiDataContract apiData;
     private AppSharedPreferencesData sharedPreferencesData;
+    private AppSchedulerProvider scheduler;
 
     @Inject
-    public DataRepository(DbContract dbData, WeatherApiDataContract apiData, AppSharedPreferencesData sharedPreferencesData) {
+    public DataRepository(DbContract dbData,
+                          WeatherApiDataContract apiData,
+                          AppSharedPreferencesData sharedPreferencesData
+    ) {
         this.dbData = dbData;
         this.apiData = apiData;
         this.sharedPreferencesData = sharedPreferencesData;
     }
 
     @Override
-    public Observable<CurrentWeatherModel> getCurrentWeather(String locationId) {
+    public Observable<CurrentWeatherAdapterModel> getCurrentWeather(String locationId) {
         if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
-            return apiData.getCurrentWeather(locationId).map(new Function<CurrentWeatherApiModel, CurrentWeatherModel>() {
-                @Override
-                public CurrentWeatherModel apply(@NonNull CurrentWeatherApiModel apiModel) throws Exception {
-                    return AppModelFactory.create(apiModel);
-                }
-            });
+            return apiData.getCurrentWeather(locationId)
+                    .map(new Function<CurrentWeatherApiModel, CurrentWeatherAdapterModel>() {
+                        @Override
+                        public CurrentWeatherAdapterModel apply(@NonNull CurrentWeatherApiModel apiModel) throws Exception {
+                            CurrentWeatherAdapterModel model = AppModelFactory.create(apiModel);
+                            dbData.saveCurrentWeather(model.getAdaptee()).subscribeOn(scheduler.io()).subscribe();
+                            return model;
+                        }
+                    });
         }
-        return dbData.getCurrentWeather(locationId).map(new Function<CurrentWeatherEntity, CurrentWeatherModel>() {
+        return dbData.getCurrentWeather(locationId).map(new Function<CurrentWeatherEntity, CurrentWeatherAdapterModel>() {
             @Override
-            public CurrentWeatherModel apply(@NonNull CurrentWeatherEntity currentWeatherEntity) throws Exception {
+            public CurrentWeatherAdapterModel apply(@NonNull CurrentWeatherEntity currentWeatherEntity) throws Exception {
                 return AppModelFactory.create(currentWeatherEntity);
             }
         });

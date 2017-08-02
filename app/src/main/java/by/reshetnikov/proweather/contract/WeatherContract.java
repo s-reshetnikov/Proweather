@@ -2,7 +2,7 @@ package by.reshetnikov.proweather.contract;
 
 
 public interface WeatherContract {
-    interface View extends BaseView<Presenter> {
+    interface View extends ViewContract<Presenter> {
 
         void showProgress();
 
@@ -20,7 +20,7 @@ public interface WeatherContract {
 
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends PresenterContract {
         void getCitiesList();
 
         void updateLocation();

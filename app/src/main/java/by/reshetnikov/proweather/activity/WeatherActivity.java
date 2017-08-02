@@ -106,12 +106,21 @@ public class WeatherActivity extends AppCompatActivity
             startSettingsActivity();
             return true;
         }
+        if (id == R.id.action_scrolling) {
+            startScrollingActivity();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
     private void startSettingsActivity() {
         Intent settingsActivityIntent = new Intent(this, SettingsActivity.class);
         startActivity(settingsActivityIntent);
+    }
+
+    private void startScrollingActivity() {
+        Intent scrollingActivityIntent = new Intent(this, ScrollingActivity.class);
+        startActivity(scrollingActivityIntent);
     }
 
     private void startLocationManagerActivity() {
@@ -252,5 +261,14 @@ public class WeatherActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    @Override
+    public void onError(String message) {
+
+    }
 }
 

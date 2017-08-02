@@ -5,12 +5,12 @@ import by.reshetnikov.proweather.data.network.model.forecastweather.HourlyForeca
 
 public interface WeatherForecastContract {
 
-    interface View extends BaseView<WeatherForecastContract.Presenter> {
+    interface View extends ViewContract<Presenter> {
 
         void showWeatherForecast();
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends PresenterContract {
         HourlyForecastWeatherApiModel getForecastWeather();
 
         void setView(View view);

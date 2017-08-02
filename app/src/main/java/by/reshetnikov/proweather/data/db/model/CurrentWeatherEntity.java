@@ -1,12 +1,11 @@
 package by.reshetnikov.proweather.data.db.model;
 
-import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.ToMany;
-
-import java.util.List;
+import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.NotNull;
 
 @Entity(active = true)
 public class CurrentWeatherEntity {
@@ -14,34 +13,31 @@ public class CurrentWeatherEntity {
     @Id
     private long currentWeatherId;
     private String locationId;
-    @ToMany(referencedJoinProperty = "weatherId")
-    private List<WeatherEntity> weathers;
+    @ToOne(joinProperty = "currentWeatherId")
+    private WeatherEntity weatherEntity;
     private double temperature;
     private double rain;
     private double snow;
     private double clouds;
     private int pressure;
+    private int humidity;
     private double windSpeed;
-    private int degrees;
+    private int windDirectionDegrees;
     private int dateOfUpdate;
     private int sunrise;
     private int sunset;
-
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 643943492)
     private transient CurrentWeatherEntityDao myDao;
 
-    @Generated(hash = 894542767)
-    public CurrentWeatherEntity(long currentWeatherId, String locationId, double temperature,
-                                double rain, double snow, double clouds, int pressure, double windSpeed, int degrees,
-                                int dateOfUpdate, int sunrise, int sunset) {
+    @Generated(hash = 1019947030)
+    public CurrentWeatherEntity(long currentWeatherId, String locationId,
+            double temperature, double rain, double snow, double clouds,
+            int pressure, int humidity, double windSpeed, int windDirectionDegrees,
+            int dateOfUpdate, int sunrise, int sunset) {
         this.currentWeatherId = currentWeatherId;
         this.locationId = locationId;
         this.temperature = temperature;
@@ -49,8 +45,9 @@ public class CurrentWeatherEntity {
         this.snow = snow;
         this.clouds = clouds;
         this.pressure = pressure;
+        this.humidity = humidity;
         this.windSpeed = windSpeed;
-        this.degrees = degrees;
+        this.windDirectionDegrees = windDirectionDegrees;
         this.dateOfUpdate = dateOfUpdate;
         this.sunrise = sunrise;
         this.sunset = sunset;
@@ -59,6 +56,9 @@ public class CurrentWeatherEntity {
     @Generated(hash = 1937976266)
     public CurrentWeatherEntity() {
     }
+
+    @Generated(hash = 1942152839)
+    private transient Long weatherEntity__resolvedKey;
 
     public long getCurrentWeatherId() {
         return currentWeatherId;
@@ -124,12 +124,12 @@ public class CurrentWeatherEntity {
         this.windSpeed = windSpeed;
     }
 
-    public int getDegrees() {
-        return degrees;
+    public int getWindDirectionDegrees() {
+        return windDirectionDegrees;
     }
 
-    public void setDegrees(int degrees) {
-        this.degrees = degrees;
+    public void setWindDirectionDegrees(int degrees) {
+        this.windDirectionDegrees = degrees;
     }
 
     public int getDateOfUpdate() {
@@ -156,35 +156,46 @@ public class CurrentWeatherEntity {
         this.sunset = sunset;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 1448503762)
-    public List<WeatherEntity> getWeathers() {
-        if (weathers == null) {
+    public int getHumidity() {
+        return this.humidity;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
+    }
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 1799296048)
+    public WeatherEntity getWeatherEntity() {
+        long __key = this.currentWeatherId;
+        if (weatherEntity__resolvedKey == null
+                || !weatherEntity__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
             WeatherEntityDao targetDao = daoSession.getWeatherEntityDao();
-            List<WeatherEntity> weathersNew = targetDao
-                    ._queryCurrentWeatherEntity_Weathers(currentWeatherId);
+            WeatherEntity weatherEntityNew = targetDao.load(__key);
             synchronized (this) {
-                if (weathers == null) {
-                    weathers = weathersNew;
-                }
+                weatherEntity = weatherEntityNew;
+                weatherEntity__resolvedKey = __key;
             }
         }
-        return weathers;
+        return weatherEntity;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
-    @Generated(hash = 883555496)
-    public synchronized void resetWeathers() {
-        weathers = null;
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1489315537)
+    public void setWeatherEntity(@NotNull WeatherEntity weatherEntity) {
+        if (weatherEntity == null) {
+            throw new DaoException(
+                    "To-one property 'currentWeatherId' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.weatherEntity = weatherEntity;
+            currentWeatherId = weatherEntity.getWeatherId();
+            weatherEntity__resolvedKey = currentWeatherId;
+        }
     }
 
     /**

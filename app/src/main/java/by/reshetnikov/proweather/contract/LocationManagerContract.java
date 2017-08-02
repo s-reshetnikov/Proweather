@@ -6,7 +6,7 @@ import by.reshetnikov.proweather.data.model.LocationAdapterModel;
 
 public interface LocationManagerContract {
 
-    interface View extends BaseView<LocationManagerContract.Presenter> {
+    interface View extends ViewContract<Presenter> {
 
         void showSearchLocation();
 
@@ -19,7 +19,7 @@ public interface LocationManagerContract {
         void showError(String errorText);
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends PresenterContract {
 
         View getView();
 

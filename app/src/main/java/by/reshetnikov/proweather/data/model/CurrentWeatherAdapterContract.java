@@ -1,7 +1,9 @@
 package by.reshetnikov.proweather.data.model;
 
 
-interface CurrentWeatherModelContract {
+import by.reshetnikov.proweather.data.db.model.CurrentWeatherEntity;
+
+interface CurrentWeatherAdapterContract {
 
     void applyUnits(UnitsAppModel units);
 
@@ -35,7 +37,9 @@ interface CurrentWeatherModelContract {
 
     double getWindDegrees();
 
-    void setWindDegrees(double windDegrees);
+    void setWindDegrees(int windDegrees);
+
+    CurrentWeatherEntity getAdaptee();
 
     double getRain();
 

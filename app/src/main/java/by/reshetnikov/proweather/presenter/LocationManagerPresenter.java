@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import by.reshetnikov.proweather.contract.LocationManagerContract;
 import by.reshetnikov.proweather.data.DataContract;
 import by.reshetnikov.proweather.data.model.LocationAdapterModel;
-import by.reshetnikov.proweather.utils.scheduler.BaseSchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
@@ -21,12 +21,12 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
     private final static int AUTO_COMPLETE_MAX_RESULTS = 10;
 
     private DataContract dataRepository;
-    private BaseSchedulerProvider scheduler;
+    private SchedulerProvider scheduler;
     private WeakReference<LocationManagerContract.View> viewRef;
     private CompositeDisposable disposables;
 
     @Inject
-    public LocationManagerPresenter(DataContract dataRepository, BaseSchedulerProvider scheduler) {
+    public LocationManagerPresenter(DataContract dataRepository, SchedulerProvider scheduler) {
         this.dataRepository = dataRepository;
         this.scheduler = scheduler;
         disposables = new CompositeDisposable();

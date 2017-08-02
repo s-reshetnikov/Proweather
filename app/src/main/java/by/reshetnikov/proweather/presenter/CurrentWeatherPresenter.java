@@ -3,20 +3,22 @@ package by.reshetnikov.proweather.presenter;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.contract.CurrentWeatherContract;
-import by.reshetnikov.proweather.data.DataRepository;
+import by.reshetnikov.proweather.data.DataContract;
+import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.disposables.CompositeDisposable;
 
 
 public class CurrentWeatherPresenter implements CurrentWeatherContract.Presenter {
 
-    private DataRepository dataRepository;
-
+    private DataContract dataRepository;
+    private SchedulerProvider scheduler;
     private CurrentWeatherContract.View view;
     private CompositeDisposable compositeDisposable;
 
     @Inject
-    public CurrentWeatherPresenter(DataRepository dataRepository) {
+    public CurrentWeatherPresenter(DataContract dataRepository, SchedulerProvider scheduler) {
         this.dataRepository = dataRepository;
+        this.scheduler = scheduler;
         compositeDisposable = new CompositeDisposable();
     }
 
@@ -42,8 +44,6 @@ public class CurrentWeatherPresenter implements CurrentWeatherContract.Presenter
 
 
     public void getWeather() {
-        //CurrentWeatherModel weather = dataRepository.getCurrentWeather();
-        //view.showCurrentWeather(weather);
     }
 
     @Override

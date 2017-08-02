@@ -7,7 +7,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by SacRahl on 7/26/2017.
  */
 
-public class ImmediateSchedulerProvider implements BaseSchedulerProvider {
+public class ImmediateSchedulerProvider implements SchedulerProvider {
     private static ImmediateSchedulerProvider INSTANCE;
 
     private ImmediateSchedulerProvider(){

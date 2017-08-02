@@ -1,5 +1,6 @@
 package by.reshetnikov.proweather.fragment;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -22,8 +24,11 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.adapter.AutoCompleteLocationsAdapter;
 import by.reshetnikov.proweather.adapter.LocationsRecyclerViewAdapter;
@@ -32,6 +37,9 @@ import by.reshetnikov.proweather.contract.LocationManagerContract;
 import by.reshetnikov.proweather.contract.LocationsAdapterContract;
 import by.reshetnikov.proweather.data.model.LocationAdapterModel;
 import by.reshetnikov.proweather.decoration.SimpleDividerItemDecoration;
+import by.reshetnikov.proweather.injector.component.ActivityComponent;
+import by.reshetnikov.proweather.injector.component.DaggerActivityComponent;
+import by.reshetnikov.proweather.injector.module.ActivityModule;
 import by.reshetnikov.proweather.listener.OnAutoCompleteLocationSearchListener;
 import by.reshetnikov.proweather.listener.OnLocationRemovedListener;
 import by.reshetnikov.proweather.listener.OnLocationsOrderChangedListener;
@@ -50,8 +58,9 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     ProgressBar progressBar;
     @BindView(R.id.fab_add_location)
     FloatingActionButton fabAddLocation;
-
-    private LocationManagerContract.Presenter presenter;
+    @Inject
+    LocationManagerContract.Presenter presenter;
+    private ActivityComponent component;
 
     public LocationManagerFragment() {
     }
@@ -61,17 +70,17 @@ public class LocationManagerFragment extends Fragment implements LocationManager
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_location, container, false);
-//        ActivityComponent activityComponent = DaggerActivityComponent.builder()
-//                .activityModule(new ActivityModule(this))
-//                .applicationComponent(((ProWeatherApp) getActivity().getApplication()))
-//                .build()
-//                .inject(this);
+        component.inject(this);
         presenter.setView(this);
         ButterKnife.bind(this, view);
         setupAutoCompleteView();
         setupLocationsRecyclerView();
         setupAddLocationButton();
         return view;
+    }
+
+    private ActivityComponent getActivityComponent() {
+        return null;
     }
 
     private void setupAddLocationButton() {
@@ -81,6 +90,18 @@ public class LocationManagerFragment extends Fragment implements LocationManager
                 presenter.onFabClicked(tvAutoCompleteLocation.getVisibility() == TextView.VISIBLE);
             }
         });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d(TAG, "onAttach() called");
+        if (context instanceof AppCompatActivity) {
+            component = DaggerActivityComponent.builder()
+                    .activityModule(new ActivityModule((AppCompatActivity) context))
+                    .applicationComponent(((ProWeatherApp) getActivity().getApplication()).getComponent())
+                    .build();
+        }
     }
 
     @Override
@@ -196,5 +217,15 @@ public class LocationManagerFragment extends Fragment implements LocationManager
                 return false;
             }
         });
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    @Override
+    public void onError(String message) {
+
     }
 }
