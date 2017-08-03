@@ -12,10 +12,10 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
-import by.reshetnikov.proweather.contract.LocationManagerContract;
+import by.reshetnikov.proweather.ui.location.LocationManagerContract;
 import by.reshetnikov.proweather.data.DataContract;
 import by.reshetnikov.proweather.data.model.LocationAdapterModel;
-import by.reshetnikov.proweather.presenter.LocationManagerPresenter;
+import by.reshetnikov.proweather.ui.location.LocationManagerPresenter;
 import by.reshetnikov.proweather.utils.scheduler.ImmediateSchedulerProvider;
 import io.reactivex.Observable;
 import io.reactivex.Observer;

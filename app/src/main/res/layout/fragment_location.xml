@@ -8,7 +8,7 @@
     tools:context="by.reshetnikov.proweather.fragment.LocationManagerFragment"
     tools:showIn="@layout/activity_location">
 
-    <by.reshetnikov.proweather.view.DelayAutoCompleteTextView
+    <by.reshetnikov.proweather.customview.DelayAutoCompleteTextView
         android:id="@+id/ac_location_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

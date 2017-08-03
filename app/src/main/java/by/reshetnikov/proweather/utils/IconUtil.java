@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.injector.ApplicationContext;
+import by.reshetnikov.proweather.di.ApplicationContext;
 
 public class IconUtil {
     private Context context;

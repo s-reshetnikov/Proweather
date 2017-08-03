@@ -3,17 +3,17 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="by.reshetnikov.proweather.activity.SettingsActivity$LocationPreferenceFragment"
+        android:fragment="by.reshetnikov.proweather.ui.settings.SettingsActivity$LocationPreferenceFragment"
         android:icon="@drawable/ic_location_on_black_24dp"
         android:title="@string/pref_header_location" />
 
     <header
-        android:fragment="by.reshetnikov.proweather.activity.SettingsActivity$UnitsPreferenceFragment"
+        android:fragment="by.reshetnikov.proweather.ui.settings.SettingsActivity$UnitsPreferenceFragment"
         android:icon="@drawable/ic_units_24dp"
         android:title="@string/pref_header_units" />
 
     <header
-        android:fragment="by.reshetnikov.proweather.activity.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="by.reshetnikov.proweather.ui.settings.SettingsActivity$NotificationPreferenceFragment"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/pref_header_notifications" />
 

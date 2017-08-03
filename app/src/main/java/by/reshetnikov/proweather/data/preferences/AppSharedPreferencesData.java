@@ -12,7 +12,7 @@ import by.reshetnikov.proweather.data.model.UnitsAppModel;
 import by.reshetnikov.proweather.data.preferences.units.DistanceUnits;
 import by.reshetnikov.proweather.data.preferences.units.TemperatureUnit;
 import by.reshetnikov.proweather.data.preferences.units.WindSpeedUnit;
-import by.reshetnikov.proweather.injector.ApplicationContext;
+import by.reshetnikov.proweather.di.ApplicationContext;
 
 
 public class AppSharedPreferencesData implements PreferencesContract {

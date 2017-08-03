@@ -8,9 +8,9 @@ import android.util.Log;
 
 import java.util.concurrent.Callable;
 
-import by.reshetnikov.proweather.injector.component.ApplicationComponent;
-import by.reshetnikov.proweather.injector.component.DaggerApplicationComponent;
-import by.reshetnikov.proweather.injector.module.ApplicationModule;
+import by.reshetnikov.proweather.di.component.ApplicationComponent;
+import by.reshetnikov.proweather.di.component.DaggerApplicationComponent;
+import by.reshetnikov.proweather.di.module.ApplicationModule;
 import io.reactivex.Observable;
 
 

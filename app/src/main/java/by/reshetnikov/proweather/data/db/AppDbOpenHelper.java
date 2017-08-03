@@ -8,8 +8,8 @@ import org.greenrobot.greendao.database.Database;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.data.db.model.DaoMaster;
-import by.reshetnikov.proweather.injector.ApplicationContext;
-import by.reshetnikov.proweather.injector.DatabaseInfo;
+import by.reshetnikov.proweather.di.ApplicationContext;
+import by.reshetnikov.proweather.di.DatabaseInfo;
 
 
 public class AppDbOpenHelper extends DaoMaster.OpenHelper {
