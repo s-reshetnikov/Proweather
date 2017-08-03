@@ -26,6 +26,7 @@ import by.reshetnikov.proweather.presenter.CurrentWeatherPresenter;
 
 
 public class CurrentWeatherFragment extends Fragment implements CurrentWeatherContract.View {
+    private static final String ARG_SECTION_NUMBER = "SECTION_NUMBER";
 
     @BindView(R.id.tv_feels_like_temp)
     TextView tvFeelsLikeTemperature;
@@ -50,8 +51,12 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     public CurrentWeatherFragment() {
     }
 
-    public static CurrentWeatherFragment newInstance() {
-        return new CurrentWeatherFragment();
+    public static CurrentWeatherFragment newInstance(int sectionNumber) {
+        CurrentWeatherFragment fragment = new CurrentWeatherFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -91,12 +96,6 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
                     .activityModule(new ActivityModule((AppCompatActivity) context))
                     .applicationComponent(((ProWeatherApp) getActivity().getApplication()).getComponent())
                     .build();
-        }
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
         }
     }
 

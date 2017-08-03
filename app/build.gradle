@@ -80,7 +80,6 @@ dependencies {
     })
 
     //debug only
-    debugCompile 'com.amitshekhar.android:debug-db:1.0.1'
 
     // Support libs
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
@@ -91,7 +90,6 @@ dependencies {
     compile "com.android.support:cardview-v7:${supportLibVersion}"
     compile "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
     compile "com.google.android.gms:play-services-location:${playServicesVerion}"
-
 
     // Reactive Java
     compile "io.reactivex.rxjava2:rxjava:${rxJavaVersion}"
@@ -124,4 +122,6 @@ dependencies {
     testCompile "org.hamcrest:hamcrest-all:${hamcrestVersion}"
     testCompile "org.powermock:powermock-module-junit4:${powerMockitoVersion}"
     testCompile "org.powermock:powermock-api-mockito:${powerMockitoVersion}"
+    compile 'com.android.support:support-v4:25.3.1'
+    debugCompile 'com.amitshekhar.android:debug-db:1.0.1'
 }

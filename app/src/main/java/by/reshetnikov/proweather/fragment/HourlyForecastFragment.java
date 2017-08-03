@@ -8,24 +8,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import javax.inject.Inject;
-
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.contract.WeatherForecastContract;
 import by.reshetnikov.proweather.presenter.WeatherForecastPresenter;
 
 
-public class WeatherForecastFragment extends Fragment implements WeatherForecastContract.View {
+public class HourlyForecastFragment extends Fragment implements WeatherForecastContract.View {
+
+    private static final String ARG_SECTION_NUMBER = "SECTION_NUMBER";
 
     WeatherForecastPresenter presenter;
 
     private OnFragmentInteractionListener mListener;
 
-    public WeatherForecastFragment() {
+    public HourlyForecastFragment() {
     }
 
-    public static WeatherForecastFragment newInstance() {
-        WeatherForecastFragment fragment = new WeatherForecastFragment();
+    public static HourlyForecastFragment newInstance(int sectionNumber) {
+        HourlyForecastFragment fragment = new HourlyForecastFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -50,12 +53,6 @@ public class WeatherForecastFragment extends Fragment implements WeatherForecast
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override

@@ -163,4 +163,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="some_error">Unrecognezed exception occured</string>
+    <string name="title_activity_tabbed">TabbedActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_tabbed_main">TabbedMainActivity</string>
 </resources>

@@ -10,9 +10,12 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +28,7 @@ import android.widget.Toast;
 
 import by.reshetnikov.proweather.BuildConfig;
 import by.reshetnikov.proweather.R;
+import by.reshetnikov.proweather.adapter.ForecastSectionsPagerAdapter;
 import by.reshetnikov.proweather.contract.WeatherContract;
 import by.reshetnikov.proweather.fragment.CurrentWeatherFragment;
 import by.reshetnikov.proweather.presenter.WeatherPresenter;
@@ -35,6 +39,21 @@ import by.reshetnikov.proweather.utils.ToastUtils;
 public class WeatherActivity extends AppCompatActivity
         implements WeatherContract.View, NavigationView.OnNavigationItemSelectedListener,
         CurrentWeatherFragment.OnFragmentInteractionListener {
+
+    /**
+     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * fragments for each of the sections. We use a
+     * {@link FragmentPagerAdapter} derivative, which will keep every
+     * loaded fragment in memory. If this becomes too memory intensive, it
+     * may be best to switch to a
+     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     */
+    private ForecastSectionsPagerAdapter forecastSectionsPagerAdapter;
+
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    private ViewPager mViewPager;
 
     private final String TAG = WeatherActivity.class.getSimpleName();
     private final int PERMISSION_REQUEST_CODE = 1409;
@@ -48,12 +67,15 @@ public class WeatherActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         Log.d(TAG, "stop start");
         setContentView(R.layout.activity_weather);
-//
-//
-//        presenter = new WeatherPresenter();
-//        presenter.setView(this);
-//        presenter.updateLocation();
 
+        forecastSectionsPagerAdapter = new ForecastSectionsPagerAdapter(getSupportFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(forecastSectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
         Toolbar toolbar = (Toolbar) findViewById(R.id.location_toolbar);
         setSupportActionBar(toolbar);
 
@@ -66,16 +88,16 @@ public class WeatherActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (findViewById(R.id.weather_fragment_placeholder) != null) {
-
-            if (savedInstanceState != null) {
-                return;
-            }
-
-            FragmentUtils.replaceFragment(getSupportFragmentManager(),
-                    R.id.weather_fragment_placeholder,
-                    CurrentWeatherFragment.newInstance());
-        }
+//        if (findViewById(R.id.weather_fragment_placeholder) != null) {
+//
+//            if (savedInstanceState != null) {
+//                return;
+//            }
+//
+//            FragmentUtils.replaceFragment(getSupportFragmentManager(),
+//                    R.id.weather_fragment_placeholder,
+//                    CurrentWeatherFragment.newInstance());
+//        }
         Log.d(TAG, "stop end");
     }
 
@@ -106,10 +128,6 @@ public class WeatherActivity extends AppCompatActivity
             startSettingsActivity();
             return true;
         }
-        if (id == R.id.action_scrolling) {
-            startScrollingActivity();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -118,10 +136,6 @@ public class WeatherActivity extends AppCompatActivity
         startActivity(settingsActivityIntent);
     }
 
-    private void startScrollingActivity() {
-        Intent scrollingActivityIntent = new Intent(this, ScrollingActivity.class);
-        startActivity(scrollingActivityIntent);
-    }
 
     private void startLocationManagerActivity() {
         Intent locationManagerActivityIntent = new Intent(this, LocationActivity.class);
