@@ -1,8 +1,8 @@
 package by.reshetnikov.proweather.ui.weather;
 
 
-import by.reshetnikov.proweather.base.PresenterContract;
-import by.reshetnikov.proweather.base.ViewContract;
+import by.reshetnikov.proweather.ui.base.PresenterContract;
+import by.reshetnikov.proweather.ui.base.ViewContract;
 
 public interface WeatherContract {
     interface View extends ViewContract<Presenter> {

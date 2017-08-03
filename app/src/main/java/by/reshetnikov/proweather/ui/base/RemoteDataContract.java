@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.base;
+package by.reshetnikov.proweather.ui.base;
 
 import by.reshetnikov.proweather.data.network.model.currentweather.CurrentWeatherApiModel;
 import by.reshetnikov.proweather.data.network.model.forecastweather.DailyForecastWeatherApiModel;

@@ -2,8 +2,8 @@ package by.reshetnikov.proweather.ui.location;
 
 import java.util.List;
 
-import by.reshetnikov.proweather.base.PresenterContract;
-import by.reshetnikov.proweather.base.ViewContract;
+import by.reshetnikov.proweather.ui.base.PresenterContract;
+import by.reshetnikov.proweather.ui.base.ViewContract;
 import by.reshetnikov.proweather.data.model.LocationAdapterModel;
 
 public interface LocationManagerContract {

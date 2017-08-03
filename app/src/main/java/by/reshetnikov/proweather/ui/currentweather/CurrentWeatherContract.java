@@ -1,9 +1,9 @@
 package by.reshetnikov.proweather.ui.currentweather;
 
 
-import by.reshetnikov.proweather.base.PresenterContract;
-import by.reshetnikov.proweather.base.ViewContract;
 import by.reshetnikov.proweather.data.model.CurrentWeatherAdapterModel;
+import by.reshetnikov.proweather.ui.base.PresenterContract;
+import by.reshetnikov.proweather.ui.base.ViewContract;
 
 
 public interface CurrentWeatherContract {

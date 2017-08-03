@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.base;
+package by.reshetnikov.proweather.ui.base;
 
 
 public interface PresenterContract {

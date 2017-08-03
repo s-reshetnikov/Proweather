@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.base;
+package by.reshetnikov.proweather.ui.base;
 
 /**
  * Created by SacRahl on 5/29/2017.
