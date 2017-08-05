@@ -26,12 +26,8 @@ import by.reshetnikov.proweather.di.module.ActivityModule;
 public class CurrentWeatherFragment extends Fragment implements CurrentWeatherContract.View {
     private static final String ARG_SECTION_NUMBER = "SECTION_NUMBER";
 
-    @BindView(R.id.tv_feels_like_temp)
-    TextView tvFeelsLikeTemperature;
     @BindView(R.id.tv_humidity)
     TextView tvHumidity;
-    @BindView(R.id.tv_max_min_temp)
-    TextView tvMaxMinTemperature;
     @BindView(R.id.tv_precipitation)
     TextView tvPrecipitation;
     @BindView(R.id.tv_temp)

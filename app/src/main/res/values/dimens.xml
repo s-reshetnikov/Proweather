@@ -9,4 +9,9 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="zero_margin">0dp</dimen>
+    <dimen name="min_margin">8dp</dimen>
+    <dimen name="average_margin">16dp</dimen>
+    <dimen name="icon_value_text_size">24sp</dimen>
+
 </resources>

@@ -5,154 +5,134 @@
     android:layout_height="match_parent"
     tools:context=".ui.currentweather.CurrentWeatherFragment">
 
-    <ImageView
-        android:id="@+id/img_weather"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintLeft_toRightOf="@+id/tv_temp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_temp"
-        app:srcCompat="@mipmap/ic_launcher"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
-
     <TextView
-        android:id="@+id/tv_max_min_temp"
+        android:id="@+id/tv_week_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="n/a"
+        android:layout_marginLeft="@dimen/average_margin"
+        android:layout_marginTop="@dimen/min_margin"
+        android:gravity="center"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="30sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_weather"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:text="250\u2103 / 190\u2103" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Monday" />
+
+    <ImageView
+        android:id="@+id/img_weather"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginLeft="@dimen/average_margin"
+        android:layout_marginStart="@dimen/average_margin"
+        android:layout_marginTop="@dimen/min_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_week_day"
+        app:srcCompat="@drawable/ic_cloudy_day_24dp" />
 
     <TextView
         android:id="@+id/tv_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:text="n/a"
-        android:textSize="65sp"
-        android:textStyle="normal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="@dimen/average_margin"
+        android:layout_marginStart="@dimen/average_margin"
+        android:textSize="64sp"
+        app:layout_constraintLeft_toRightOf="@+id/img_weather"
+        app:layout_constraintTop_toTopOf="@+id/img_weather"
         tools:text="240 \u2109" />
 
-    <TextView
-        android:id="@+id/tv_feels_like_temp_descr"
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:gravity="end"
-        android:text="Feels Like"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="@+id/img_weather"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_temp" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.68" />
 
-    <TextView
-        android:id="@+id/tv_feels_like_temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:text="n/a"
-        android:textSize="30sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tv_feels_like_temp_descr"
-        app:layout_constraintLeft_toRightOf="@+id/tv_feels_like_temp_descr"
-        tools:text="230\u2103" />
-
-    <TextView
-        android:id="@+id/tv_wind_descr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginLeft="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:gravity="end"
-        android:text="Wind"
-        android:textSize="30sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_max_min_temp" />
-
-    <TextView
-        android:id="@+id/tv_wind"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginStart="24dp"
-        android:text="n/a"
-        android:textSize="30sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tv_wind_descr"
-        app:layout_constraintLeft_toRightOf="@+id/tv_wind_descr"
-        tools:text="SSW 7m/s" />
-
-    <TextView
-        android:id="@+id/tv_humidity_descr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginBottom="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:gravity="end"
-        android:text="Humidity"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_precipitation_descr"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_wind_descr"
-        app:layout_constraintVertical_bias="0.526" />
-
-    <TextView
-        android:id="@+id/tv_humidity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginStart="24dp"
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/coloredLinearGroup"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/zero_margin"
+        android:layout_marginLeft="@dimen/zero_margin"
+        android:layout_marginRight="@dimen/zero_margin"
+        android:background="@color/colorPrimaryDark"
         android:gravity="center"
-        android:text="n/a"
-        android:textSize="30sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tv_humidity_descr"
-        app:layout_constraintLeft_toRightOf="@+id/tv_humidity_descr"
-        tools:text="0%" />
-
-    <TextView
-        android:id="@+id/tv_precipitation_descr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginLeft="24dp"
-        android:layout_marginStart="24dp"
-        android:gravity="end"
-        android:text="Precipitation"
-        android:textSize="30sp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        tools:layout_editor_absoluteY="396dp" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline">
 
-    <TextView
-        android:id="@+id/tv_precipitation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginStart="24dp"
-        android:gravity="center"
-        android:text="n/a"
-        android:textSize="30sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tv_precipitation_descr"
-        app:layout_constraintLeft_toRightOf="@+id/tv_precipitation_descr"
-        tools:text="0 mm" />
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/stateRainy"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_margin="@dimen/min_margin"
+                android:layout_weight="0.33"
+                app:srcCompat="@drawable/ic_state_rainy_24dp"
+                android:contentDescription="@string/weather_icon_description" />
+
+
+            <ImageView
+                android:id="@+id/statePrecipitation"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_margin="@dimen/min_margin"
+                android:layout_weight="0.33"
+                app:srcCompat="@drawable/ic_state_water_drop_24dp" />
+
+            <ImageView
+                android:id="@+id/stateWind"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_margin="@dimen/min_margin"
+                android:layout_weight="0.33"
+                app:srcCompat="@drawable/ic_state_wind_24dp" />
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_humidity"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/min_margin"
+                android:layout_weight="0.33"
+                android:gravity="center"
+                android:textColor="@color/colorIconWhite"
+                android:textSize="@dimen/icon_value_text_size"
+                tools:text="100%" />
+
+            <TextView
+                android:id="@+id/tv_precipitation"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:layout_weight="0.34"
+                android:gravity="center"
+                android:textColor="@color/colorIconWhite"
+                android:textSize="@dimen/icon_value_text_size"
+                tools:text="100%" />
+
+            <TextView
+                android:id="@+id/tv_wind"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/min_margin"
+                android:layout_weight="0.33"
+                android:gravity="center"
+                android:textColor="@color/colorIconWhite"
+                android:textSize="@dimen/icon_value_text_size"
+                tools:text="37 m/s" />
+        </android.support.v7.widget.LinearLayoutCompat>
+
+
+    </android.support.v7.widget.LinearLayoutCompat>
 
 </android.support.constraint.ConstraintLayout>
