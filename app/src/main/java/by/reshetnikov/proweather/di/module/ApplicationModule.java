@@ -20,11 +20,12 @@ import by.reshetnikov.proweather.data.db.model.DaoMaster;
 import by.reshetnikov.proweather.data.db.model.DaoSession;
 import by.reshetnikov.proweather.data.network.AppWeatherApiData;
 import by.reshetnikov.proweather.data.network.WeatherApiDataContract;
-import by.reshetnikov.proweather.data.network.WeatherApiService;
+import by.reshetnikov.proweather.data.network.openweathermap.OpenWeatherMapApiService;
 import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
 import by.reshetnikov.proweather.di.ApplicationContext;
 import by.reshetnikov.proweather.di.DatabaseInfo;
 import by.reshetnikov.proweather.utils.AppConstants;
+import by.reshetnikov.proweather.utils.WeatherStateIconUtil;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
@@ -91,8 +92,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    WeatherApiService provideApiService(Retrofit retrofit) {
-        return retrofit.create(WeatherApiService.class);
+    OpenWeatherMapApiService provideApiService(Retrofit retrofit) {
+        return retrofit.create(OpenWeatherMapApiService.class);
     }
 
     // db
@@ -131,7 +132,14 @@ public class ApplicationModule {
     // repository
     @Singleton
     @Provides
-    DataContract proDataRepository(DataRepository repository) {
+    DataContract provideDataRepository(DataRepository repository) {
         return repository;
+    }
+
+    // utils
+    @Singleton
+    @Provides
+    WeatherStateIconUtil provideWeatherStateIconUtil(@ApplicationContext Context context) {
+        return new WeatherStateIconUtil(context);
     }
 }

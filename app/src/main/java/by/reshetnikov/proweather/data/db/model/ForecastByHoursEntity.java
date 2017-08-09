@@ -13,11 +13,9 @@ public class ForecastByHoursEntity {
     private int dateTime;
     @ToMany(referencedJoinProperty = "weatherId")
     private List<WeatherEntity> weather;
-    private int cloudiness;
     private double snow;
     private double rain;
     private double temperature;
-    private int pressure;
     private int humidity;
     private double windSpeed;
     private double windDegrees;
@@ -36,14 +34,6 @@ public class ForecastByHoursEntity {
 
     public void setDateTime(int dateTime) {
         this.dateTime = dateTime;
-    }
-
-    public int getCloudiness() {
-        return cloudiness;
-    }
-
-    public void setCloudiness(int cloudiness) {
-        this.cloudiness = cloudiness;
     }
 
     public double getSnow() {
@@ -68,14 +58,6 @@ public class ForecastByHoursEntity {
 
     public void setTemperature(double temperature) {
         this.temperature = temperature;
-    }
-
-    public int getPressure() {
-        return pressure;
-    }
-
-    public void setPressure(int pressure) {
-        this.pressure = pressure;
     }
 
     public int getHumidity() {

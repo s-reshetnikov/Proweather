@@ -28,15 +28,15 @@ import android.widget.Toast;
 
 import by.reshetnikov.proweather.BuildConfig;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.ui.settings.SettingsActivity;
-import by.reshetnikov.proweather.ui.currentweather.CurrentWeatherFragment;
+import by.reshetnikov.proweather.ui.currentforecast.CurrentForecastFragment;
 import by.reshetnikov.proweather.ui.location.LocationActivity;
+import by.reshetnikov.proweather.ui.settings.SettingsActivity;
 import by.reshetnikov.proweather.utils.ToastUtils;
 
 
 public class WeatherActivity extends AppCompatActivity
         implements WeatherContract.View, NavigationView.OnNavigationItemSelectedListener,
-        CurrentWeatherFragment.OnFragmentInteractionListener {
+        CurrentForecastFragment.OnFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -94,7 +94,7 @@ public class WeatherActivity extends AppCompatActivity
 //
 //            FragmentUtils.replaceFragment(getSupportFragmentManager(),
 //                    R.id.weather_fragment_placeholder,
-//                    CurrentWeatherFragment.newInstance());
+//                    CurrentForecastFragment.newInstance());
 //        }
         Log.d(TAG, "stop end");
     }
@@ -185,9 +185,7 @@ public class WeatherActivity extends AppCompatActivity
     @Override
     public boolean hasLocationPermissions() {
         int permissionStatus = ContextCompat.checkSelfPermission(this, locationPermission);
-        if (permissionStatus == PackageManager.PERMISSION_GRANTED)
-            return true;
-        return false;
+        return permissionStatus == PackageManager.PERMISSION_GRANTED;
     }
 
 

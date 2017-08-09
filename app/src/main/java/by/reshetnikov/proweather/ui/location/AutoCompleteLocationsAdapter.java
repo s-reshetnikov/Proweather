@@ -17,7 +17,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.data.model.LocationAdapterModel;
+import by.reshetnikov.proweather.data.model.location.LocationAdapter;
+import by.reshetnikov.proweather.data.model.location.LocationContract;
 import by.reshetnikov.proweather.ui.location.listener.OnAutoCompleteLocationSearchListener;
 
 public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filterable {
@@ -29,7 +30,7 @@ public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filtera
     @BindView(R.id.tv_dropdown_country_code)
     TextView tvCountyCode;
     private WeakReference<Context> contextRef;
-    private List<LocationAdapterModel> results = new ArrayList<>();
+    private List<LocationContract> results = new ArrayList<>();
     private OnAutoCompleteLocationSearchListener listener;
 
     public AutoCompleteLocationsAdapter(Context context) {
@@ -40,7 +41,7 @@ public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filtera
         this.listener = listener;
     }
 
-    public void updateSearchResults(List<LocationAdapterModel> locations) {
+    public void updateSearchResults(List<LocationContract> locations) {
         results = locations;
     }
 
@@ -66,7 +67,7 @@ public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filtera
             convertView = inflater.inflate(R.layout.item_autocomplete_location, parent, false);
         }
         ButterKnife.bind(this, convertView);
-        LocationAdapterModel location = (LocationAdapterModel) getItem(position);
+        LocationAdapter location = (LocationAdapter) getItem(position);
         tvLocation.setText(location.getLocationName());
         tvCountyCode.setText(location.getCountryCode());
         return convertView;
@@ -92,7 +93,7 @@ public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filtera
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (results != null && results.count > 0 && constraint != null) {
                     Log.d(TAG, "performFiltering() in getFilter(): " + constraint.toString());
-                    AutoCompleteLocationsAdapter.this.results = (List<LocationAdapterModel>) results.values;
+                    AutoCompleteLocationsAdapter.this.results = (List<LocationContract>) results.values;
                     notifyDataSetChanged();
                 } else {
                     notifyDataSetInvalidated();

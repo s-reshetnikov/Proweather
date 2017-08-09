@@ -3,7 +3,7 @@ package by.reshetnikov.proweather.ui.hourlyforecast;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.data.DataRepository;
-import by.reshetnikov.proweather.data.network.model.forecastweather.HourlyForecastWeatherApiModel;
+import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.HourlyForecastWeatherApiModel;
 
 
 public class HourlyForecastPresenter implements HourlyForecastContract.Presenter {

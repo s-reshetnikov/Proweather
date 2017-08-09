@@ -167,4 +167,11 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_tabbed_main">TabbedMainActivity</string>
     <string name="weather_icon_description">weather icon</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursaday">Thursaday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
 </resources>

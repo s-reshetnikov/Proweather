@@ -16,8 +16,12 @@
 
     //icons color
     <color name="colorCloud">#0288D1</color>
+    <color name="colorNightCloud">#6c809c</color>
+    <color name="colorRain">#67daff</color>
+    <color name="colorNightRain">#0288D1</color>
     <color name="colorSun">#FFED4D</color>
-    <color name="colorMoon">#FEFCD7</color>
+    <color name="colorMoon">#ffff72</color>
+    <color name="colorStar">#FFEB3B</color>
     <color name="colorWind">#CBCFD4</color>
     <color name="colorIconWhite">#F2F4F7</color>
 

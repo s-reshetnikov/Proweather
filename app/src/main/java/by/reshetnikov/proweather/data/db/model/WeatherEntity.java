@@ -17,34 +17,31 @@ public class WeatherEntity {
     private Long weatherId;
     @Index
     @NotNull
-    private String locationId;
+    private int locationId;
     private double temperature;
     private int humidity;
-    private int pressure;
+
     @Unique
     private Date date;
     private int weatherConditionId;
     private String weatherDescription;
-    private String iconCode;
     private double windSpeed;
     private double windDegrees;
     private double rain;
     private double snow;
 
-    @Generated(hash = 1751359941)
-    public WeatherEntity(Long weatherId, @NotNull String locationId,
-                         double temperature, int humidity, int pressure, Date date,
-                         int weatherConditionId, String weatherDescription, String iconCode,
-                         double windSpeed, double windDegrees, double rain, double snow) {
+    @Generated(hash = 1191374903)
+    public WeatherEntity(Long weatherId, int locationId, double temperature,
+                         int humidity, Date date, int weatherConditionId,
+                         String weatherDescription, double windSpeed, double windDegrees,
+                         double rain, double snow) {
         this.weatherId = weatherId;
         this.locationId = locationId;
         this.temperature = temperature;
         this.humidity = humidity;
-        this.pressure = pressure;
         this.date = date;
         this.weatherConditionId = weatherConditionId;
         this.weatherDescription = weatherDescription;
-        this.iconCode = iconCode;
         this.windSpeed = windSpeed;
         this.windDegrees = windDegrees;
         this.rain = rain;
@@ -59,19 +56,19 @@ public class WeatherEntity {
         return this.weatherId;
     }
 
-    public void setWeatherId(Long weatherId) {
-        this.weatherId = weatherId;
-    }
-
     public void setWeatherId(long Id) {
         this.weatherId = Id;
     }
 
-    public String getLocationId() {
+    public void setWeatherId(Long weatherId) {
+        this.weatherId = weatherId;
+    }
+
+    public int getLocationId() {
         return this.locationId;
     }
 
-    public void setLocationId(String locationId) {
+    public void setLocationId(int locationId) {
         this.locationId = locationId;
     }
 
@@ -89,14 +86,6 @@ public class WeatherEntity {
 
     public void setHumidity(int humidity) {
         this.humidity = humidity;
-    }
-
-    public int getPressure() {
-        return this.pressure;
-    }
-
-    public void setPressure(int pressure) {
-        this.pressure = pressure;
     }
 
     public Date getDate() {
@@ -121,14 +110,6 @@ public class WeatherEntity {
 
     public void setWeatherDescription(String weatherDescription) {
         this.weatherDescription = weatherDescription;
-    }
-
-    public String getIconCode() {
-        return this.iconCode;
-    }
-
-    public void setIconCode(String iconCode) {
-        this.iconCode = iconCode;
     }
 
     public double getWindSpeed() {

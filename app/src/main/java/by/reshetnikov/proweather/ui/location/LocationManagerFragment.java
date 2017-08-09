@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.fragment;
+package by.reshetnikov.proweather.ui.location;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -30,21 +30,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.ui.location.AutoCompleteLocationsAdapter;
-import by.reshetnikov.proweather.ui.location.adapter.LocationsRecyclerViewAdapter;
-import by.reshetnikov.proweather.ui.location.callback.LocationItemTouchHelperCallback;
-import by.reshetnikov.proweather.ui.location.LocationManagerContract;
-import by.reshetnikov.proweather.ui.location.adapter.LocationsAdapterContract;
-import by.reshetnikov.proweather.data.model.LocationAdapterModel;
+import by.reshetnikov.proweather.customview.DelayAutoCompleteTextView;
+import by.reshetnikov.proweather.data.model.location.LocationAdapter;
+import by.reshetnikov.proweather.data.model.location.LocationContract;
 import by.reshetnikov.proweather.decoration.SimpleDividerItemDecoration;
 import by.reshetnikov.proweather.di.component.ActivityComponent;
 import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
 import by.reshetnikov.proweather.di.module.ActivityModule;
+import by.reshetnikov.proweather.ui.location.adapter.LocationsRecyclerViewAdapter;
+import by.reshetnikov.proweather.ui.location.adapter.LocationsViewAdapterContract;
+import by.reshetnikov.proweather.ui.location.callback.LocationItemTouchHelperCallback;
 import by.reshetnikov.proweather.ui.location.listener.OnAutoCompleteLocationSearchListener;
 import by.reshetnikov.proweather.ui.location.listener.OnLocationRemovedListener;
 import by.reshetnikov.proweather.ui.location.listener.OnLocationsOrderChangedListener;
 import by.reshetnikov.proweather.utils.ToastUtils;
-import by.reshetnikov.proweather.customview.DelayAutoCompleteTextView;
 
 public class LocationManagerFragment extends Fragment implements LocationManagerContract.View {
 
@@ -130,13 +129,13 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     }
 
     @Override
-    public void refreshSavedLocations(List<LocationAdapterModel> savedLocations) {
+    public void refreshSavedLocations(List<LocationContract> savedLocations) {
         LocationsRecyclerViewAdapter rvAdapter = (LocationsRecyclerViewAdapter) rvLocations.getAdapter();
         rvAdapter.updateView(savedLocations);
     }
 
     @Override
-    public void refreshSearchedLocations(List<LocationAdapterModel> locations) {
+    public void refreshSearchedLocations(List<LocationContract> locations) {
         AutoCompleteLocationsAdapter adapter = (AutoCompleteLocationsAdapter) tvAutoCompleteLocation.getAdapter();
         adapter.updateSearchResults(locations);
     }
@@ -159,7 +158,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
         });
         locationsAdapter.setOnLocationRemovedListener(new OnLocationRemovedListener() {
             @Override
-            public void onRemove(LocationAdapterModel location) {
+            public void onRemove(LocationContract location) {
                 presenter.onLocationItemRemoved(location);
             }
         });
@@ -177,7 +176,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     }
 
     private void setupItemTouchHelper() {
-        final LocationsAdapterContract adapter = (LocationsAdapterContract) rvLocations.getAdapter();
+        final LocationsViewAdapterContract adapter = (LocationsViewAdapterContract) rvLocations.getAdapter();
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new LocationItemTouchHelperCallback(adapter));
         itemTouchHelper.attachToRecyclerView(rvLocations);
     }
@@ -203,7 +202,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
         tvAutoCompleteLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                LocationAdapterModel location = (LocationAdapterModel) adapterView.getItemAtPosition(position);
+                LocationAdapter location = (LocationAdapter) adapterView.getItemAtPosition(position);
                 Toast.makeText(view.getContext(), location.getLocationName(), Toast.LENGTH_LONG).show();
                 tvAutoCompleteLocation.setText("");
                 hideSearchLocation();

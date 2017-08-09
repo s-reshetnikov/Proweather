@@ -1,9 +1,9 @@
 package by.reshetnikov.proweather.ui.base;
 
-import by.reshetnikov.proweather.data.network.model.currentweather.CurrentWeatherApiModel;
-import by.reshetnikov.proweather.data.network.model.forecastweather.DailyForecastWeatherApiModel;
-import by.reshetnikov.proweather.data.network.model.forecastweather.HourlyForecastWeatherApiModel;
-import by.reshetnikov.proweather.data.network.model.location.LocationForecastApiModel;
+import by.reshetnikov.proweather.data.network.openweathermap.model.currentweather.CurrentWeatherApiModel;
+import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.DailyForecastWeatherApiModel;
+import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.HourlyForecastWeatherApiModel;
+import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationForecastApiModel;
 
 
 public interface RemoteDataContract {

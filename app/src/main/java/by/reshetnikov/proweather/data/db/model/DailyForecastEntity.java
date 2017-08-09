@@ -15,12 +15,10 @@ public class DailyForecastEntity {
     private long dailyForecastId;
     @ToMany(referencedJoinProperty = "dayForecastId")
     private List<DayForecastEntity> dayForecasts;
-    private String locationId;
-    private int pressure;
+    private int locationId;
     private double humidity;
     private double rain;
     private double snow;
-    private double clouds;
     /**
      * Used to resolve relations
      */
@@ -30,17 +28,14 @@ public class DailyForecastEntity {
     @Generated(hash = 1638140434)
     private transient DailyForecastEntityDao myDao;
 
-    @Generated(hash = 1815357949)
-    public DailyForecastEntity(long dailyForecastId, String locationId,
-                               int pressure, double humidity, double rain, double snow,
-                               double clouds) {
+    @Generated(hash = 754510621)
+    public DailyForecastEntity(long dailyForecastId, int locationId,
+                               double humidity, double rain, double snow) {
         this.dailyForecastId = dailyForecastId;
         this.locationId = locationId;
-        this.pressure = pressure;
         this.humidity = humidity;
         this.rain = rain;
         this.snow = snow;
-        this.clouds = clouds;
     }
 
     @Generated(hash = 994273881)
@@ -53,22 +48,6 @@ public class DailyForecastEntity {
 
     public void setDailyForecastId(long dailyForecastId) {
         this.dailyForecastId = dailyForecastId;
-    }
-
-    public String getLocation() {
-        return locationId;
-    }
-
-    public void setLocation(String locationId) {
-        this.locationId = locationId;
-    }
-
-    public int getPressure() {
-        return pressure;
-    }
-
-    public void setPressure(int pressure) {
-        this.pressure = pressure;
     }
 
     public double getHumidity() {
@@ -95,19 +74,11 @@ public class DailyForecastEntity {
         this.snow = snow;
     }
 
-    public double getClouds() {
-        return clouds;
-    }
-
-    public void setClouds(double clouds) {
-        this.clouds = clouds;
-    }
-
-    public String getLocationId() {
+    public int getLocationId() {
         return this.locationId;
     }
 
-    public void setLocationId(String locationId) {
+    public void setLocationId(int locationId) {
         this.locationId = locationId;
     }
 

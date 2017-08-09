@@ -1,26 +1,23 @@
 package by.reshetnikov.proweather.data.model;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import by.reshetnikov.proweather.data.db.model.CurrentWeatherEntity;
+import by.reshetnikov.proweather.data.db.model.CurrentForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import by.reshetnikov.proweather.data.db.model.WeatherEntity;
-import by.reshetnikov.proweather.data.network.model.Weather;
-import by.reshetnikov.proweather.data.network.model.currentweather.CurrentWeatherApiModel;
-import by.reshetnikov.proweather.data.network.model.location.LocationWeatherApiModel;
+import by.reshetnikov.proweather.data.model.location.LocationAdapter;
+import by.reshetnikov.proweather.data.model.weather.current.CurrentForecastAdapter;
+import by.reshetnikov.proweather.data.network.openweathermap.model.currentweather.CurrentWeatherApiModel;
+import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationWeatherApiModel;
 
 public class AppModelFactory {
 
 
-    public static LocationAdapterModel create(LocationEntity entity) {
-        return new LocationAdapterModel(entity);
+    public static LocationAdapter create(LocationEntity entity) {
+        return new LocationAdapter(entity);
     }
 
-    public static LocationAdapterModel create(LocationWeatherApiModel apiModel) {
+    public static LocationAdapter create(LocationWeatherApiModel apiModel) {
         LocationEntity locationEntity = createLocationEntity(apiModel);
-        return new LocationAdapterModel(locationEntity);
+        return new LocationAdapter(locationEntity);
     }
 
     private static LocationEntity createLocationEntity(LocationWeatherApiModel apiModel) {
@@ -35,21 +32,17 @@ public class AppModelFactory {
         return locationEntity;
     }
 
-    public static CurrentWeatherAdapterModel create(CurrentWeatherApiModel apiModel) {
-        CurrentWeatherEntity currentWeather = new CurrentWeatherEntity();
+    public static CurrentForecastAdapter create(CurrentWeatherApiModel apiModel) {
+        CurrentForecastEntity currentWeather = new CurrentForecastEntity();
         currentWeather.setLocationId(String.valueOf(apiModel.getId()));
         currentWeather.setTemperature(apiModel.getMain().getTemperature());
         currentWeather.setRain(apiModel.getRain().getRainVolume());
         currentWeather.setSnow(apiModel.getSnow().getSnowVolume());
-        currentWeather.setClouds(apiModel.getClouds().getCloudiness());
-        currentWeather.setPressure(apiModel.getMain().getPressure());
         currentWeather.setWindSpeed(apiModel.getWind().getSpeed());
         currentWeather.setWindDirectionDegrees((int) Math.round(apiModel.getWind().getDegrees()));
         currentWeather.setDateOfUpdate(apiModel.getDt());
         currentWeather.setHumidity(apiModel.getMain().getHumidity());
-        currentWeather.setSunrise(apiModel.getSys().getSunrise());
-        currentWeather.setSunset(apiModel.getSys().getSunset());
-        return new CurrentWeatherAdapterModel(currentWeather);
+        return new CurrentForecastAdapter(currentWeather);
     }
 
 //    private static WeatherEntity create(Weather weather) {
@@ -68,7 +61,7 @@ public class AppModelFactory {
 //        weatherEntity.setWeatherConditionId();
 //    }
 
-    public static CurrentWeatherAdapterModel create(CurrentWeatherEntity currentWeatherEntity) {
+    public static CurrentForecastAdapter create(CurrentForecastEntity currentForecastEntity) {
         return null;
     }
 }

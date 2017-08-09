@@ -1,8 +1,8 @@
 package by.reshetnikov.proweather.ui.hourlyforecast;
 
+import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.HourlyForecastWeatherApiModel;
 import by.reshetnikov.proweather.ui.base.PresenterContract;
 import by.reshetnikov.proweather.ui.base.ViewContract;
-import by.reshetnikov.proweather.data.network.model.forecastweather.HourlyForecastWeatherApiModel;
 
 
 public interface HourlyForecastContract {

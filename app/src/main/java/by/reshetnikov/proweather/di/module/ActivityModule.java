@@ -3,17 +3,17 @@ package by.reshetnikov.proweather.di.module;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
+import by.reshetnikov.proweather.di.ActivityContext;
+import by.reshetnikov.proweather.ui.currentforecast.CurrentForecastContract;
+import by.reshetnikov.proweather.ui.currentforecast.CurrentForecastPresenter;
+import by.reshetnikov.proweather.ui.hourlyforecast.HourlyForecastContract;
 import by.reshetnikov.proweather.ui.hourlyforecast.HourlyForecastPresenter;
 import by.reshetnikov.proweather.ui.location.AutoCompleteLocationsAdapter;
-import by.reshetnikov.proweather.ui.location.adapter.LocationsRecyclerViewAdapter;
-import by.reshetnikov.proweather.ui.currentweather.CurrentWeatherContract;
 import by.reshetnikov.proweather.ui.location.LocationManagerContract;
-import by.reshetnikov.proweather.ui.hourlyforecast.HourlyForecastContract;
-import by.reshetnikov.proweather.di.ActivityContext;
-import by.reshetnikov.proweather.ui.currentweather.CurrentWeatherPresenter;
 import by.reshetnikov.proweather.ui.location.LocationManagerPresenter;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.ui.location.adapter.LocationsRecyclerViewAdapter;
 import by.reshetnikov.proweather.utils.scheduler.AppSchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import dagger.Module;
 import dagger.Provides;
 
@@ -39,7 +39,7 @@ public class ActivityModule {
     }
 
     @Provides
-    CurrentWeatherContract.Presenter provideCurrentWeatherPresenter(CurrentWeatherPresenter presenter) {
+    CurrentForecastContract.Presenter provideCurrentWeatherPresenter(CurrentForecastPresenter presenter) {
         return presenter;
     }
 

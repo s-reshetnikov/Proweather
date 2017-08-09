@@ -14,7 +14,7 @@ import java.util.Date;
 public class HourlyForecastEntity {
     @Id(autoincrement = true)
     private long hourlyForecastEntityId;
-    private String locationId;
+    private int locationId;
     private double temperature;
     private int humidity;
     private int pressure;
@@ -38,8 +38,8 @@ public class HourlyForecastEntity {
     @Generated(hash = 1006291059)
     private transient HourlyForecastEntityDao myDao;
 
-    @Generated(hash = 1060085089)
-    public HourlyForecastEntity(long hourlyForecastEntityId, String locationId,
+    @Generated(hash = 648238166)
+    public HourlyForecastEntity(long hourlyForecastEntityId, int locationId,
                                 double temperature, int humidity, int pressure, double windSpeed,
                                 double windDegrees, Date date, int weatherConditionId,
                                 String weatherDescription, String iconCode, double snow, double rain) {
@@ -62,11 +62,11 @@ public class HourlyForecastEntity {
     public HourlyForecastEntity() {
     }
 
-    public String getLocationId() {
+    public int getLocationId() {
         return this.locationId;
     }
 
-    public void setLocationId(String locationId) {
+    public void setLocationId(int locationId) {
         this.locationId = locationId;
     }
 

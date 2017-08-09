@@ -2,35 +2,37 @@ package by.reshetnikov.proweather.data;
 
 import java.util.List;
 
-import by.reshetnikov.proweather.data.model.CurrentWeatherAdapterModel;
-import by.reshetnikov.proweather.data.model.DailyForecastWeatherModel;
-import by.reshetnikov.proweather.data.model.HourlyForecastWeatherModel;
-import by.reshetnikov.proweather.data.model.LocationAdapterModel;
-import by.reshetnikov.proweather.data.model.UnitsAppModel;
-import io.reactivex.Observable;
+import by.reshetnikov.proweather.data.model.location.LocationContract;
+import by.reshetnikov.proweather.data.model.unit.UnitsContract;
+import by.reshetnikov.proweather.data.model.weather.current.CurrentForecastAdapterContract;
+import by.reshetnikov.proweather.data.model.weather.daily.DailyForecastAdapterContract;
+import by.reshetnikov.proweather.data.model.weather.hourly.HourlyForecastAdapterContract;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
 
 public interface DataContract {
 
-    Observable<CurrentWeatherAdapterModel> getCurrentWeather(String locationId);
 
-    Observable<HourlyForecastWeatherModel> getHourlyForecastWeather(String locationId);
+    Single<? extends CurrentForecastAdapterContract> getSavedCurrentWeather(LocationContract location);
 
-    Observable<DailyForecastWeatherModel> getDailyForecastWeather(String locationId);
+    Single<? extends HourlyForecastAdapterContract> getSavedHourlyForecastWeather(LocationContract location);
 
-    Observable<List<LocationAdapterModel>> getAllLocationsByName(String locationName, int resultsCount);
+    Single<? extends DailyForecastAdapterContract> getSavedDailyForecastWeather(LocationContract location);
 
-    Observable<LocationAdapterModel> getChosenLocation();
+    Single<List<LocationContract>> getAllLocationsByName(String locationName, int resultsCount);
 
-    Observable<List<LocationAdapterModel>> getSavedLocations();
+    Single<? extends LocationContract> getChosenLocation();
 
-    Observable<Boolean> saveNewLocation(LocationAdapterModel location);
+    Single<List<LocationContract>> getSavedLocations();
 
-    Observable<Boolean> removeLocation(LocationAdapterModel location);
+    Completable saveNewLocation(LocationContract location);
+
+    Completable removeLocation(LocationContract location);
 
     boolean getCanUseCurrentLocationPreference();
 
-    UnitsAppModel getUnits();
+    Single<UnitsContract> getUnits();
 
-    Observable<Boolean> updateLocationPosition(int fromPosition, int toPosition);
+    Completable updateLocationPosition(int fromPosition, int toPosition);
 }

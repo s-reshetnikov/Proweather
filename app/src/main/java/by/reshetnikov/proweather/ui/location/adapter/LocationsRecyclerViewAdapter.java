@@ -9,16 +9,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import by.reshetnikov.proweather.data.model.location.LocationContract;
 import by.reshetnikov.proweather.ui.location.callback.LocationsDiffUtilCallback;
-import by.reshetnikov.proweather.data.model.LocationAdapterContract;
-import by.reshetnikov.proweather.data.model.LocationAdapterModel;
 import by.reshetnikov.proweather.ui.location.listener.OnLocationRemovedListener;
 import by.reshetnikov.proweather.ui.location.listener.OnLocationsOrderChangedListener;
 import by.reshetnikov.proweather.ui.location.viewholder.LocationViewHolder;
 
-public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationViewHolder> implements LocationsAdapterContract {
+public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationViewHolder> implements LocationsViewAdapterContract {
     private final static boolean DETECT_MOVES = true;
-    private List<LocationAdapterModel> locations = new ArrayList<>();
+    private List<LocationContract> locations = new ArrayList<>();
     private OnLocationsOrderChangedListener orderChangedListener = null;
     private OnLocationRemovedListener locationRemovedListener = null;
 
@@ -33,15 +32,15 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     @Override
     public void onBindViewHolder(LocationViewHolder holder, int position) {
 
-        LocationAdapterContract location = getLocationAtPosition(position);
+        LocationContract location = getLocationAtPosition(position);
         holder.setLocationName(location.getLocationName());
         holder.setCircleCountryCode(location.getCountryCode());
         if (location.isCurrent())
             holder.markAsCurrent(true);
     }
 
-    private LocationAdapterContract getLocationAtPosition(int position) {
-        for (LocationAdapterModel model :
+    private LocationContract getLocationAtPosition(int position) {
+        for (LocationContract model :
                 locations) {
             if (model.getPosition() == position)
                 return model;
@@ -55,7 +54,7 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     }
 
     @Override
-    public void updateView(List<LocationAdapterModel> updatedLocations) {
+    public void updateView(List<LocationContract> updatedLocations) {
         LocationsDiffUtilCallback diffCallback = new LocationsDiffUtilCallback(this.locations, updatedLocations);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback, DETECT_MOVES);
 
@@ -66,12 +65,12 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     }
 
     @Override
-    public LocationAdapterModel getLocation(int position) {
+    public LocationContract getLocation(int position) {
         return locations.get(position);
     }
 
     @Override
-    public void addLocation(LocationAdapterModel location) {
+    public void addLocation(LocationContract location) {
         int position = locations.size();
         locations.add(position, location);
         notifyItemInserted(position);

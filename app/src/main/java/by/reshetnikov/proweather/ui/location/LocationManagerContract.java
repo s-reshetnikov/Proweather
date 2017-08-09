@@ -2,9 +2,9 @@ package by.reshetnikov.proweather.ui.location;
 
 import java.util.List;
 
+import by.reshetnikov.proweather.data.model.location.LocationContract;
 import by.reshetnikov.proweather.ui.base.PresenterContract;
 import by.reshetnikov.proweather.ui.base.ViewContract;
-import by.reshetnikov.proweather.data.model.LocationAdapterModel;
 
 public interface LocationManagerContract {
 
@@ -14,9 +14,9 @@ public interface LocationManagerContract {
 
         void hideSearchLocation();
 
-        void refreshSavedLocations(List<LocationAdapterModel> savedLocations);
+        void refreshSavedLocations(List<LocationContract> savedLocations);
 
-        void refreshSearchedLocations(List<LocationAdapterModel> savedLocations);
+        void refreshSearchedLocations(List<LocationContract> savedLocations);
 
         void showError(String errorText);
     }
@@ -29,11 +29,11 @@ public interface LocationManagerContract {
 
         void getSavedLocations();
 
-        void saveLocation(LocationAdapterModel location);
+        void saveLocation(LocationContract location);
 
         void onLocationItemMoved(int fromPosition, int toPosition);
 
-        void onLocationItemRemoved(LocationAdapterModel location);
+        void onLocationItemRemoved(LocationContract location);
 
         void onFabClicked(boolean isAutocompleteVisible);
 

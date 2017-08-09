@@ -1,32 +1,38 @@
 package by.reshetnikov.proweather.data.db;
 
+import android.support.annotation.Nullable;
+
 import java.util.List;
 
-import by.reshetnikov.proweather.data.db.model.CurrentWeatherEntity;
+import by.reshetnikov.proweather.data.db.model.CurrentForecastEntity;
 import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.HourlyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import io.reactivex.Observable;
+import by.reshetnikov.proweather.data.model.location.LocationContract;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
 public interface DbContract {
 
-    Observable<CurrentWeatherEntity> getCurrentWeather(String locationId);
+    Single<CurrentForecastEntity> getSavedCurrentWeather(@Nullable LocationContract location);
 
-    Observable<Boolean> saveCurrentWeather(CurrentWeatherEntity currentWeather);
+    Completable saveCurrentWeather(CurrentForecastEntity currentWeather);
 
-    Observable<HourlyForecastEntity> getHourlyForecastWeather(String locationId);
+    Single<HourlyForecastEntity> getSavedHourlyForecastWeather(LocationContract location);
 
-    Observable<DailyForecastEntity> getDailyForecastWeather(String locationId);
+    Completable saveHourlyForecastWeather(HourlyForecastEntity forecastWeather);
 
-    Observable<Boolean> saveHourlyForecastWeather(HourlyForecastEntity forecastWeather);
+    Single<DailyForecastEntity> getSavedDailyForecastWeather(LocationContract location);
 
-    Observable<LocationEntity> getChosenLocation();
+    Completable saveDailyForecastWeather(DailyForecastEntity dailyForecast);
 
-    Observable<List<LocationEntity>> getSavedLocations();
+    Single<LocationEntity> getChosenLocation();
 
-    Observable<Boolean> saveNewLocation(LocationEntity locationEntity);
+    Single<List<LocationEntity>> getSavedLocations();
 
-    Observable<Boolean> updateLocation(LocationEntity locationEntity);
+    Completable saveNewLocation(LocationEntity locationEntity);
 
-    Observable<Boolean> removeLocation(LocationEntity locationEntity);
+    Completable updateLocation(LocationEntity locationEntity);
+
+    Completable removeLocation(LocationEntity locationEntity);
 }

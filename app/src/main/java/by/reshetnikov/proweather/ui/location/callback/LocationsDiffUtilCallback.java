@@ -4,16 +4,15 @@ import android.support.v7.util.DiffUtil;
 
 import java.util.List;
 
-import by.reshetnikov.proweather.data.model.LocationAdapterContract;
-import by.reshetnikov.proweather.data.model.LocationAdapterModel;
+import by.reshetnikov.proweather.data.model.location.LocationContract;
 
 
 public class LocationsDiffUtilCallback extends DiffUtil.Callback {
 
-    private final List<LocationAdapterModel> oldLocations;
-    private final List<LocationAdapterModel> newLocations;
+    private final List<LocationContract> oldLocations;
+    private final List<LocationContract> newLocations;
 
-    public LocationsDiffUtilCallback(List<LocationAdapterModel> oldList, List<LocationAdapterModel> newList) {
+    public LocationsDiffUtilCallback(List<LocationContract> oldList, List<LocationContract> newList) {
         this.oldLocations = oldList;
         this.newLocations = newList;
     }
@@ -35,8 +34,8 @@ public class LocationsDiffUtilCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        LocationAdapterContract oldLocation = oldLocations.get(oldItemPosition);
-        LocationAdapterContract newLocation = newLocations.get(oldItemPosition);
+        LocationContract oldLocation = oldLocations.get(oldItemPosition);
+        LocationContract newLocation = newLocations.get(oldItemPosition);
 
         return oldLocation.getPosition() == newLocation.getPosition() &&
                 oldLocation.isCurrent() == newLocation.isCurrent();

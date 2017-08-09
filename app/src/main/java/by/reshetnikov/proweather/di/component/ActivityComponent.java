@@ -1,13 +1,13 @@
 package by.reshetnikov.proweather.di.component;
 
-import by.reshetnikov.proweather.ui.location.LocationActivity;
-import by.reshetnikov.proweather.ui.weather.WeatherActivity;
-import by.reshetnikov.proweather.ui.currentweather.CurrentWeatherFragment;
-import by.reshetnikov.proweather.fragment.LocationManagerFragment;
 import by.reshetnikov.proweather.di.PerActivity;
 import by.reshetnikov.proweather.di.module.ActivityModule;
-import by.reshetnikov.proweather.ui.currentweather.CurrentWeatherPresenter;
+import by.reshetnikov.proweather.ui.currentforecast.CurrentForecastFragment;
+import by.reshetnikov.proweather.ui.currentforecast.CurrentForecastPresenter;
+import by.reshetnikov.proweather.ui.location.LocationActivity;
+import by.reshetnikov.proweather.ui.location.LocationManagerFragment;
 import by.reshetnikov.proweather.ui.location.LocationManagerPresenter;
+import by.reshetnikov.proweather.ui.weather.WeatherActivity;
 import dagger.Component;
 
 @PerActivity
@@ -22,9 +22,9 @@ public interface ActivityComponent {
 
     void inject(LocationManagerPresenter presenter);
 
-    void inject(CurrentWeatherFragment fragment);
+    void inject(CurrentForecastFragment fragment);
 
-    void inject(CurrentWeatherPresenter presenter);
+    void inject(CurrentForecastPresenter presenter);
 
 
 }

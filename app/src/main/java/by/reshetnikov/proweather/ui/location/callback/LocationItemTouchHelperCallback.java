@@ -4,17 +4,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 
-import by.reshetnikov.proweather.ui.location.adapter.LocationsAdapterContract;
+import by.reshetnikov.proweather.ui.location.adapter.LocationsViewAdapterContract;
 
 
 public class LocationItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
     private static final String TAG = LocationItemTouchHelperCallback.class.getSimpleName();
-    private final LocationsAdapterContract adapter;
+    private final LocationsViewAdapterContract adapter;
     private int dragFromPosition = -1;
     private int dragToPosition = -1;
 
 
-    public LocationItemTouchHelperCallback(LocationsAdapterContract adapter) {
+    public LocationItemTouchHelperCallback(LocationsViewAdapterContract adapter) {
         super(0, ItemTouchHelper.RIGHT);
         this.adapter = adapter;
     }

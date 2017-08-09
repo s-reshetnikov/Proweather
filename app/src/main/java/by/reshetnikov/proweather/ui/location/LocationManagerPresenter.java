@@ -8,11 +8,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.data.DataContract;
-import by.reshetnikov.proweather.data.model.LocationAdapterModel;
+import by.reshetnikov.proweather.data.model.location.LocationContract;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
+import io.reactivex.observers.DisposableCompletableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 
 public class LocationManagerPresenter implements LocationManagerContract.Presenter {
 
@@ -43,7 +44,7 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
     }
 
     @Override
-    public void saveLocation(@NotNull LocationAdapterModel location) {
+    public void saveLocation(@NotNull LocationContract location) {
         if (location == null) {
             getView().showError("Error on saving location");
             return;
@@ -52,9 +53,9 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
         disposables.add(dataRepository.saveNewLocation(location)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
-                .subscribeWith(new DisposableObserver<Boolean>() {
+                .subscribeWith(new DisposableCompletableObserver() {
                     @Override
-                    public void onNext(@NonNull Boolean isSaved) {
+                    public void onComplete() {
                         getSavedLocations();
                     }
 
@@ -62,57 +63,43 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
                     public void onError(@NonNull Throwable e) {
                         getView().showError("Error on saving location");
                     }
-
-                    @Override
-                    public void onComplete() {
-                        System.out.println("location saved");
-                    }
                 }));
     }
 
     @Override
     public void onLocationItemMoved(final int fromPosition, final int toPosition) {
-
         disposables.add(dataRepository.updateLocationPosition(fromPosition, toPosition)
                 .subscribeOn(scheduler.io())
-                .subscribeWith(new DisposableObserver<Boolean>() {
+                .subscribeWith(new DisposableCompletableObserver() {
                     @Override
-                    public void onNext(@NonNull Boolean isSuccess) {
+                    public void onComplete() {
+                        getSavedLocations();
+
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
                         getView().showError("Location wasn't moved");
                         getSavedLocations();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        getSavedLocations();
-
                     }
                 })
         );
     }
 
     @Override
-    public void onLocationItemRemoved(@NotNull LocationAdapterModel location) {
+    public void onLocationItemRemoved(@NotNull LocationContract location) {
         disposables.add(dataRepository.removeLocation(location)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
-                .subscribeWith(new DisposableObserver<Boolean>() {
+                .subscribeWith(new DisposableCompletableObserver() {
                     @Override
-                    public void onNext(@NonNull Boolean isCompleted) {
+                    public void onComplete() {
+                        getSavedLocations();
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
                         getView().showError("Location wasn't moved");
-                        getSavedLocations();
-                    }
-
-                    @Override
-                    public void onComplete() {
                         getSavedLocations();
                     }
                 }));
@@ -128,8 +115,8 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
 
     @Override
     public void onLocationByNameSearch(String searchText) {
-        List<LocationAdapterModel> locations =
-                dataRepository.getAllLocationsByName(searchText, AUTO_COMPLETE_MAX_RESULTS).blockingSingle();
+        List<LocationContract> locations =
+                dataRepository.getAllLocationsByName(searchText, AUTO_COMPLETE_MAX_RESULTS).blockingGet();
         getView().refreshSearchedLocations(locations);
     }
 
@@ -138,20 +125,16 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
         disposables.add(dataRepository.getSavedLocations()
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
-                .subscribeWith(new DisposableObserver<List<LocationAdapterModel>>() {
+                .subscribeWith(new DisposableSingleObserver<List<LocationContract>>() {
+
                     @Override
-                    public void onNext(@NonNull List<LocationAdapterModel> locations) {
+                    public void onSuccess(@NonNull List<LocationContract> locations) {
                         getView().refreshSavedLocations(locations);
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
                         getView().showError("No locations saved");
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 }));
     }

@@ -5,50 +5,51 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import by.reshetnikov.proweather.data.db.model.CurrentWeatherEntity;
-import by.reshetnikov.proweather.data.db.model.CurrentWeatherEntityDao;
+import by.reshetnikov.proweather.data.db.model.CurrentForecastEntity;
+import by.reshetnikov.proweather.data.db.model.CurrentForecastEntityDao;
 import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.DailyForecastEntityDao;
-import by.reshetnikov.proweather.data.db.model.DaoMaster;
 import by.reshetnikov.proweather.data.db.model.DaoSession;
 import by.reshetnikov.proweather.data.db.model.HourlyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.HourlyForecastEntityDao;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntityDao;
 import by.reshetnikov.proweather.data.db.model.WeatherEntityDao;
-import io.reactivex.Observable;
+import by.reshetnikov.proweather.data.model.location.LocationContract;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
 
 public class AppDbData implements DbContract {
 
     private static final String TAG = AppDbData.class.getSimpleName();
 
-    private final CurrentWeatherEntityDao currentWeatherDao;
+    private final CurrentForecastEntityDao currentForecastDao;
     private final HourlyForecastEntityDao hourlyForecastDao;
     private final DailyForecastEntityDao dailyForecastDao;
     private final LocationEntityDao locationDao;
 
     @Inject
     public AppDbData(DaoSession daoSession) {
-        currentWeatherDao = daoSession.getCurrentWeatherEntityDao();
+        currentForecastDao = daoSession.getCurrentForecastEntityDao();
         hourlyForecastDao = daoSession.getHourlyForecastEntityDao();
         dailyForecastDao = daoSession.getDailyForecastEntityDao();
         locationDao = daoSession.getLocationEntityDao();
     }
 
     @Override
-    public Observable<CurrentWeatherEntity> getCurrentWeather(final String locationId) {
-        return Observable.fromCallable(new Callable<CurrentWeatherEntity>() {
+    public Single<CurrentForecastEntity> getSavedCurrentWeather(final LocationContract location) {
+        return Single.fromCallable(new Callable<CurrentForecastEntity>() {
             @Override
-            public CurrentWeatherEntity call() throws Exception {
-                return getCurrentWeatherEntity(locationId);
+            public CurrentForecastEntity call() throws Exception {
+                return getCurrentWeatherEntity(location.getLocationId());
             }
         });
     }
 
     @Override
-    public Observable<Boolean> saveCurrentWeather(final CurrentWeatherEntity currentWeather) {
-        return Observable.fromCallable(new Callable<Boolean>() {
+    public Completable saveCurrentWeather(final CurrentForecastEntity currentWeather) {
+        return Completable.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return saveCurrentWeatherEntity(currentWeather);
@@ -57,18 +58,18 @@ public class AppDbData implements DbContract {
     }
 
     @Override
-    public Observable<HourlyForecastEntity> getHourlyForecastWeather(final String locationId) {
-        return Observable.fromCallable(new Callable<HourlyForecastEntity>() {
+    public Single<HourlyForecastEntity> getSavedHourlyForecastWeather(final LocationContract location) {
+        return Single.fromCallable(new Callable<HourlyForecastEntity>() {
             @Override
             public HourlyForecastEntity call() throws Exception {
-                return getHourlyForecastWeatherEntity(locationId);
+                return getHourlyForecastWeatherEntity(location.getLocationId());
             }
         });
     }
 
     @Override
-    public Observable<Boolean> saveHourlyForecastWeather(final HourlyForecastEntity forecastWeather) {
-        return Observable.fromCallable(new Callable<Boolean>() {
+    public Completable saveHourlyForecastWeather(final HourlyForecastEntity forecastWeather) {
+        return Completable.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return saveHourlyForecastWeatherEntity(forecastWeather);
@@ -77,18 +78,28 @@ public class AppDbData implements DbContract {
     }
 
     @Override
-    public Observable<DailyForecastEntity> getDailyForecastWeather(final String locationId) {
-        return Observable.fromCallable(new Callable<DailyForecastEntity>() {
+    public Single<DailyForecastEntity> getSavedDailyForecastWeather(final LocationContract location) {
+        return Single.fromCallable(new Callable<DailyForecastEntity>() {
             @Override
             public DailyForecastEntity call() throws Exception {
-                return getDailyForecastWeatherEntity(locationId);
+                return getDailyForecastWeatherEntity(location.getLocationId());
             }
         });
     }
 
     @Override
-    public Observable<LocationEntity> getChosenLocation() {
-        return Observable.fromCallable(new Callable<LocationEntity>() {
+    public Completable saveDailyForecastWeather(final DailyForecastEntity dailyForecast) {
+        return Completable.fromCallable(new Callable() {
+            @Override
+            public Boolean call() throws Exception {
+                return saveDailyForecastWeatherEntity(dailyForecast);
+            }
+        });
+    }
+
+    @Override
+    public Single<LocationEntity> getChosenLocation() {
+        return Single.fromCallable(new Callable<LocationEntity>() {
             @Override
             public LocationEntity call() throws Exception {
                 return getChosenLocationEntity();
@@ -97,8 +108,8 @@ public class AppDbData implements DbContract {
     }
 
     @Override
-    public Observable<List<LocationEntity>> getSavedLocations() {
-        return Observable.fromCallable(new Callable<List<LocationEntity>>() {
+    public Single<List<LocationEntity>> getSavedLocations() {
+        return Single.fromCallable(new Callable<List<LocationEntity>>() {
             @Override
             public List<LocationEntity> call() {
                 return getSavedLocationEntities();
@@ -107,8 +118,8 @@ public class AppDbData implements DbContract {
     }
 
     @Override
-    public Observable<Boolean> saveNewLocation(final LocationEntity locationEntity) {
-        return Observable.fromCallable(new Callable<Boolean>() {
+    public Completable saveNewLocation(final LocationEntity locationEntity) {
+        return Completable.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return saveNewLocationEntity(locationEntity);
@@ -117,8 +128,8 @@ public class AppDbData implements DbContract {
     }
 
     @Override
-    public Observable<Boolean> updateLocation(final LocationEntity locationEntity) {
-        return Observable.fromCallable(new Callable<Boolean>() {
+    public Completable updateLocation(final LocationEntity locationEntity) {
+        return Completable.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return updateLocationEntity(locationEntity);
@@ -127,8 +138,8 @@ public class AppDbData implements DbContract {
     }
 
     @Override
-    public Observable<Boolean> removeLocation(final LocationEntity locationEntity) {
-        return Observable.fromCallable(new Callable<Boolean>() {
+    public Completable removeLocation(final LocationEntity locationEntity) {
+        return Completable.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return removeLocationEntity(locationEntity);
@@ -136,8 +147,8 @@ public class AppDbData implements DbContract {
         });
     }
 
-    private CurrentWeatherEntity getCurrentWeatherEntity(String locationId) {
-        return currentWeatherDao.queryBuilder()
+    private CurrentForecastEntity getCurrentWeatherEntity(int locationId) {
+        return currentForecastDao.queryBuilder()
                 .where(WeatherEntityDao.Properties.LocationId.eq(locationId))
                 .orderAsc(WeatherEntityDao.Properties.Date)
                 .limit(1)
@@ -145,15 +156,16 @@ public class AppDbData implements DbContract {
                 .unique();
     }
 
-    private Boolean saveCurrentWeatherEntity(CurrentWeatherEntity currentWeather) {
-        currentWeatherDao.save(currentWeather);
+    private Boolean saveCurrentWeatherEntity(CurrentForecastEntity currentWeather) {
+        currentForecastDao.save(currentWeather);
         return true;
     }
 
-    private HourlyForecastEntity getHourlyForecastWeatherEntity(String locationId) {
+    private HourlyForecastEntity getHourlyForecastWeatherEntity(int locationId) {
         return hourlyForecastDao.queryBuilder()
                 .where(HourlyForecastEntityDao.Properties.LocationId.eq(locationId))
-                .build().unique();
+                .build()
+                .unique();
     }
 
 
@@ -162,14 +174,16 @@ public class AppDbData implements DbContract {
         return true;
     }
 
-    private DailyForecastEntity getDailyForecastWeatherEntity(String locationId) {
+    private DailyForecastEntity getDailyForecastWeatherEntity(int locationId) {
         return dailyForecastDao.queryBuilder()
                 .where(DailyForecastEntityDao.Properties.LocationId.eq(locationId))
-                .build().unique();
+                .build()
+                .unique();
     }
 
-    private long saveDailyForecastWeatherEntity(DailyForecastEntity dailyForecastEntity) {
-        return dailyForecastDao.insertOrReplace(dailyForecastEntity);
+    private Boolean saveDailyForecastWeatherEntity(DailyForecastEntity dailyForecastEntity) {
+        dailyForecastDao.insertOrReplace(dailyForecastEntity);
+        return Boolean.TRUE;
     }
 
     private LocationEntity getChosenLocationEntity() {
