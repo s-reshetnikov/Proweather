@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.data.DataContract;
-import by.reshetnikov.proweather.data.DataRepository;
+import by.reshetnikov.proweather.data.DataManager;
 import by.reshetnikov.proweather.data.db.AppDbData;
 import by.reshetnikov.proweather.data.db.AppDbOpenHelper;
 import by.reshetnikov.proweather.data.db.DbContract;
@@ -132,7 +132,7 @@ public class ApplicationModule {
     // repository
     @Singleton
     @Provides
-    DataContract provideDataRepository(DataRepository repository) {
+    DataContract provideDataRepository(DataManager repository) {
         return repository;
     }
 

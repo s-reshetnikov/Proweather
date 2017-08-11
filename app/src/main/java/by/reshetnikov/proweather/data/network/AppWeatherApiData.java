@@ -10,9 +10,8 @@ import javax.inject.Inject;
 
 import by.reshetnikov.proweather.data.model.location.LocationContract;
 import by.reshetnikov.proweather.data.network.openweathermap.OpenWeatherMapApiService;
-import by.reshetnikov.proweather.data.network.openweathermap.model.currentweather.CurrentWeatherApiModel;
-import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.DailyForecastWeatherApiModel;
-import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.HourlyForecastWeatherApiModel;
+import by.reshetnikov.proweather.data.network.openweathermap.model.currentweather.CurrentForecastApiModel;
+import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.HourlyForecastApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationForecastApiModel;
 import by.reshetnikov.proweather.utils.ApiQuery;
 import io.reactivex.Single;
@@ -26,32 +25,25 @@ public class AppWeatherApiData implements WeatherApiDataContract {
 
     @Inject
     public AppWeatherApiData(OpenWeatherMapApiService api) {
-        Log.d(TAG, "create AppWeatherApiData");
+        Log.d(TAG, "createCurrentForecastAdapter AppWeatherApiData");
         this.api = api;
     }
 
     @Override
-    public Single<CurrentWeatherApiModel> getCurrentWeather(LocationContract location) {
+    public Single<CurrentForecastApiModel> getCurrentForecast(LocationContract location) {
         HashMap<String, String> queryMap = getQueryForRequest(location);
         return api.getCurrentWeather(queryMap);
     }
 
     @Override
-    public Single<HourlyForecastWeatherApiModel> getHourlyForecastWeather(LocationContract location) {
+    public Single<HourlyForecastApiModel> getHourlyForecast(LocationContract location) {
         HashMap<String, String> queryMap = getQueryForRequest(location);
         return api.getHourlyForecastWeather(queryMap);
     }
 
-
-    @Override
-    public Single<DailyForecastWeatherApiModel> getDailyForecastWeather(LocationContract location) {
-        HashMap<String, String> queryMap = getQueryForRequest(location);
-        return api.getDailyForecastWeather(queryMap);
-    }
-
     @Override
     public Single<LocationForecastApiModel> getLocationsByName(String locationName, int maxResults) {
-        Log.d(TAG, "getSavedDailyForecastWeather location " + locationName + " call");
+        Log.d(TAG, "getSavedDailyForecast location " + locationName + " call");
         HashMap<String, String> queryMap = getQuery(locationName, maxResults);
         return api.getLocations(queryMap);
     }

@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import by.reshetnikov.proweather.BuildConfig;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.ui.currentforecast.CurrentForecastFragment;
+import by.reshetnikov.proweather.ui.currentforecast.WeatherNowFragment;
 import by.reshetnikov.proweather.ui.location.LocationActivity;
 import by.reshetnikov.proweather.ui.settings.SettingsActivity;
 import by.reshetnikov.proweather.utils.ToastUtils;
@@ -36,7 +36,7 @@ import by.reshetnikov.proweather.utils.ToastUtils;
 
 public class WeatherActivity extends AppCompatActivity
         implements WeatherContract.View, NavigationView.OnNavigationItemSelectedListener,
-        CurrentForecastFragment.OnFragmentInteractionListener {
+        WeatherNowFragment.OnFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -94,7 +94,7 @@ public class WeatherActivity extends AppCompatActivity
 //
 //            FragmentUtils.replaceFragment(getSupportFragmentManager(),
 //                    R.id.weather_fragment_placeholder,
-//                    CurrentForecastFragment.newInstance());
+//                    WeatherNowFragment.newInstance());
 //        }
         Log.d(TAG, "stop end");
     }

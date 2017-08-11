@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import by.reshetnikov.proweather.di.ActivityContext;
 import by.reshetnikov.proweather.ui.currentforecast.CurrentForecastContract;
 import by.reshetnikov.proweather.ui.currentforecast.CurrentForecastPresenter;
-import by.reshetnikov.proweather.ui.hourlyforecast.HourlyForecastContract;
-import by.reshetnikov.proweather.ui.hourlyforecast.HourlyForecastPresenter;
+import by.reshetnikov.proweather.ui.forecast.ForecastContract;
+import by.reshetnikov.proweather.ui.forecast.ForecastPresenter;
 import by.reshetnikov.proweather.ui.location.AutoCompleteLocationsAdapter;
 import by.reshetnikov.proweather.ui.location.LocationManagerContract;
 import by.reshetnikov.proweather.ui.location.LocationManagerPresenter;
@@ -44,7 +44,7 @@ public class ActivityModule {
     }
 
     @Provides
-    HourlyForecastContract.Presenter provideWeatherForecastPresenter(HourlyForecastPresenter presenter) {
+    ForecastContract.Presenter provideWeatherForecastPresenter(ForecastPresenter presenter) {
         return presenter;
     }
 

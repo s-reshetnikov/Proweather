@@ -32,7 +32,7 @@ import by.reshetnikov.proweather.utils.CalendarUtil;
 import by.reshetnikov.proweather.utils.WeatherStateIconUtil;
 
 
-public class CurrentForecastFragment extends Fragment implements CurrentForecastContract.View {
+public class WeatherNowFragment extends Fragment implements CurrentForecastContract.View {
     private static final String ARG_SECTION_NUMBER = "SECTION_NUMBER";
 
     @BindView(R.id.tvWeekDay)
@@ -67,11 +67,11 @@ public class CurrentForecastFragment extends Fragment implements CurrentForecast
     private OnFragmentInteractionListener mListener;
 
 
-    public CurrentForecastFragment() {
+    public WeatherNowFragment() {
     }
 
-    public static CurrentForecastFragment newInstance(int sectionNumber) {
-        CurrentForecastFragment fragment = new CurrentForecastFragment();
+    public static WeatherNowFragment newInstance(int sectionNumber) {
+        WeatherNowFragment fragment = new WeatherNowFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);

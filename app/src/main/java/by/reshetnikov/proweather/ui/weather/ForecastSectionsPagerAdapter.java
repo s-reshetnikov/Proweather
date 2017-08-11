@@ -4,9 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import by.reshetnikov.proweather.fragment.DailyForecastFragment;
-import by.reshetnikov.proweather.fragment.HourlyForecastFragment;
-import by.reshetnikov.proweather.ui.currentforecast.CurrentForecastFragment;
+import by.reshetnikov.proweather.ui.currentforecast.WeatherNowFragment;
+import by.reshetnikov.proweather.ui.forecast.ForecastFragment;
 
 /**
  * Created by SacRahl on 8/3/2017.
@@ -21,13 +20,11 @@ public class ForecastSectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return CurrentForecastFragment.newInstance(position + 1);
+                return WeatherNowFragment.newInstance(position + 1);
             case 1:
-                return HourlyForecastFragment.newInstance(position + 1);
-            case 2:
-                return DailyForecastFragment.newInstance(position + 1);
+                return ForecastFragment.newInstance(position + 1);
         }
-        return CurrentForecastFragment.newInstance(position + 1);
+        return WeatherNowFragment.newInstance(position + 1);
     }
 
     @Override
@@ -42,9 +39,7 @@ public class ForecastSectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return "NOW";
             case 1:
-                return "HOURLY";
-            case 2:
-                return "DAILY";
+                return "FORECAST";
         }
         return null;
     }

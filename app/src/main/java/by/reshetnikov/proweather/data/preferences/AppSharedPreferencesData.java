@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.data.model.unit.UnitsAppModel;
+import by.reshetnikov.proweather.data.model.unit.UnitsContract;
 import by.reshetnikov.proweather.data.preferences.units.DistanceUnits;
 import by.reshetnikov.proweather.data.preferences.units.TemperatureUnit;
 import by.reshetnikov.proweather.data.preferences.units.WindSpeedUnit;
@@ -96,7 +97,7 @@ public class AppSharedPreferencesData implements PreferencesContract {
     }
 
     @Override
-    public UnitsAppModel getUnits() {
+    public UnitsContract getUnits() {
         TemperatureUnit temperature = getTemperatureUnit();
         WindSpeedUnit windSpeed = getWindSpeedUnitPreference();
         DistanceUnits distance = getDistanceUnitPreference();

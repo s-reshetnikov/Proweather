@@ -70,7 +70,7 @@ public class CurrentForecastPresenter implements CurrentForecastContract.Present
 //    }
 
     private void updateChart() {
-//        compositeDisposable.add(dataRepository.getSavedHourlyForecastWeather());
+//        compositeDisposable.add(dataRepository.getSavedHourlyForecast());
     }
 
 //    private void updateWeather() {

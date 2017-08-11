@@ -14,7 +14,7 @@ import by.reshetnikov.proweather.data.network.openweathermap.model.Sys;
 import by.reshetnikov.proweather.data.network.openweathermap.model.Weather;
 import by.reshetnikov.proweather.data.network.openweathermap.model.Wind;
 
-public class CurrentWeatherApiModel {
+public class CurrentForecastApiModel {
 
     @SerializedName("coord")
     @Expose

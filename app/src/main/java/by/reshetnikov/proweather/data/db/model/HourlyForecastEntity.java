@@ -5,6 +5,8 @@ import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.Date;
@@ -22,9 +24,8 @@ public class HourlyForecastEntity {
     private double windDegrees;
     @Unique
     private Date date;
-    private int weatherConditionId;
-    private String weatherDescription;
-    private String iconCode;
+    @ToOne(joinProperty = "hourlyForecastEntityId")
+    private WeatherEntity weatherEntity;
     private double snow;
     private double rain;
     /**
@@ -32,17 +33,14 @@ public class HourlyForecastEntity {
      */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 1006291059)
     private transient HourlyForecastEntityDao myDao;
 
-    @Generated(hash = 648238166)
+    @Generated(hash = 1767295460)
     public HourlyForecastEntity(long hourlyForecastEntityId, int locationId,
                                 double temperature, int humidity, int pressure, double windSpeed,
-                                double windDegrees, Date date, int weatherConditionId,
-                                String weatherDescription, String iconCode, double snow, double rain) {
+                                double windDegrees, Date date, double snow, double rain) {
         this.hourlyForecastEntityId = hourlyForecastEntityId;
         this.locationId = locationId;
         this.temperature = temperature;
@@ -51,9 +49,6 @@ public class HourlyForecastEntity {
         this.windSpeed = windSpeed;
         this.windDegrees = windDegrees;
         this.date = date;
-        this.weatherConditionId = weatherConditionId;
-        this.weatherDescription = weatherDescription;
-        this.iconCode = iconCode;
         this.snow = snow;
         this.rain = rain;
     }
@@ -61,6 +56,9 @@ public class HourlyForecastEntity {
     @Generated(hash = 27515208)
     public HourlyForecastEntity() {
     }
+
+    @Generated(hash = 1942152839)
+    private transient Long weatherEntity__resolvedKey;
 
     public int getLocationId() {
         return this.locationId;
@@ -118,30 +116,6 @@ public class HourlyForecastEntity {
         this.date = date;
     }
 
-    public int getWeatherConditionId() {
-        return this.weatherConditionId;
-    }
-
-    public void setWeatherConditionId(int weatherConditionId) {
-        this.weatherConditionId = weatherConditionId;
-    }
-
-    public String getWeatherDescription() {
-        return this.weatherDescription;
-    }
-
-    public void setWeatherDescription(String weatherDescription) {
-        this.weatherDescription = weatherDescription;
-    }
-
-    public String getIconCode() {
-        return this.iconCode;
-    }
-
-    public void setIconCode(String iconCode) {
-        this.iconCode = iconCode;
-    }
-
     public double getSnow() {
         return this.snow;
     }
@@ -164,6 +138,44 @@ public class HourlyForecastEntity {
 
     public void setHourlyForecastEntityId(long hourlyForecastEntityId) {
         this.hourlyForecastEntityId = hourlyForecastEntityId;
+    }
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Generated(hash = 1026688404)
+    public WeatherEntity getWeatherEntity() {
+        long __key = this.hourlyForecastEntityId;
+        if (weatherEntity__resolvedKey == null
+                || !weatherEntity__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            WeatherEntityDao targetDao = daoSession.getWeatherEntityDao();
+            WeatherEntity weatherEntityNew = targetDao.load(__key);
+            synchronized (this) {
+                weatherEntity = weatherEntityNew;
+                weatherEntity__resolvedKey = __key;
+            }
+        }
+        return weatherEntity;
+    }
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 1548406284)
+    public void setWeatherEntity(@NotNull WeatherEntity weatherEntity) {
+        if (weatherEntity == null) {
+            throw new DaoException(
+                    "To-one property 'hourlyForecastEntityId' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.weatherEntity = weatherEntity;
+            hourlyForecastEntityId = weatherEntity.getWeatherId();
+            weatherEntity__resolvedKey = hourlyForecastEntityId;
+        }
     }
 
     /**

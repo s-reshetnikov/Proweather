@@ -6,7 +6,7 @@ import by.reshetnikov.proweather.data.db.model.LocationEntity;
 public class LocationAdapter implements LocationContract {
 
 
-    private LocationEntity locationEntity;
+    LocationEntity locationEntity;
 
     public LocationAdapter(LocationEntity locationEntity) {
         this.locationEntity = locationEntity;

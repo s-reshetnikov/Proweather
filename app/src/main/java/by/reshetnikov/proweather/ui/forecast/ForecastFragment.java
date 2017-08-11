@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.fragment;
+package by.reshetnikov.proweather.ui.forecast;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,23 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.ui.hourlyforecast.HourlyForecastPresenter;
-import by.reshetnikov.proweather.ui.hourlyforecast.HourlyForecastContract;
 
 
-public class HourlyForecastFragment extends Fragment implements HourlyForecastContract.View {
+public class ForecastFragment extends Fragment implements ForecastContract.View {
 
     private static final String ARG_SECTION_NUMBER = "SECTION_NUMBER";
 
-    HourlyForecastPresenter presenter;
+    ForecastPresenter presenter;
 
     private OnFragmentInteractionListener mListener;
 
-    public HourlyForecastFragment() {
+    public ForecastFragment() {
     }
 
-    public static HourlyForecastFragment newInstance(int sectionNumber) {
-        HourlyForecastFragment fragment = new HourlyForecastFragment();
+    public static ForecastFragment newInstance(int sectionNumber) {
+        ForecastFragment fragment = new ForecastFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);

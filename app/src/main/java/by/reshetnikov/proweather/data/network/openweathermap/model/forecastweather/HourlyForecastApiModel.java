@@ -7,7 +7,7 @@ import java.util.List;
 
 import by.reshetnikov.proweather.data.network.openweathermap.model.Location;
 
-public class HourlyForecastWeatherApiModel {
+public class HourlyForecastApiModel {
 
     @SerializedName("cod")
     @Expose
