@@ -6,16 +6,23 @@
     <color name="colorAccent">#FFEB3B</color>
     <color name="colorAccentLight">#ffff72</color>
 
-    <color name="divider">#E0E0E0</color>
+    <color name="colorDivider">@color/colorGreyLight</color>
 
+    <color name="colorGreyDark">#616161</color>
+    <color name="colorGrey">#9E9E9E</color>
+    <color name="colorGreyLight">#E0E0E0</color>
 
     //icons color
     <color name="colorCloud">#0288D1</color>
     <color name="colorNightCloud">#6c809c</color>
+    <color name="colorRain">#03A9F4</color>
     <color name="colorNightRain">#0288D1</color>
     <color name="colorSun">#FFED4D</color>
     <color name="colorMoon">#ffff72</color>
+    <color name="colorLightning">#ffff72</color>
     <color name="colorStar">#FFEB3B</color>
+    <color name="colorFog">#E0E0E0</color>
+    <color name="colorSnow">#B3E5FC</color>
     <color name="colorIconWhite">#F2F4F7</color>
 
 </resources>
