@@ -1,28 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#03A9F4</color>
-    <color name="colorPrimaryLight">#67daff</color>
     <color name="colorPrimaryDark">#0288D1</color>
-    <color name="colorPrimaryText">#1a1a1a</color>
 
     <color name="colorAccent">#FFEB3B</color>
     <color name="colorAccentLight">#ffff72</color>
-    <color name="colorAccentDark">#c8b900</color>
-    <color name="colorAccentText">#1a1a1a</color>
 
     <color name="divider">#E0E0E0</color>
-    <color name="colorBeige">#F1F0DD</color>
 
 
     //icons color
     <color name="colorCloud">#0288D1</color>
     <color name="colorNightCloud">#6c809c</color>
-    <color name="colorRain">#67daff</color>
     <color name="colorNightRain">#0288D1</color>
     <color name="colorSun">#FFED4D</color>
     <color name="colorMoon">#ffff72</color>
     <color name="colorStar">#FFEB3B</color>
-    <color name="colorWind">#CBCFD4</color>
     <color name="colorIconWhite">#F2F4F7</color>
 
 </resources>

@@ -4,7 +4,7 @@
 
     <header
         android:fragment="by.reshetnikov.proweather.presentation.settings.SettingsActivity$LocationPreferenceFragment"
-        android:icon="@drawable/ic_location_on_black_24dp"
+        android:icon="@drawable/ic_location_24dp"
         android:title="@string/pref_header_location" />
 
     <header
@@ -14,7 +14,7 @@
 
     <header
         android:fragment="by.reshetnikov.proweather.presentation.settings.SettingsActivity$NotificationPreferenceFragment"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ic_notifications_24dp"
         android:title="@string/pref_header_notifications" />
 
 </preference-headers>

@@ -58,7 +58,6 @@ public class ProWeatherApp extends Application {
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_location, canReadAgain);
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_units, canReadAgain);
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_notification, canReadAgain);
-        PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_first_run, canReadAgain);
     }
 
     public ApplicationComponent getComponent() {
