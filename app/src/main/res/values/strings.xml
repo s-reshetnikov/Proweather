@@ -170,8 +170,26 @@
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
-    <string name="thursaday">Thursaday</string>
+    <string name="thursday">Thursday</string>
     <string name="friday">Friday</string>
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
+    <string name="short_hour">h</string>
+    <string name="north">N</string>
+    <string name="north_north_east">NNE</string>
+    <string name="north_east">NE</string>
+    <string name="east">E</string>
+    <string name="east_south_east">ESE</string>
+    <string name="south_east">SE</string>
+    <string name="south_south_east">SSE</string>
+    <string name="south">S</string>
+    <string name="south_south_west">SSW</string>
+    <string name="south_west">SW</string>
+    <string name="west_south_west">WSW</string>
+    <string name="west">W</string>
+    <string name="west_north_west">WNW</string>
+    <string name="north_west">NW</string>
+    <string name="north_north_west">NNW</string>
+    <string name="metres_per_second">m/s</string>
+    <string name="miles_per_second">mph</string>
 </resources>

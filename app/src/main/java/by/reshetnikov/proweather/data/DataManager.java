@@ -11,15 +11,12 @@ import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.db.DbContract;
-import by.reshetnikov.proweather.data.db.model.CurrentForecastEntity;
-import by.reshetnikov.proweather.data.db.model.HourlyForecastEntity;
+import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import by.reshetnikov.proweather.data.model.location.LocationContract;
+import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
 import by.reshetnikov.proweather.data.model.location.LocationFactory;
-import by.reshetnikov.proweather.data.model.unit.UnitsContract;
+import by.reshetnikov.proweather.data.model.unit.Units;
 import by.reshetnikov.proweather.data.model.weather.WeatherModelFactory;
-import by.reshetnikov.proweather.data.model.weather.current.CurrentForecastAdapterContract;
-import by.reshetnikov.proweather.data.model.weather.hourly.HourlyForecastAdapterContract;
 import by.reshetnikov.proweather.data.network.WeatherApiDataContract;
 import by.reshetnikov.proweather.data.network.openweathermap.model.currentweather.CurrentForecastApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.HourlyForecastApiModel;
@@ -56,57 +53,46 @@ public class DataManager implements DataContract {
     }
 
     @Override
-    public Single<? extends CurrentForecastAdapterContract> getSavedCurrentWeather(@NonNull LocationContract location) {
+    public Single<NowForecastEntity> getNowForecast(@NonNull LocationEntity location) {
         if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getCurrentForecast(location)
-                    .map(new Function<CurrentForecastApiModel, CurrentForecastAdapterContract>() {
+                    .map(new Function<CurrentForecastApiModel, NowForecastEntity>() {
                         @Override
-                        public CurrentForecastAdapterContract apply(@NonNull CurrentForecastApiModel apiModel) throws Exception {
-                            CurrentForecastAdapterContract model = WeatherModelFactory.createCurrentForecastAdapter(apiModel);
-                            dbData.saveCurrentWeather(model.getAdaptee()).subscribe();
+                        public NowForecastEntity apply(@NonNull CurrentForecastApiModel apiModel) throws Exception {
+                            NowForecastEntity model = WeatherModelFactory.createNowForecastFromAPI(apiModel);
+//                            dbData.saveCurrentWeather(model).subscribe();
                             return model;
                         }
                     });
         }
-        return dbData.getSavedCurrentWeather(location)
-                .map(new Function<CurrentForecastEntity, CurrentForecastAdapterContract>() {
-                    @Override
-                    public CurrentForecastAdapterContract apply(@NonNull CurrentForecastEntity currentForecast) throws Exception {
-                        return WeatherModelFactory.createCurrentForecastAdapter(currentForecast);
-                    }
-                });
+        return dbData.getSavedNowForecast(location);
     }
 
     @Override
-    public Single<HourlyForecastAdapterContract> getSavedHourlyForecastWeather(@NonNull LocationContract location) {
+    public Single<List<HoursForecastEntity>> getHourForecasts(@NonNull LocationEntity location) {
+        Log.d(TAG, "getHourForecasts(), Is location null? " + (location == null));
+        Log.d(TAG, "getHourForecasts(), Is internet connected? " + (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())));
         if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getHourlyForecast(location)
-                    .map(new Function<HourlyForecastApiModel, HourlyForecastAdapterContract>() {
+                    .map(new Function<HourlyForecastApiModel, List<HoursForecastEntity>>() {
                         @Override
-                        public HourlyForecastAdapterContract apply(@NonNull HourlyForecastApiModel apiModel) throws Exception {
-                            HourlyForecastAdapterContract model = WeatherModelFactory.createHourlyForecastAdapter(apiModel);
-                            dbData.saveHourlyForecastWeather(model.getAdaptee()).subscribe();
-                            return model;
+                        public List<HoursForecastEntity> apply(@NonNull HourlyForecastApiModel apiModel) throws Exception {
+                            List<HoursForecastEntity> forecasts = WeatherModelFactory.createForecastsFromAPI(apiModel);
+                            return forecasts;
                         }
                     });
         }
-        return dbData.getSavedHourlyForecast(location)
-                .map(new Function<HourlyForecastEntity, HourlyForecastAdapterContract>() {
-                    @Override
-                    public HourlyForecastAdapterContract apply(@NonNull HourlyForecastEntity entity) throws Exception {
-                        return WeatherModelFactory.createHourlyForecastAdapter(entity);
-                    }
-                });
+        return dbData.getSavedHourlyForecast(location);
     }
 
     @Override
-    public Single<List<LocationContract>> getAllLocationsByName(String locationName, int resultsCount) {
+    public Single<List<LocationEntity>> getAllLocationsByName(String locationName, int resultsCount) {
         if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getLocationsByName(locationName, resultsCount)
-                    .map(new Function<LocationForecastApiModel, List<LocationContract>>() {
+                    .map(new Function<LocationForecastApiModel, List<LocationEntity>>() {
                         @Override
-                        public List<LocationContract> apply(@NonNull LocationForecastApiModel locations) throws Exception {
-                            List<LocationContract> locationAdapters = new ArrayList<>();
+                        public List<LocationEntity> apply(@NonNull LocationForecastApiModel locations) throws Exception {
+                            List<LocationEntity> locationAdapters = new ArrayList<>();
                             for (LocationWeatherApiModel apiModel : locations.locationApiModelList) {
                                 locationAdapters.add(LocationFactory.create(apiModel));
                             }
@@ -119,37 +105,28 @@ public class DataManager implements DataContract {
     }
 
     @Override
-    public Single<? extends LocationContract> getChosenLocation() {
-        return dbData.getChosenLocation().map(new Function<LocationEntity, LocationContract>() {
-            @Override
-            public LocationContract apply(@NonNull LocationEntity locationEntity) throws Exception {
-                return LocationFactory.create(locationEntity);
-            }
-        });
+    public Single<LocationEntity> getChosenLocation() {
+        Log.d(TAG, "getSavedLocation()");
+        return dbData.getChosenLocation();
     }
 
     @Override
-    public Single<List<LocationContract>> getSavedLocations() {
-        return dbData.getSavedLocations().map(new Function<List<LocationEntity>, List<LocationContract>>() {
-            @Override
-            public List<LocationContract> apply(@NonNull List<LocationEntity> locationEntities) throws Exception {
-                List<LocationContract> locationAdapters = new ArrayList<>();
-                for (LocationEntity locationEntity : locationEntities) {
-                    locationAdapters.add(LocationFactory.create(locationEntity));
-                }
-                return locationAdapters;
-            }
-        });
+    public Single<List<LocationEntity>> getSavedLocations() {
+        return dbData.getSavedLocations();
     }
 
     @Override
-    public Completable saveNewLocation(@NonNull LocationContract location) {
-        return dbData.saveNewLocation(location.getAdaptee());
+    public Completable saveNewLocation(@NonNull LocationEntity location) {
+        if (location instanceof LocationEntity)
+            return dbData.saveNewLocation(location);
+        return Completable.error(new ClassCastException());
     }
 
     @Override
-    public Completable removeLocation(LocationContract location) {
-        return dbData.removeLocation(location.getAdaptee());
+    public Completable removeLocation(@NonNull LocationEntity location) {
+        if (location instanceof LocationEntity)
+            return dbData.removeLocation(location);
+        return Completable.error(new ClassCastException());
     }
 
     @Override
@@ -158,7 +135,7 @@ public class DataManager implements DataContract {
     }
 
     @Override
-    public Single<UnitsContract> getUnits() {
+    public Single<Units> getUnits() {
         return Single.just(sharedPreferencesData.getUnits());
     }
 

@@ -29,16 +29,14 @@ public class LocationEntity {
      */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 2022235245)
     private transient LocationEntityDao myDao;
 
     @Generated(hash = 939177862)
     public LocationEntity(Long Id, int locationId, @NotNull String locationName,
-                          String countryCode, double longitude, double latitude, boolean isCurrent,
-                          int position) {
+                          String countryCode, double longitude, double latitude,
+                          boolean isCurrent, int position) {
         this.Id = Id;
         this.locationId = locationId;
         this.locationName = locationName;
@@ -73,16 +71,27 @@ public class LocationEntity {
         return countryCode;
     }
 
+
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
     }
+
 
     public double getLongitude() {
         return longitude;
     }
 
+
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public boolean isCurrent() {
+        return false;
+    }
+
+    public void setCurrent(boolean isCurrent) {
+        this.isCurrent = isCurrent;
     }
 
     public double getLatitude() {
@@ -98,24 +107,28 @@ public class LocationEntity {
         this.longitude = longitude;
     }
 
-    public boolean getIsCurrent() {
-        return this.isCurrent;
-    }
-
-    public void setIsCurrent(boolean isCurrent) {
-        this.isCurrent = isCurrent;
-    }
-
-    public void setCurrent(boolean isCurrent) {
-        this.isCurrent = isCurrent;
-    }
-
     public int getPosition() {
         return position;
     }
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public Long getId() {
+        return this.Id;
+    }
+
+    public void setId(Long Id) {
+        this.Id = Id;
+    }
+
+    public boolean getIsCurrent() {
+        return this.isCurrent;
+    }
+
+    public void setIsCurrent(boolean isCurrent) {
+        this.isCurrent = isCurrent;
     }
 
     /**
@@ -154,18 +167,11 @@ public class LocationEntity {
         myDao.update(this);
     }
 
-    public Long getId() {
-        return this.Id;
-    }
-
-    public void setId(Long Id) {
-        this.Id = Id;
-    }
-
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 923553686)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getLocationEntityDao() : null;
     }
+
 }

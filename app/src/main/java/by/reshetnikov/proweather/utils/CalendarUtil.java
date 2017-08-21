@@ -3,6 +3,8 @@ package by.reshetnikov.proweather.utils;
 import android.content.Context;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
@@ -12,6 +14,33 @@ import by.reshetnikov.proweather.R;
  */
 
 public class CalendarUtil {
+
+    public static int getTodayDate() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int date = calendar.get(Calendar.DATE);
+        calendar.set(year, month, date);
+
+        long dateInMillis = calendar.getTimeInMillis();
+        return (int) dateInMillis / 1000;
+    }
+
+    public static String getTime(int time) {
+        Context context = ProWeatherApp.getAppContext();
+        Date date = new Date(time * 1000L);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.setTimeZone(TimeZone.getDefault());
+        return calendar.get(Calendar.HOUR) + context.getResources().getString(R.string.short_hour);
+
+    }
+
+    public static int getTodayDateInSeconds() {
+        Calendar calendar = Calendar.getInstance();
+        long dateInMillis = calendar.getTimeInMillis();
+        return (int) dateInMillis / 1000;
+    }
 
     public static String getWeekDay() {
         Context context = ProWeatherApp.getAppContext();
@@ -25,7 +54,7 @@ public class CalendarUtil {
             case Calendar.WEDNESDAY:
                 return context.getResources().getString(R.string.wednesday);
             case Calendar.THURSDAY:
-                return context.getResources().getString(R.string.thursaday);
+                return context.getResources().getString(R.string.thursday);
             case Calendar.FRIDAY:
                 return context.getResources().getString(R.string.friday);
             case Calendar.SATURDAY:

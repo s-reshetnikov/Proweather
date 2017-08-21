@@ -6,14 +6,9 @@ import by.reshetnikov.proweather.data.network.openweathermap.model.location.Loca
 
 public class LocationFactory {
 
-
-    public static LocationContract create(LocationEntity entity) {
-        return new LocationAdapter(entity);
-    }
-
-    public static LocationContract create(LocationWeatherApiModel apiModel) {
+    public static LocationEntity create(LocationWeatherApiModel apiModel) {
         LocationEntity locationEntity = createLocationEntity(apiModel);
-        return new LocationAdapter(locationEntity);
+        return locationEntity;
     }
 
     private static LocationEntity createLocationEntity(LocationWeatherApiModel apiModel) {
@@ -24,9 +19,7 @@ public class LocationFactory {
         locationEntity.setLatitude(apiModel.getLatitude());
         locationEntity.setLongitude(apiModel.getLongitude());
         locationEntity.setPosition(0);
-        locationEntity.setIsCurrent(false);
+        locationEntity.setCurrent(false);
         return locationEntity;
     }
-
-
 }

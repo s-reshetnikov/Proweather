@@ -4,22 +4,23 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
-import by.reshetnikov.proweather.data.db.model.CurrentForecastEntity;
-import by.reshetnikov.proweather.data.db.model.HourlyForecastEntity;
+import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import by.reshetnikov.proweather.data.model.location.LocationContract;
+import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public interface DbContract {
 
-    Single<CurrentForecastEntity> getSavedCurrentWeather(@Nullable LocationContract location);
+    Single<NowForecastEntity> getSavedNowForecast(@Nullable LocationEntity location);
 
-    Completable saveCurrentWeather(CurrentForecastEntity currentWeather);
+    Completable saveCurrentWeather(NowForecastEntity currentWeather);
 
-    Single<HourlyForecastEntity> getSavedHourlyForecast(LocationContract location);
+    Single<List<HoursForecastEntity>> getSavedHourlyForecast(LocationEntity location);
 
-    Completable saveHourlyForecastWeather(HourlyForecastEntity forecastWeather);
+    Completable saveHourlyForecasts(List<HoursForecastEntity> forecastWeather);
+
+    Single<LocationEntity> getSavedLocation(long id);
 
     Single<LocationEntity> getChosenLocation();
 

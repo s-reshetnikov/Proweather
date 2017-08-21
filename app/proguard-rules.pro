@@ -47,3 +47,6 @@
 -keepattributes Exceptions
 # used by retrofit
 -dontwarn okio.**
+
+#MPAndroidChart
+-keep class com.github.mikephil.charting.** { *; }

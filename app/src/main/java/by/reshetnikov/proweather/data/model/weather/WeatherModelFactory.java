@@ -1,51 +1,64 @@
 package by.reshetnikov.proweather.data.model.weather;
 
-import by.reshetnikov.proweather.data.db.model.CurrentForecastEntity;
-import by.reshetnikov.proweather.data.db.model.HourlyForecastEntity;
-import by.reshetnikov.proweather.data.db.model.WeatherEntity;
-import by.reshetnikov.proweather.data.model.weather.current.CurrentForecastAdapter;
-import by.reshetnikov.proweather.data.model.weather.current.CurrentForecastAdapterContract;
-import by.reshetnikov.proweather.data.model.weather.hourly.HourlyForecastAdapter;
-import by.reshetnikov.proweather.data.model.weather.hourly.HourlyForecastAdapterContract;
-import by.reshetnikov.proweather.data.network.openweathermap.model.Weather;
+import java.util.ArrayList;
+import java.util.List;
+
+import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
+import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
 import by.reshetnikov.proweather.data.network.openweathermap.model.currentweather.CurrentForecastApiModel;
+import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.ForecastByHoursApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.HourlyForecastApiModel;
 
 
 public class WeatherModelFactory {
 
-    public static CurrentForecastAdapterContract createCurrentForecastAdapter(CurrentForecastApiModel apiModel) {
-        CurrentForecastEntity entity = new CurrentForecastEntity();
+    public static NowForecastEntity createNowForecastFromAPI(CurrentForecastApiModel apiModel) {
+        NowForecastEntity entity = new NowForecastEntity();
         entity.setLocationId(String.valueOf(apiModel.getId()));
-        entity.setTemperature(apiModel.getMain().getTemperature());
-        entity.setRain(apiModel.getRain().getRainVolume());
-        entity.setSnow(apiModel.getSnow().getSnowVolume());
+        entity.setTemperature((int) Math.round(apiModel.getMain().getTemperature()));
+        if (apiModel.getRain() != null)
+            entity.setRain((int) Math.round(apiModel.getRain().getRainVolume()));
+        else
+            entity.setRain(0);
+        if (apiModel.getSnow() != null)
+            entity.setSnow((int) Math.round(apiModel.getSnow().getSnowVolume()));
+        else
+            entity.setSnow(0);
+
         entity.setWindSpeed(apiModel.getWind().getSpeed());
         entity.setWindDirectionDegrees((int) Math.round(apiModel.getWind().getDegrees()));
-        entity.setDateOfUpdate(apiModel.getDt());
+        entity.setDateOfUpdate(apiModel.getDate());
         entity.setHumidity(apiModel.getMain().getHumidity());
-        WeatherEntity weatherEntity = createWeatherEntity(apiModel.getWeather());
-        entity.setWeatherEntity(weatherEntity);
-        return new CurrentForecastAdapter(entity);
+        entity.setWeatherConditionId(apiModel.getWeather().getId());
+        entity.setWeatherDescription(apiModel.getWeather().getDescription());
+        return entity;
     }
 
-    public static CurrentForecastAdapterContract createCurrentForecastAdapter(CurrentForecastEntity entity) {
-        return new CurrentForecastAdapter(entity);
+    public static List<HoursForecastEntity> createForecastsFromAPI(HourlyForecastApiModel apiModel) {
+        List<HoursForecastEntity> forecast = new ArrayList<>();
+        for (ForecastByHoursApiModel hourlyForecast : apiModel.forecasts) {
+            HoursForecastEntity entity = new HoursForecastEntity();
+            entity.setHumidity(hourlyForecast.getMain().getHumidity());
+            entity.setDate(hourlyForecast.getDate());
+            if (hourlyForecast.getRain() != null)
+                entity.setRain((int) Math.round(hourlyForecast.getRain().getRainVolume()));
+            else
+                entity.setRain(0);
+            if (hourlyForecast.getSnow() != null)
+                entity.setSnow((int) Math.round(hourlyForecast.getSnow().getSnowVolume()));
+            else
+                entity.setSnow(0);
+            if (apiModel.getLocation() != null)
+                entity.setLocationId(apiModel.getLocation().getLocationId());
+            else
+                entity.setLocationId(apiModel.getCity().getId());
+            entity.setPressure((int) Math.round(hourlyForecast.getMain().getPressure()));
+            entity.setTemperature((int) Math.round(hourlyForecast.getMain().getTemperature()));
+            entity.setWindDegrees(hourlyForecast.getWind().getDegrees());
+            entity.setWindSpeed(hourlyForecast.getWind().getSpeed());
+            forecast.add(entity);
+        }
+        return forecast;
     }
 
-    public static HourlyForecastAdapterContract createHourlyForecastAdapter(HourlyForecastApiModel apiModel) {
-        HourlyForecastEntity entity = new HourlyForecastEntity();
-        return new HourlyForecastAdapter(entity);
-    }
-
-    public static HourlyForecastAdapterContract createHourlyForecastAdapter(HourlyForecastEntity entity) {
-        return new HourlyForecastAdapter(entity);
-    }
-
-    private static WeatherEntity createWeatherEntity(Weather weather) {
-        WeatherEntity weatherEntity = new WeatherEntity();
-        weatherEntity.setWeatherConditionId(weather.getId());
-        weatherEntity.setWeatherDescription(weather.getDescription());
-        return weatherEntity;
-    }
 }

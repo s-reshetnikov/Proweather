@@ -1,168 +1,182 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeNowForecast"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.currentforecast.WeatherNowFragment"
-    tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="81dp">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tvWeekDay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="30sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Monday" />
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <ImageView
-        android:id="@+id/ivWeatherState"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvWeekDay"
-        app:srcCompat="@drawable/ic_cloudy_day_24dp" />
-
-    <TextView
-        android:id="@+id/tvTemperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:textSize="64sp"
-        app:layout_constraintLeft_toRightOf="@+id/ivWeatherState"
-        app:layout_constraintTop_toTopOf="@+id/ivWeatherState"
-        tools:text="240 \u2109" />
-
-    <TextView
-        android:id="@+id/tvLocationName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="10dp"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/ivWeatherState"
-        app:layout_constraintLeft_toRightOf="@+id/ivWeatherState"
-        app:layout_constraintTop_toBottomOf="@+id/tvTemperature"
-        tools:text="New York" />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/weatherChart"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/tvLocationName" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.68" />
-
-    <android.support.v7.widget.LinearLayoutCompat
-        android:id="@+id/coloredLinearGroup"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/colorPrimaryDark"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <android.support.v7.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
+        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/ivStateRainy"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_margin="8dp"
-                android:layout_weight="0.33"
-                app:srcCompat="@drawable/ic_state_rainy_24dp" />
-
-
-            <ImageView
-                android:id="@+id/ivStatePrecipitation"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_margin="8dp"
-                android:layout_weight="0.33"
-                app:srcCompat="@drawable/ic_state_water_drop_24dp" />
-
-            <ImageView
-                android:id="@+id/ivStateWind"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_margin="8dp"
-                android:layout_weight="0.33"
-                app:srcCompat="@drawable/ic_state_wind_24dp" />
-        </android.support.v7.widget.LinearLayoutCompat>
-
-        <android.support.v7.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
+            tools:context=".presentation.nowforecast.NowForecastFragment"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="81dp">
 
             <TextView
-                android:id="@+id/tvHumidity"
+                android:id="@+id/tvWeekDay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="0.33"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:textColor="@color/colorIconWhite"
-                android:textSize="24sp"
-                tools:text="100%" />
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="30sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Monday" />
+
+            <ImageView
+                android:id="@+id/ivWeatherState"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvWeekDay"
+                app:srcCompat="@drawable/ic_cloudy_day_24dp" />
 
             <TextView
-                android:id="@+id/tvPrecipitation"
+                android:id="@+id/tvTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="0.33"
-                android:gravity="center"
-                android:textColor="@color/colorIconWhite"
-                android:textSize="24sp"
-                tools:text="100 mm" />
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:textSize="64sp"
+                app:layout_constraintLeft_toRightOf="@+id/ivWeatherState"
+                app:layout_constraintTop_toTopOf="@+id/ivWeatherState"
+                tools:text="240 \u2109" />
 
             <TextView
-                android:id="@+id/tvWind"
+                android:id="@+id/tvLocationName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="0.33"
-                android:gravity="center"
-                android:textColor="@color/colorIconWhite"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
                 android:textSize="24sp"
-                tools:text="70 km/h" />
-        </android.support.v7.widget.LinearLayoutCompat>
+                app:layout_constraintBottom_toBottomOf="@+id/ivWeatherState"
+                app:layout_constraintLeft_toRightOf="@+id/ivWeatherState"
+                app:layout_constraintTop_toBottomOf="@+id/tvTemperature"
+                tools:text="New York" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/weatherChart"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/tvLocationName" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.70" />
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/coloredLinearGroup"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/colorPrimaryDark"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@+id/guideline"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/ivStateRainy"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_margin="8dp"
+                        android:layout_weight="0.33"
+                        app:srcCompat="@drawable/ic_state_rainy_24dp" />
 
 
-    </android.support.v7.widget.LinearLayoutCompat>
+                    <ImageView
+                        android:id="@+id/ivStateWindDirection"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_margin="8dp"
+                        android:layout_weight="0.33"
+                        app:srcCompat="@drawable/ic_state_compass_24dp" />
 
-</android.support.constraint.ConstraintLayout>
+                    <ImageView
+                        android:id="@+id/ivStateWindSpeed"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_margin="8dp"
+                        android:layout_weight="0.33"
+                        app:srcCompat="@drawable/ic_state_wind_24dp" />
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvHumidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:layout_weight="0.33"
+                        android:gravity="center"
+                        android:textColor="@color/colorIconWhite"
+                        android:textSize="24sp"
+                        tools:text="100%" />
+
+                    <TextView
+                        android:id="@+id/tvWindDirection"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:layout_weight="0.33"
+                        android:gravity="center"
+                        android:textColor="@color/colorIconWhite"
+                        android:textSize="24sp"
+                        tools:text="NNW" />
+
+                    <TextView
+                        android:id="@+id/tvWindSpeed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:layout_weight="0.33"
+                        android:gravity="center"
+                        android:textColor="@color/colorIconWhite"
+                        android:textSize="24sp"
+                        tools:text="70 km/h" />
+                </android.support.v7.widget.LinearLayoutCompat>
+
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>

@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import by.reshetnikov.proweather.data.network.openweathermap.model.City;
 import by.reshetnikov.proweather.data.network.openweathermap.model.Location;
 
 public class HourlyForecastApiModel {
@@ -28,6 +29,40 @@ public class HourlyForecastApiModel {
 
     @SerializedName("location")
     @Expose
+    public City city;
+    @SerializedName("city")
+    @Expose
     public Location location;
 
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public double getMessage() {
+        return message;
+    }
+
+    public void setMessage(double message) {
+        this.message = message;
+    }
+
+    public List<ForecastByHoursApiModel> getForecasts() {
+        return forecasts;
+    }
+
+    public void setForecasts(List<ForecastByHoursApiModel> forecasts) {
+        this.forecasts = forecasts;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }

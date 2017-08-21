@@ -13,10 +13,9 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 
 import by.reshetnikov.proweather.data.DataContract;
-import by.reshetnikov.proweather.data.model.location.LocationAdapter;
-import by.reshetnikov.proweather.data.model.location.LocationContract;
-import by.reshetnikov.proweather.ui.location.LocationManagerContract;
-import by.reshetnikov.proweather.ui.location.LocationManagerPresenter;
+import by.reshetnikov.proweather.data.db.model.LocationEntity;
+import by.reshetnikov.proweather.presentation.location.LocationManagerContract;
+import by.reshetnikov.proweather.presentation.location.LocationManagerPresenter;
 import by.reshetnikov.proweather.utils.scheduler.ImmediateSchedulerProvider;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
@@ -41,7 +40,7 @@ public class LocationManagerPresenterTest {
     private LocationManagerContract.View view;
 
     @Captor
-    private ArgumentCaptor<List<LocationContract>> adapterModelsCaptor;
+    private ArgumentCaptor<List<LocationEntity>> adapterModelsCaptor;
 
     private LocationManagerContract.Presenter presenter;
 
@@ -55,7 +54,7 @@ public class LocationManagerPresenterTest {
 
     @Test
     public void onStartTest() {
-        List<LocationContract> locations = getMockedLocations();
+        List<LocationEntity> locations = getMockedLocations();
         when(repository.getSavedLocations()).thenReturn(Single.just(locations));
         presenter.start();
         verify(view).refreshSavedLocations(adapterModelsCaptor.capture());
@@ -63,7 +62,7 @@ public class LocationManagerPresenterTest {
 
     @Test(expected = NullPointerException.class)
     public void onStartErrorTest() {
-        List<LocationContract> locations = getMockedLocations();
+//        List<LocationEntity> locations = getMockedLocations();
         when(presenter.getView()).thenThrow(new NullPointerException());
         doThrow(new NullPointerException()).when(presenter).getView();
         presenter.getView();
@@ -72,11 +71,11 @@ public class LocationManagerPresenterTest {
 
     @Test
     public void getSavedLocationsErrorTest() {
-        List<LocationContract> locations = getMockedLocations();
-        when(repository.getSavedLocations()).thenReturn(new Single<List<LocationContract>>() {
+        List<LocationEntity> locations = getMockedLocations();
+        when(repository.getSavedLocations()).thenReturn(new Single<List<LocationEntity>>() {
 
             @Override
-            protected void subscribeActual(@NonNull SingleObserver<? super List<LocationContract>> observer) {
+            protected void subscribeActual(@NonNull SingleObserver<? super List<LocationEntity>> observer) {
                 observer.onError(new RuntimeException());
             }
         });
@@ -86,7 +85,7 @@ public class LocationManagerPresenterTest {
 
     @Test
     public void loadLocationsFromRepositoryAndLoadIntoViewTest() throws Exception {
-        List<LocationContract> locations = getMockedLocations();
+        List<LocationEntity> locations = getMockedLocations();
         when(repository.getSavedLocations()).thenReturn(Single.just(locations));
         presenter.getSavedLocations();
         verify(view).refreshSavedLocations(adapterModelsCaptor.capture());
@@ -106,8 +105,8 @@ public class LocationManagerPresenterTest {
 
     @Test
     public void saveLocationSuccessfullyTest() {
-        List<LocationContract> locations = getMockedLocations();
-        LocationContract location = getMockedLocation();
+        List<LocationEntity> locations = getMockedLocations();
+        LocationEntity location = getMockedLocation();
         when(repository.saveNewLocation(location))
                 .thenReturn(Completable.complete());
         when(repository.getSavedLocations()).thenReturn(Single.just(locations));
@@ -123,7 +122,7 @@ public class LocationManagerPresenterTest {
 
     @Test
     public void saveLocationOnSaveErrorTest() {
-        LocationContract adapterModel = getMockedLocation();
+        LocationEntity adapterModel = getMockedLocation();
         when(repository.saveNewLocation(adapterModel))
                 .thenReturn(new Completable() {
                     @Override
@@ -138,7 +137,7 @@ public class LocationManagerPresenterTest {
     @Test
     public void onLocationItemMovedSuccessfullyTest() {
         int from = 0, to = 5;
-        List<LocationContract> locations = getMockedLocations();
+        List<LocationEntity> locations = getMockedLocations();
         when(repository.updateLocationPosition(from, to))
                 .thenReturn(Completable.complete());
         when(repository.getSavedLocations()).thenReturn(Single.just(locations));
@@ -149,7 +148,7 @@ public class LocationManagerPresenterTest {
     @Test
     public void onLocationItemMovedErrorTest() {
         int from = 0, to = 5;
-        List<LocationContract> locations = getMockedLocations();
+        List<LocationEntity> locations = getMockedLocations();
         when(repository.updateLocationPosition(from, to))
                 .thenReturn(new Completable() {
                     @Override
@@ -167,8 +166,8 @@ public class LocationManagerPresenterTest {
 
     @Test
     public void removeLocationSuccessfullyTest() {
-        List<LocationContract> locations = getMockedLocations();
-        LocationContract location = getMockedLocation();
+        List<LocationEntity> locations = getMockedLocations();
+        LocationEntity location = getMockedLocation();
         when(repository.removeLocation(location))
                 .thenReturn(Completable.complete());
         when(repository.getSavedLocations()).thenReturn(Single.just(locations));
@@ -178,8 +177,8 @@ public class LocationManagerPresenterTest {
 
     @Test
     public void removeLocationWithErrorTest() {
-        List<LocationContract> locations = getMockedLocations();
-        LocationContract location = getMockedLocation();
+        List<LocationEntity> locations = getMockedLocations();
+        LocationEntity location = getMockedLocation();
         when(repository.removeLocation(location))
                 .thenReturn(new Completable() {
                     @Override
@@ -194,7 +193,7 @@ public class LocationManagerPresenterTest {
 
     @Test
     public void onLocationByNameSearchTest() {
-        List<LocationContract> locations = getMockedLocations();
+        List<LocationEntity> locations = getMockedLocations();
         String searchText = Mockito.anyString();
         when(repository.getAllLocationsByName(searchText, Mockito.anyInt()))
                 .thenReturn(Single.just(locations));
@@ -207,13 +206,13 @@ public class LocationManagerPresenterTest {
         presenter.stop();
     }
 
-    private List<LocationContract> getMockedLocations() {
-        List<LocationContract> locations = Mockito.mock(List.class);
+    private List<LocationEntity> getMockedLocations() {
+        List<LocationEntity> locations = Mockito.mock(List.class);
         return locations;
     }
 
-    private LocationContract getMockedLocation() {
-        LocationContract location = Mockito.mock(LocationAdapter.class);
+    private LocationEntity getMockedLocation() {
+        LocationEntity location = Mockito.mock(LocationEntity.class);
         return location;
     }
 }

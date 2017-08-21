@@ -23,7 +23,7 @@ public class Main {
     // Atmospheric pressure (on the sea level, if there is no sea_level or grnd_level data), hPa
     @SerializedName("pressure")
     @Expose
-    private int pressure;
+    private double pressure;
 
     // Atmospheric pressure on the sea level, hPa
     @SerializedName("sea_level")
@@ -33,7 +33,7 @@ public class Main {
     // Atmospheric pressure on the ground level, hPa
     @SerializedName("grnd_level")
     @Expose
-    private int grndLevel;
+    private double grndLevel;
 
     // Humidity, %
     @SerializedName("humidity")
@@ -43,7 +43,7 @@ public class Main {
 
     @SerializedName("temp_kf")
     @Expose
-    private int tempKf;
+    private double tempKf;
 
     public double getTemperature() {
         return temperature;
@@ -69,11 +69,11 @@ public class Main {
         this.tempMax = tempMax;
     }
 
-    public int getPressure() {
+    public double getPressure() {
         return pressure;
     }
 
-    public void setPressure(int pressure) {
+    public void setPressure(double pressure) {
         this.pressure = pressure;
     }
 
@@ -85,11 +85,11 @@ public class Main {
         this.seaLevel = seaLevel;
     }
 
-    public int getGrndLevel() {
+    public double getGrndLevel() {
         return grndLevel;
     }
 
-    public void setGrndLevel(int grndLevel) {
+    public void setGrndLevel(double grndLevel) {
         this.grndLevel = grndLevel;
     }
 
@@ -101,7 +101,7 @@ public class Main {
         this.humidity = humidity;
     }
 
-    public int getTempKf() {
+    public double getTempKf() {
         return tempKf;
     }
 

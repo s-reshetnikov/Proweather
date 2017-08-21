@@ -3,15 +3,17 @@ package by.reshetnikov.proweather.di.module;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
+import by.reshetnikov.proweather.business.nowforecast.NowForecastInteractor;
+import by.reshetnikov.proweather.business.nowforecast.NowForecastInteractorContract;
 import by.reshetnikov.proweather.di.ActivityContext;
-import by.reshetnikov.proweather.ui.currentforecast.CurrentForecastContract;
-import by.reshetnikov.proweather.ui.currentforecast.CurrentForecastPresenter;
-import by.reshetnikov.proweather.ui.forecast.ForecastContract;
-import by.reshetnikov.proweather.ui.forecast.ForecastPresenter;
-import by.reshetnikov.proweather.ui.location.AutoCompleteLocationsAdapter;
-import by.reshetnikov.proweather.ui.location.LocationManagerContract;
-import by.reshetnikov.proweather.ui.location.LocationManagerPresenter;
-import by.reshetnikov.proweather.ui.location.adapter.LocationsRecyclerViewAdapter;
+import by.reshetnikov.proweather.presentation.forecast.ForecastContract;
+import by.reshetnikov.proweather.presentation.forecast.ForecastPresenter;
+import by.reshetnikov.proweather.presentation.location.AutoCompleteLocationsAdapter;
+import by.reshetnikov.proweather.presentation.location.LocationManagerContract;
+import by.reshetnikov.proweather.presentation.location.LocationManagerPresenter;
+import by.reshetnikov.proweather.presentation.location.adapter.LocationsRecyclerViewAdapter;
+import by.reshetnikov.proweather.presentation.nowforecast.NowForecastContract;
+import by.reshetnikov.proweather.presentation.nowforecast.NowForecastPresenter;
 import by.reshetnikov.proweather.utils.scheduler.AppSchedulerProvider;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import dagger.Module;
@@ -39,7 +41,7 @@ public class ActivityModule {
     }
 
     @Provides
-    CurrentForecastContract.Presenter provideCurrentWeatherPresenter(CurrentForecastPresenter presenter) {
+    NowForecastContract.Presenter provideCurrentWeatherPresenter(NowForecastPresenter presenter) {
         return presenter;
     }
 
@@ -67,5 +69,10 @@ public class ActivityModule {
     @Provides
     SchedulerProvider provideSchedulerProvider() {
         return new AppSchedulerProvider();
+    }
+
+    @Provides
+    NowForecastInteractorContract provideNowForecastInteractor(NowForecastInteractor interactor) {
+        return interactor;
     }
 }

@@ -8,11 +8,10 @@ import com.google.gson.Gson;
 
 import javax.inject.Inject;
 
-import by.reshetnikov.proweather.data.model.unit.UnitsAppModel;
-import by.reshetnikov.proweather.data.model.unit.UnitsContract;
+import by.reshetnikov.proweather.data.model.unit.Units;
 import by.reshetnikov.proweather.data.preferences.units.DistanceUnits;
+import by.reshetnikov.proweather.data.preferences.units.SpeedUnit;
 import by.reshetnikov.proweather.data.preferences.units.TemperatureUnit;
-import by.reshetnikov.proweather.data.preferences.units.WindSpeedUnit;
 import by.reshetnikov.proweather.di.ApplicationContext;
 
 
@@ -85,23 +84,23 @@ public class AppSharedPreferencesData implements PreferencesContract {
         return DistanceUnits.METER;
     }
 
-    private WindSpeedUnit getWindSpeedUnitPreference() {
+    private SpeedUnit getWindSpeedUnitPreference() {
         int unitValue = Integer.valueOf(preferences.getString(WIND_SPEED_UNIT_KEY, "0"));
         switch (unitValue) {
             case 0:
-                return WindSpeedUnit.METERES_PER_SECOND;
+                return SpeedUnit.METRES_PER_SECOND;
             case 1:
-                return WindSpeedUnit.MILES_PER_HOUR;
+                return SpeedUnit.MILES_PER_HOUR;
         }
-        return WindSpeedUnit.METERES_PER_SECOND;
+        return SpeedUnit.METRES_PER_SECOND;
     }
 
     @Override
-    public UnitsContract getUnits() {
+    public Units getUnits() {
         TemperatureUnit temperature = getTemperatureUnit();
-        WindSpeedUnit windSpeed = getWindSpeedUnitPreference();
+        SpeedUnit windSpeed = getWindSpeedUnitPreference();
         DistanceUnits distance = getDistanceUnitPreference();
-        return new UnitsAppModel(temperature, distance, windSpeed);
+        return new Units(temperature, distance, windSpeed);
     }
 
 }

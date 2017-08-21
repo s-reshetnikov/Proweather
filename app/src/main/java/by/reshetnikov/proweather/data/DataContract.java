@@ -4,10 +4,10 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import by.reshetnikov.proweather.data.model.location.LocationContract;
-import by.reshetnikov.proweather.data.model.unit.UnitsContract;
-import by.reshetnikov.proweather.data.model.weather.current.CurrentForecastAdapterContract;
-import by.reshetnikov.proweather.data.model.weather.hourly.HourlyForecastAdapterContract;
+import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
+import by.reshetnikov.proweather.data.db.model.LocationEntity;
+import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
+import by.reshetnikov.proweather.data.model.unit.Units;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
@@ -15,23 +15,23 @@ import io.reactivex.Single;
 public interface DataContract {
 
 
-    Single<? extends CurrentForecastAdapterContract> getSavedCurrentWeather(@NonNull LocationContract location);
+    Single<NowForecastEntity> getNowForecast(@NonNull LocationEntity location);
 
-    Single<? extends HourlyForecastAdapterContract> getSavedHourlyForecastWeather(@NonNull LocationContract location);
+    Single<List<HoursForecastEntity>> getHourForecasts(@NonNull LocationEntity location);
 
-    Single<List<LocationContract>> getAllLocationsByName(String locationName, int resultsCount);
+    Single<List<LocationEntity>> getAllLocationsByName(String locationName, int resultsCount);
 
-    Single<? extends LocationContract> getChosenLocation();
+    Single<LocationEntity> getChosenLocation();
 
-    Single<List<LocationContract>> getSavedLocations();
+    Single<List<LocationEntity>> getSavedLocations();
 
-    Completable saveNewLocation(@NonNull LocationContract location);
+    Completable saveNewLocation(@NonNull LocationEntity location);
 
-    Completable removeLocation(@NonNull LocationContract location);
+    Completable removeLocation(@NonNull LocationEntity location);
 
     boolean getCanUseCurrentLocationPreference();
 
-    Single<UnitsContract> getUnits();
+    Single<Units> getUnits();
 
     Completable updateLocationPosition(int fromPosition, int toPosition);
 }

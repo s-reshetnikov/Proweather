@@ -2,7 +2,7 @@ package by.reshetnikov.proweather.data.preferences;
 
 import android.location.Location;
 
-import by.reshetnikov.proweather.data.model.unit.UnitsContract;
+import by.reshetnikov.proweather.data.model.unit.Units;
 
 
 public interface PreferencesContract {
@@ -17,5 +17,5 @@ public interface PreferencesContract {
 
     boolean getCanUseCurrentLocationPreference();
 
-    UnitsContract getUnits();
+    Units getUnits();
 }

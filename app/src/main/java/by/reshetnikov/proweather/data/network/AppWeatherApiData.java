@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import by.reshetnikov.proweather.data.model.location.LocationContract;
+import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.network.openweathermap.OpenWeatherMapApiService;
 import by.reshetnikov.proweather.data.network.openweathermap.model.currentweather.CurrentForecastApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.HourlyForecastApiModel;
@@ -25,18 +25,18 @@ public class AppWeatherApiData implements WeatherApiDataContract {
 
     @Inject
     public AppWeatherApiData(OpenWeatherMapApiService api) {
-        Log.d(TAG, "createCurrentForecastAdapter AppWeatherApiData");
+        Log.d(TAG, "createNowForecastFromAPI AppWeatherApiData");
         this.api = api;
     }
 
     @Override
-    public Single<CurrentForecastApiModel> getCurrentForecast(LocationContract location) {
+    public Single<CurrentForecastApiModel> getCurrentForecast(LocationEntity location) {
         HashMap<String, String> queryMap = getQueryForRequest(location);
         return api.getCurrentWeather(queryMap);
     }
 
     @Override
-    public Single<HourlyForecastApiModel> getHourlyForecast(LocationContract location) {
+    public Single<HourlyForecastApiModel> getHourlyForecast(LocationEntity location) {
         HashMap<String, String> queryMap = getQueryForRequest(location);
         return api.getHourlyForecastWeather(queryMap);
     }
@@ -55,12 +55,12 @@ public class AppWeatherApiData implements WeatherApiDataContract {
         return api.getLocations(queryMap);
     }
 
-    private HashMap<String, String> getQueryForRequest(LocationContract location) {
+    private HashMap<String, String> getQueryForRequest(LocationEntity location) {
         int maxResultsPerRequest = 10;
         return getQueryForRequest(location, maxResultsPerRequest);
     }
 
-    private HashMap<String, String> getQueryForRequest(LocationContract location, int maxResults) {
+    private HashMap<String, String> getQueryForRequest(LocationEntity location, int maxResults) {
 
         if (!TextUtils.isEmpty(location.getLocationName())) {
             if (TextUtils.isEmpty(location.getCountryCode()))
