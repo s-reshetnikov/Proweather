@@ -96,4 +96,10 @@
     <string name="north_north_west">NNW</string>
     <string name="metres_per_second">m/s</string>
     <string name="miles_per_second">mph</string>
+    <string name="humidity_label">Humidity:</string>
+    <string name="pressure_label">Pressure:</string>
+    <string name="morning">Morning</string>
+    <string name="day">Day</string>
+    <string name="evening">Evening</string>
+    <string name="night">Night</string>
 </resources>

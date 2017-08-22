@@ -15,7 +15,7 @@
         android:background="@drawable/button_circle_background_40dp"
         android:gravity="center"
         android:textAlignment="gravity"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/colorIconWhite"
         android:textSize="24sp"
         tools:text="RU" />
 
