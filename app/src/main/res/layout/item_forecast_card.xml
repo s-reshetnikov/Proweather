@@ -46,7 +46,7 @@
                 android:id="@+id/humidityData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tvTemperatureCard"
+                android:layout_above="@+id/pressureData"
                 android:padding="8dp">
 
                 <TextView
@@ -66,7 +66,7 @@
                 android:id="@+id/pressureData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/humidityData"
+                android:layout_alignBottom="@+id/ivStateWeatherCard"
                 android:padding="8dp">
 
                 <TextView
@@ -90,25 +90,305 @@
                 android:layout_height="128dp"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/tvDateCard"
+                android:layout_marginBottom="8dp"
                 tools:src="@drawable/ic_hard_rain" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvHourlyForecastInfo"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:id="@+id/expandedDetailsDivider"
+                android:layout_height="1dp"
                 android:layout_below="@+id/ivStateWeatherCard"
-                android:paddingBottom="24dp"
-                tools:listitem="@layout/item_detailed_forecast_card" />
+                android:background="@android:color/darker_gray" />
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/forecastDayTimeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_below="@+id/expandedDetailsDivider"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/tvForecastStateMorning"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:text="@string/morning"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvForecastStateDay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:text="@string/day"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvForecastStateEvening"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:text="@string/evening"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvForecastStateNight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:text="@string/night"
+                    android:textSize="18sp" />
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/forecastImageDayTimeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/forecastDayTimeLayout">
+
+                <ImageView
+                    android:id="@+id/ivForecastStateMorning"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:layout_weight="0.25"
+                    tools:src="@drawable/ic_hard_rain" />
+
+                <ImageView
+                    android:id="@+id/ivForecastStateDay"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:layout_weight="0.25"
+                    tools:src="@drawable/ic_hard_rain" />
+
+                <ImageView
+                    android:id="@+id/ivForecastStateEvening"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:layout_weight="0.25"
+                    tools:src="@drawable/ic_hard_rain" />
+
+                <ImageView
+                    android:id="@+id/ivForecastStateNight"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:layout_weight="0.25"
+                    tools:src="@drawable/ic_hard_rain" />
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/forecastTemperatureLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/forecastImageDayTimeLayout">
+
+                <TextView
+                    android:id="@+id/tvForecastTemperatureMorning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    tools:text="275 \u212A" />
+
+                <TextView
+                    android:id="@+id/tvForecastTemperatureDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    tools:text="290 \u212A" />
+
+                <TextView
+                    android:id="@+id/tvForecastTemperatureEvening"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    tools:text="280 \u212A" />
+
+                <TextView
+                    android:id="@+id/tvForecastTemperatureNight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    tools:text="270 \u212A" />
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/forecastWindDirectionLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/forecastTemperatureLayout">
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_weight="0.5"
+                        android:paddingEnd="3dp"
+                        android:paddingRight="3dp"
+                        android:scaleType="fitEnd"
+                        app:srcCompat="@drawable/ic_compass_24dp" />
+
+                    <TextView
+                        android:id="@+id/tvForecastWindDirectionMorning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="3dp"
+                        android:textSize="16sp"
+                        tools:text="N" />
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_weight="0.5"
+                        android:paddingEnd="3dp"
+                        android:paddingRight="3dp"
+                        android:scaleType="fitEnd"
+                        app:srcCompat="@drawable/ic_compass_24dp" />
+
+                    <TextView
+                        android:id="@+id/tvForecastWindDirectionDay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="3dp"
+                        android:textSize="16sp"
+                        tools:text="NE" />
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_weight="0.5"
+                        android:paddingEnd="3dp"
+                        android:paddingRight="3dp"
+                        android:scaleType="fitEnd"
+                        app:srcCompat="@drawable/ic_compass_24dp" />
+
+                    <TextView
+                        android:id="@+id/tvForecastWindDirectionEvening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="3dp"
+                        android:textSize="16sp"
+                        tools:text="NEE" />
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_weight="0.5"
+                        android:paddingEnd="3dp"
+                        android:paddingRight="3dp"
+                        android:scaleType="fitEnd"
+                        app:srcCompat="@drawable/ic_compass_24dp" />
+
+                    <TextView
+                        android:id="@+id/tvForecastWindDirectionNight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="3dp"
+                        android:textSize="16sp"
+                        tools:text="E" />
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/forecastWindSpeedLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/forecastWindDirectionLayout">
+
+                <TextView
+                    android:id="@+id/tvForecastWindSpeedMorning"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    tools:text="155 kmh" />
+
+                <TextView
+                    android:id="@+id/tvForecastWindSpeedDay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    tools:text="155 kmh" />
+
+                <TextView
+                    android:id="@+id/tvForecastWindSpeedEvening"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    tools:text="155 kmh" />
+
+                <TextView
+                    android:id="@+id/tvForecastWindSpeedNight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    tools:text="155 kmh" />
+
+            </android.support.v7.widget.LinearLayoutCompat>
 
             <ImageButton
                 android:id="@+id/ibCollapseCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/rvHourlyForecastInfo"
                 android:padding="8dp"
                 app:srcCompat="@drawable/ic_expand_more_24dp" />
 
         </RelativeLayout>
+
     </android.support.v7.widget.CardView>
 </android.support.v7.widget.LinearLayoutCompat>
