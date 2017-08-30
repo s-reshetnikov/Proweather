@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.decoration;
+package by.reshetnikov.proweather.presentation.decoration;
 
 import android.content.Context;
 import android.graphics.Canvas;

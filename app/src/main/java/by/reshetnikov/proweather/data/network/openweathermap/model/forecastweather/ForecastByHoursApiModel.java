@@ -18,7 +18,7 @@ public class ForecastByHoursApiModel {
     // Time of data forecasted, unix, UTC
     @SerializedName("dt")
     @Expose
-    public int date;
+    public long date;
     @SerializedName("main")
     @Expose
     public Main main;
@@ -45,11 +45,11 @@ public class ForecastByHoursApiModel {
     @Expose
     public String dateText;
 
-    public int getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(int date) {
+    public void setDate(long date) {
         this.date = date;
     }
 
@@ -61,8 +61,8 @@ public class ForecastByHoursApiModel {
         this.main = main;
     }
 
-    public List<Weather> getWeather() {
-        return weather;
+    public Weather getWeather() {
+        return weather.get(0);
     }
 
     public void setWeather(List<Weather> weather) {

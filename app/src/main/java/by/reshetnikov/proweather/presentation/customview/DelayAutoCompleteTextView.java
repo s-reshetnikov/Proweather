@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.customview;
+package by.reshetnikov.proweather.presentation.customview;
 
 import android.content.Context;
 import android.os.Handler;

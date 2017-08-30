@@ -1,6 +1,7 @@
 package by.reshetnikov.proweather.presentation.forecast;
 
-import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.HourlyForecastApiModel;
+import java.util.List;
+
 import by.reshetnikov.proweather.presentation.base.PresenterContract;
 import by.reshetnikov.proweather.presentation.base.ViewContract;
 
@@ -9,11 +10,16 @@ public interface ForecastContract {
 
     interface View extends ViewContract<Presenter> {
 
-        void showWeatherForecast();
+        void showWeatherForecast(List<DailyForecastViewModel> forecast);
+
+        void showLoading();
+
+        void hideLoading();
     }
 
     interface Presenter extends PresenterContract {
-        HourlyForecastApiModel getForecastWeather();
+
+        void onRefresh();
 
         void setView(View view);
     }

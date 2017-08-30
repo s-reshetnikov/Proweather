@@ -150,7 +150,7 @@
                         tools:text="100%" />
 
                     <TextView
-                        android:id="@+id/tvWindDirection"
+                        android:id="@+id/tvWindDirectionDataValue"
                         android:layout_width="64dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="0dp"
@@ -161,7 +161,7 @@
                         tools:text="NNE" />
 
                     <TextView
-                        android:id="@+id/tvWindSpeed"
+                        android:id="@+id/tvWindSpeedDataValue"
                         android:layout_width="64dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="0dp"

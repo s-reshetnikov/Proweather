@@ -30,12 +30,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.customview.DelayAutoCompleteTextView;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import by.reshetnikov.proweather.decoration.SimpleDividerItemDecoration;
 import by.reshetnikov.proweather.di.component.ActivityComponent;
 import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
 import by.reshetnikov.proweather.di.module.ActivityModule;
+import by.reshetnikov.proweather.presentation.customview.DelayAutoCompleteTextView;
+import by.reshetnikov.proweather.presentation.decoration.SimpleDividerItemDecoration;
 import by.reshetnikov.proweather.presentation.location.adapter.LocationsRecyclerViewAdapter;
 import by.reshetnikov.proweather.presentation.location.adapter.LocationsViewAdapterContract;
 import by.reshetnikov.proweather.presentation.location.callback.LocationItemTouchHelperCallback;
@@ -76,10 +76,6 @@ public class LocationManagerFragment extends Fragment implements LocationManager
         setupAddLocationButton();
         return view;
     }
-
-//    private ActivityComponent getActivityComponent() {
-//        return null;
-//    }
 
     private void setupAddLocationButton() {
         fabAddLocation.setOnClickListener(new View.OnClickListener() {
@@ -212,7 +208,6 @@ public class LocationManagerFragment extends Fragment implements LocationManager
         rvLocations.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View v, DragEvent event) {
-                Log.d(TAG, event.toString());
                 return false;
             }
         });

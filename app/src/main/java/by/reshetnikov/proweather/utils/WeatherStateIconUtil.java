@@ -7,45 +7,30 @@ import android.support.v7.content.res.AppCompatResources;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.inject.Inject;
-
+import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.di.ApplicationContext;
 
 public class WeatherStateIconUtil {
-    private Context context;
 
-    @Inject
-    public WeatherStateIconUtil(@ApplicationContext Context context) {
-        this.context = context;
+    private WeatherStateIconUtil() {
     }
 
-    public Drawable getIcon(int iconCode) {
+    public static Drawable getIcon(int iconCode) {
         return getIcon(iconCode, System.currentTimeMillis());
     }
 
-    public Drawable getIcon(int iconCode, long dateTime) {
+    public static Drawable getIcon(int iconCode, long dateTime) {
         boolean isDay = isDayTime(dateTime);
+        Context context = ProWeatherApp.getAppContext();
         return AppCompatResources.getDrawable(context, getIconCode(iconCode, isDay));
     }
 
-    private int getIconCode(int iconCode, boolean isDay) {
-        if (iconCode >= 200 && iconCode < 300)
-            return getThunderstormCodes(iconCode, isDay);
-        if (iconCode >= 300 && iconCode < 400)
-            return getDrizzleCodes(iconCode, isDay);
-        if (iconCode >= 500 && iconCode < 600)
-            return getRainCodes(iconCode, isDay);
-        if (iconCode >= 600 && iconCode < 700)
-            return getSnowCodes(iconCode, isDay);
-        if (iconCode >= 700 && iconCode < 800)
-            return getAtmosphereCodes(iconCode, isDay);
-        if (iconCode >= 800 && iconCode < 900)
-            return getClearCodes(iconCode, isDay);
-        return getExtremeCodes(iconCode, isDay);
+    public static Drawable getIcon(int iconCode, boolean isDay) {
+        Context context = ProWeatherApp.getAppContext();
+        return AppCompatResources.getDrawable(context, getIconCode(iconCode, isDay));
     }
 
-    private boolean isDayTime(long dateTime) {
+    private static boolean isDayTime(long dateTime) {
         Date date = new Date(dateTime);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -53,19 +38,18 @@ public class WeatherStateIconUtil {
 
     }
 
-
     // 2xx
-    private int getThunderstormCodes(int iconCode, boolean isDay) {
+    private static int getThunderstormCodes(int iconCode, boolean isDay) {
         return R.drawable.ic_lightning_and_drizzle_cloud;
     }
 
     // 3xx
-    private int getDrizzleCodes(int iconCode, boolean isDay) {
+    private static int getDrizzleCodes(int iconCode, boolean isDay) {
         return R.drawable.ic_hard_rain;
     }
 
     // 5xx
-    private int getRainCodes(int iconCode, boolean isDay) {
+    private static int getRainCodes(int iconCode, boolean isDay) {
         if (iconCode == 500)
             return R.drawable.ic_rain_and_cloud;
         if (iconCode >= 501 && iconCode <= 504) {
@@ -81,17 +65,17 @@ public class WeatherStateIconUtil {
     }
 
     // 6xx
-    private int getSnowCodes(int iconCode, boolean isDay) {
+    private static int getSnowCodes(int iconCode, boolean isDay) {
         return R.drawable.ic_snow_cloud;
     }
 
     // 7xx
-    private int getAtmosphereCodes(int iconCode, boolean isDay) {
+    private static int getAtmosphereCodes(int iconCode, boolean isDay) {
         return R.drawable.ic_foggy_day;
     }
 
     // 8xx
-    private int getClearCodes(int iconCode, boolean isDay) {
+    private static int getClearCodes(int iconCode, boolean isDay) {
         if (iconCode == 800) {
             if (isDay)
                 return R.drawable.ic_sunny_day;
@@ -108,7 +92,23 @@ public class WeatherStateIconUtil {
     }
 
     // 9xx
-    private int getExtremeCodes(int iconCode, boolean isDay) {
+    private static int getExtremeCodes(int iconCode, boolean isDay) {
         return R.drawable.ic_tornado;
+    }
+
+    private static int getIconCode(int iconCode, boolean isDay) {
+        if (iconCode >= 200 && iconCode < 300)
+            return getThunderstormCodes(iconCode, isDay);
+        if (iconCode >= 300 && iconCode < 400)
+            return getDrizzleCodes(iconCode, isDay);
+        if (iconCode >= 500 && iconCode < 600)
+            return getRainCodes(iconCode, isDay);
+        if (iconCode >= 600 && iconCode < 700)
+            return getSnowCodes(iconCode, isDay);
+        if (iconCode >= 700 && iconCode < 800)
+            return getAtmosphereCodes(iconCode, isDay);
+        if (iconCode >= 800 && iconCode < 900)
+            return getClearCodes(iconCode, isDay);
+        return getExtremeCodes(iconCode, isDay);
     }
 }

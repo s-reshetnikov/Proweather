@@ -7,6 +7,8 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
+import by.reshetnikov.proweather.data.db.model.DailyForecastEntityDao;
 import by.reshetnikov.proweather.data.db.model.DaoSession;
 import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
 import by.reshetnikov.proweather.data.db.model.HoursForecastEntityDao;
@@ -14,8 +16,8 @@ import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntityDao;
 import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
 import by.reshetnikov.proweather.data.db.model.NowForecastEntityDao;
-import by.reshetnikov.proweather.exception.NoSavedForecastDataException;
-import by.reshetnikov.proweather.exception.NoSavedLocationException;
+import by.reshetnikov.proweather.data.exception.NoSavedForecastDataException;
+import by.reshetnikov.proweather.data.exception.NoSavedLocationException;
 import by.reshetnikov.proweather.utils.CalendarUtil;
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -27,12 +29,14 @@ public class AppDbData implements DbContract {
 
     private final NowForecastEntityDao nowForecastEntityDao;
     private final HoursForecastEntityDao hourlyForecastDao;
+    private final DailyForecastEntityDao dailyForecastEntityDao;
     private final LocationEntityDao locationDao;
 
     @Inject
     public AppDbData(DaoSession daoSession) {
         nowForecastEntityDao = daoSession.getNowForecastEntityDao();
         hourlyForecastDao = daoSession.getHoursForecastEntityDao();
+        dailyForecastEntityDao = daoSession.getDailyForecastEntityDao();
         locationDao = daoSession.getLocationEntityDao();
     }
 
@@ -75,6 +79,26 @@ public class AppDbData implements DbContract {
             @Override
             public Boolean call() throws Exception {
                 return saveHourlyForecastWeatherEntity(forecastWeather);
+            }
+        });
+    }
+
+    @Override
+    public Single<List<DailyForecastEntity>> getSavedDailyForecast(final LocationEntity location) {
+        return Single.fromCallable(new Callable<List<DailyForecastEntity>>() {
+            @Override
+            public List<DailyForecastEntity> call() throws Exception {
+                return getDailyForecastWeatherEntity(location.getLocationId());
+            }
+        });
+    }
+
+    @Override
+    public Completable saveDailyForecasts(final List<DailyForecastEntity> forecastWeather) {
+        return Completable.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return saveDailyForecastWeatherEntity(forecastWeather);
             }
         });
     }
@@ -160,7 +184,7 @@ public class AppDbData implements DbContract {
     private List<HoursForecastEntity> getHourlyForecastWeatherEntity(int locationId) {
         return hourlyForecastDao.queryBuilder()
                 .where(HoursForecastEntityDao.Properties.LocationId.eq(locationId))
-                .where(HoursForecastEntityDao.Properties.Date.ge(Integer.valueOf(CalendarUtil.getTodayDate())))
+                .where(HoursForecastEntityDao.Properties.Date.ge(CalendarUtil.getTodayDate()))
                 .build()
                 .list();
     }
@@ -168,6 +192,20 @@ public class AppDbData implements DbContract {
     private Boolean saveHourlyForecastWeatherEntity(List<HoursForecastEntity> forecastEntities) {
         for (HoursForecastEntity entity : forecastEntities)
             hourlyForecastDao.insertOrReplace(entity);
+        return true;
+    }
+
+    private List<DailyForecastEntity> getDailyForecastWeatherEntity(int locationId) {
+        return dailyForecastEntityDao.queryBuilder()
+                .where(HoursForecastEntityDao.Properties.LocationId.eq(locationId))
+                .where(HoursForecastEntityDao.Properties.Date.ge(CalendarUtil.getTodayDate()))
+                .build()
+                .list();
+    }
+
+    private Boolean saveDailyForecastWeatherEntity(List<DailyForecastEntity> forecastEntities) {
+        for (DailyForecastEntity entity : forecastEntities)
+            dailyForecastEntityDao.insertOrReplace(entity);
         return true;
     }
 

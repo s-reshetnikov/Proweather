@@ -102,4 +102,8 @@
     <string name="day">Day</string>
     <string name="evening">Evening</string>
     <string name="night">Night</string>
+    <string name="hecto_pascal">hPa</string>
+    <string name="wind_label">Wind:</string>
+    <string name="details_button_text">Details</string>
+    <string name="hide_button_text">HIDE</string>
 </resources>

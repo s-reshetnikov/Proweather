@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
@@ -34,4 +35,6 @@ public interface DataContract {
     Single<Units> getUnits();
 
     Completable updateLocationPosition(int fromPosition, int toPosition);
+
+    Single<List<DailyForecastEntity>> getDailyForecasts(LocationEntity location);
 }

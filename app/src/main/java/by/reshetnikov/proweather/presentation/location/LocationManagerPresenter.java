@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import by.reshetnikov.proweather.data.DataContract;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import by.reshetnikov.proweather.exception.NoNetworkException;
+import by.reshetnikov.proweather.data.exception.NoNetworkException;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
@@ -31,7 +31,7 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
     public LocationManagerPresenter(DataContract dataRepository, SchedulerProvider scheduler) {
         this.dataRepository = dataRepository;
         this.scheduler = scheduler;
-        disposables = new CompositeDisposable();
+        this.disposables = new CompositeDisposable();
     }
 
     @Override

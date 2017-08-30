@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
+import by.reshetnikov.proweather.business.forecast.ForecastInteractor;
+import by.reshetnikov.proweather.business.forecast.ForecastInteractorContract;
 import by.reshetnikov.proweather.data.DataContract;
 import by.reshetnikov.proweather.data.DataManager;
 import by.reshetnikov.proweather.data.db.AppDbData;
@@ -25,9 +27,9 @@ import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
 import by.reshetnikov.proweather.di.ApplicationContext;
 import by.reshetnikov.proweather.di.DatabaseInfo;
 import by.reshetnikov.proweather.utils.AppConstants;
-import by.reshetnikov.proweather.utils.WeatherStateIconUtil;
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -136,10 +138,13 @@ public class ApplicationModule {
         return repository;
     }
 
-    // utils
-    @Singleton
     @Provides
-    WeatherStateIconUtil provideWeatherStateIconUtil(@ApplicationContext Context context) {
-        return new WeatherStateIconUtil(context);
+    CompositeDisposable provideCompositeDisposable(CompositeDisposable disposable) {
+        return disposable;
+    }
+
+    @Provides
+    ForecastInteractorContract provideInteractor(ForecastInteractor interactor) {
+        return interactor;
     }
 }

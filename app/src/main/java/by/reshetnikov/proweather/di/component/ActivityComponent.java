@@ -2,6 +2,8 @@ package by.reshetnikov.proweather.di.component;
 
 import by.reshetnikov.proweather.di.PerActivity;
 import by.reshetnikov.proweather.di.module.ActivityModule;
+import by.reshetnikov.proweather.presentation.forecast.ForecastFragment;
+import by.reshetnikov.proweather.presentation.forecast.ForecastPresenter;
 import by.reshetnikov.proweather.presentation.location.LocationActivity;
 import by.reshetnikov.proweather.presentation.location.LocationManagerFragment;
 import by.reshetnikov.proweather.presentation.location.LocationManagerPresenter;
@@ -25,6 +27,10 @@ public interface ActivityComponent {
     void inject(NowForecastFragment fragment);
 
     void inject(NowForecastPresenter presenter);
+
+    void inject(ForecastFragment fragment);
+
+    void inject(ForecastPresenter presenter);
 
 
 }

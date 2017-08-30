@@ -1,6 +1,7 @@
 package by.reshetnikov.proweather.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -23,7 +24,7 @@ public final class UnitUtils {
     private static final char KELVIN_SIGN = '\u2109';
     private static final char FAHRENHEIT_SIGN = '\u212A';
 
-    public static String getTemperatureWithSign(int fahrenheitTemperature, TemperatureUnit temperatureUnit) {
+    public static String getTemperatureWithUnits(int fahrenheitTemperature, TemperatureUnit temperatureUnit) {
         if (temperatureUnit == TemperatureUnit.CELSIUS)
             return String.valueOf(UnitUtils.kelvinsToCelsius(fahrenheitTemperature)) + WHITESPACE + CELSIUS_SIGN;
         if (temperatureUnit == TemperatureUnit.KELVIN)
@@ -42,8 +43,15 @@ public final class UnitUtils {
     public static String getSpeed(double windSpeed, SpeedUnit speedUnit) {
         Context context = ProWeatherApp.getAppContext();
         if (speedUnit == SpeedUnit.METRES_PER_SECOND)
-            return String.valueOf(windSpeed) + WHITESPACE + context.getString(R.string.metres_per_second);
+            return getFormatedDecimal(windSpeed) + WHITESPACE + context.getString(R.string.metres_per_second);
         return metesPerSecondToMilesPerHour(windSpeed) + windSpeed + context.getString(R.string.miles_per_second);
+    }
+
+    @NonNull
+    private static String getFormatedDecimal(double number) {
+        DecimalFormat formatter = new DecimalFormat("###.#");
+        formatter.setRoundingMode(RoundingMode.HALF_UP);
+        return formatter.format(number);
     }
 
     private static int kelvinsToFahrenheits(double kelvins) {
@@ -55,10 +63,8 @@ public final class UnitUtils {
     }
 
     private static String metesPerSecondToMilesPerHour(double metesPerSecond) {
-        double mph = metesPerSecond * ONE_METER_PER_SECOND_IN_MILES_PER_HOUR_CONSTANT;
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-        return decimalFormat.format(mph);
+        double windSpeed = metesPerSecond * ONE_METER_PER_SECOND_IN_MILES_PER_HOUR_CONSTANT;
+        return getFormatedDecimal(windSpeed);
 
     }
 
@@ -125,5 +131,10 @@ public final class UnitUtils {
         if (speedUnit == SpeedUnit.MILES_PER_HOUR)
             return context.getString(R.string.metres_per_second);
         return context.getString(R.string.miles_per_second);
+    }
+
+    public static String getPressureWithUnits(int pressure) {
+        Context context = ProWeatherApp.getAppContext();
+        return String.valueOf(pressure) + WHITESPACE + context.getString(R.string.hecto_pascal);
     }
 }

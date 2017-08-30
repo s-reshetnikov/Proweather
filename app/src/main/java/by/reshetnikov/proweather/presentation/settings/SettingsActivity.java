@@ -66,7 +66,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                 } else {
                     Ringtone ringtone = RingtoneManager.getRingtone(
-                            preference.getContext(), Uri.parse(stringValue));
+                            preference.getContext(), Uri.parse(Uri.decode(stringValue)));
 
                     if (ringtone == null) {
                         // Clear the summary if there was a lookup error.

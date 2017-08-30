@@ -47,7 +47,7 @@ public class CurrentForecastApiModel {
     // Time of data calculation, unix, UTC
     @SerializedName("dt")
     @Expose
-    private int date;
+    private long date;
 
     @SerializedName("sys")
     @Expose
@@ -118,11 +118,11 @@ public class CurrentForecastApiModel {
         this.snow = snow;
     }
 
-    public int getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(int dt) {
+    public void setDate(long dt) {
         this.date = dt;
     }
 

@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
+import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
@@ -19,6 +20,10 @@ public interface DbContract {
     Single<List<HoursForecastEntity>> getSavedHourlyForecast(LocationEntity location);
 
     Completable saveHourlyForecasts(List<HoursForecastEntity> forecastWeather);
+
+    Single<List<DailyForecastEntity>> getSavedDailyForecast(LocationEntity location);
+
+    Completable saveDailyForecasts(List<DailyForecastEntity> forecastWeather);
 
     Single<LocationEntity> getSavedLocation(long id);
 

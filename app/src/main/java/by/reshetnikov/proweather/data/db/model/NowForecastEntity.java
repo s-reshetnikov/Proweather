@@ -1,12 +1,11 @@
 package by.reshetnikov.proweather.data.db.model;
 
-import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
 
-@Entity(active = true)
+@Entity
 public class NowForecastEntity {
 
     @Id
@@ -20,23 +19,13 @@ public class NowForecastEntity {
     private int humidity;
     private double windSpeed;
     private int windDirectionDegrees;
-    private int dateOfUpdate;
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 1687336783)
-    private transient NowForecastEntityDao myDao;
+    private long dateOfUpdate;
 
-    @Generated(hash = 171622643)
+    @Generated(hash = 870924467)
     public NowForecastEntity(long currentWeatherId, String locationId,
                              int weatherConditionId, String weatherDescription, int temperature,
                              int rain, int snow, int humidity, double windSpeed,
-                             int windDirectionDegrees, int dateOfUpdate) {
+                             int windDirectionDegrees, long dateOfUpdate) {
         this.currentWeatherId = currentWeatherId;
         this.locationId = locationId;
         this.weatherConditionId = weatherConditionId;
@@ -126,11 +115,11 @@ public class NowForecastEntity {
         this.windDirectionDegrees = degrees;
     }
 
-    public int getDateOfUpdate() {
+    public long getDateOfUpdate() {
         return dateOfUpdate;
     }
 
-    public void setDateOfUpdate(int dateOfUpdate) {
+    public void setDateOfUpdate(long dateOfUpdate) {
         this.dateOfUpdate = dateOfUpdate;
     }
 
@@ -140,50 +129,5 @@ public class NowForecastEntity {
 
     public void setHumidity(int humidity) {
         this.humidity = humidity;
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
-    @Generated(hash = 1445092805)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getNowForecastEntityDao() : null;
     }
 }

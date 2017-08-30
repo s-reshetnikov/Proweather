@@ -38,8 +38,8 @@ public class NowForecastViewModel {
 
     public String getTemperature() {
         if (units != null)
-            return UnitUtils.getTemperatureWithSign(forecast.getTemperature(), units.getTemperature());
-        return UnitUtils.getTemperatureWithSign(forecast.getTemperature(), null);
+            return UnitUtils.getTemperatureWithUnits(forecast.getTemperature(), units.getTemperature());
+        return UnitUtils.getTemperatureWithUnits(forecast.getTemperature(), null);
     }
 
     public String getWindSpeed() {
@@ -61,7 +61,7 @@ public class NowForecastViewModel {
     }
 
     public String getWeekDay() {
-        return CalendarUtil.getWeekDay();
+        return CalendarUtil.getTodayWeekDay();
     }
 
     public String getLocationName() {

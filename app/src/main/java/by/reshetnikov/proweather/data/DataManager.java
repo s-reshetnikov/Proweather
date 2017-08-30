@@ -11,19 +11,20 @@ import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.db.DbContract;
+import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
+import by.reshetnikov.proweather.data.exception.NoNetworkException;
+import by.reshetnikov.proweather.data.model.OWMModelToDbModelFactory;
 import by.reshetnikov.proweather.data.model.location.LocationFactory;
 import by.reshetnikov.proweather.data.model.unit.Units;
-import by.reshetnikov.proweather.data.model.weather.WeatherModelFactory;
 import by.reshetnikov.proweather.data.network.WeatherApiDataContract;
 import by.reshetnikov.proweather.data.network.openweathermap.model.currentweather.CurrentForecastApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.HourlyForecastApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationForecastApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationWeatherApiModel;
 import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
-import by.reshetnikov.proweather.exception.NoNetworkException;
 import by.reshetnikov.proweather.utils.NetworkUtils;
 import by.reshetnikov.proweather.utils.scheduler.AppSchedulerProvider;
 import io.reactivex.Completable;
@@ -59,7 +60,7 @@ public class DataManager implements DataContract {
                     .map(new Function<CurrentForecastApiModel, NowForecastEntity>() {
                         @Override
                         public NowForecastEntity apply(@NonNull CurrentForecastApiModel apiModel) throws Exception {
-                            NowForecastEntity model = WeatherModelFactory.createNowForecastFromAPI(apiModel);
+                            NowForecastEntity model = OWMModelToDbModelFactory.createNowForecastFromAPI(apiModel);
 //                            dbData.saveCurrentWeather(model).subscribe();
                             return model;
                         }
@@ -71,18 +72,34 @@ public class DataManager implements DataContract {
     @Override
     public Single<List<HoursForecastEntity>> getHourForecasts(@NonNull LocationEntity location) {
         Log.d(TAG, "getHourForecasts(), Is location null? " + (location == null));
-        Log.d(TAG, "getHourForecasts(), Is internet connected? " + (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())));
         if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getHourlyForecast(location)
                     .map(new Function<HourlyForecastApiModel, List<HoursForecastEntity>>() {
                         @Override
                         public List<HoursForecastEntity> apply(@NonNull HourlyForecastApiModel apiModel) throws Exception {
-                            List<HoursForecastEntity> forecasts = WeatherModelFactory.createForecastsFromAPI(apiModel);
-                            return forecasts;
+                            return OWMModelToDbModelFactory.createHourlyForecastsFromAPI(apiModel);
                         }
                     });
         }
         return dbData.getSavedHourlyForecast(location);
+    }
+
+    @Override
+    public Single<List<DailyForecastEntity>> getDailyForecasts(LocationEntity location) {
+        Log.d(TAG, "getDailyForecasts(), Is location null? " + (location == null));
+        if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
+            return apiData.getDailyForecast(location)
+                    .map(new Function<HourlyForecastApiModel, List<DailyForecastEntity>>() {
+                        @Override
+                        public List<DailyForecastEntity> apply(@NonNull HourlyForecastApiModel apiModel) throws Exception {
+                            Log.i("DM", "api model size = " + apiModel.forecasts.size());
+                            List<DailyForecastEntity> dayModels = OWMModelToDbModelFactory.createDailyForecastsFromAPI(apiModel);
+                            Log.i("DM", "view model size = " + dayModels.size());
+                            return dayModels;
+                        }
+                    });
+        }
+        return dbData.getSavedDailyForecast(location);
     }
 
     @Override

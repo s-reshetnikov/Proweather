@@ -6,12 +6,14 @@ import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweath
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationForecastApiModel;
 import io.reactivex.Single;
 
-// TODO: implement independence from API source
 public interface WeatherApiDataContract {
 
     Single<CurrentForecastApiModel> getCurrentForecast(LocationEntity location);
 
     Single<HourlyForecastApiModel> getHourlyForecast(LocationEntity location);
+
+    // Daily forecast is paid, hourly forecast will be used instead
+    Single<HourlyForecastApiModel> getDailyForecast(LocationEntity location);
 
     Single<LocationForecastApiModel> getLocationsByName(String locationName, int resultsCount);
 

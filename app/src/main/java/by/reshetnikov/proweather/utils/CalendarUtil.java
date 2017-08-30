@@ -1,9 +1,13 @@
 package by.reshetnikov.proweather.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import by.reshetnikov.proweather.ProWeatherApp;
@@ -15,7 +19,7 @@ import by.reshetnikov.proweather.R;
 
 public class CalendarUtil {
 
-    public static int getTodayDate() {
+    public static long getTodayDate() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -23,15 +27,12 @@ public class CalendarUtil {
         calendar.set(year, month, date);
 
         long dateInMillis = calendar.getTimeInMillis();
-        return (int) dateInMillis / 1000;
+        return dateInMillis / 1000;
     }
 
-    public static String getTime(int time) {
+    public static String getTimeInHours(long time) {
+        Calendar calendar = getCalendarForTime(time);
         Context context = ProWeatherApp.getAppContext();
-        Date date = new Date(time * 1000L);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.setTimeZone(TimeZone.getDefault());
         return calendar.get(Calendar.HOUR) + context.getResources().getString(R.string.short_hour);
 
     }
@@ -42,9 +43,9 @@ public class CalendarUtil {
         return (int) dateInMillis / 1000;
     }
 
-    public static String getWeekDay() {
+    public static String getWeekDay(long date) {
         Context context = ProWeatherApp.getAppContext();
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = getCalendarForTime(date);
         int day = calendar.get(Calendar.DAY_OF_WEEK);
         switch (day) {
             case Calendar.MONDAY:
@@ -63,5 +64,48 @@ public class CalendarUtil {
                 return context.getResources().getString(R.string.sunday);
         }
         return "";
+    }
+
+    public static String getTodayWeekDay() {
+        return getWeekDay(getTodayDate());
+    }
+
+    public static String getLocaleDayAndMonth(long dateInSeconds) {
+        Date date = new Date(dateInSeconds * 1000);
+        String pattern = "d MMMM";
+        DateFormat dateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+        String formattedDate = dateFormat.format(date);
+        return formattedDate;
+    }
+
+    public static int getDateWithoutTime(long dateTime) {
+        Calendar calendar = getCalendarForTime(dateTime);
+        removeTimeFromCalendar(calendar);
+        return (int) calendar.getTimeInMillis() / 1000;
+    }
+
+    private static void removeTimeFromCalendar(Calendar calendar) {
+        calendar.clear(Calendar.HOUR_OF_DAY);
+        calendar.clear(Calendar.AM_PM);
+        calendar.clear(Calendar.MINUTE);
+        calendar.clear(Calendar.SECOND);
+        calendar.clear(Calendar.MILLISECOND);
+    }
+
+    @NonNull
+    private static Calendar getCalendarForTime(long dateTime) {
+        Date date = new Date(dateTime * 1000L);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.setTimeZone(TimeZone.getDefault());
+        return calendar;
+    }
+
+    public static long getDateFromToday(int numOfDays) {
+        Calendar calendar = Calendar.getInstance();
+        removeTimeFromCalendar(calendar);
+        int secondsInDay = 60 * 60 * 24;
+        int secondsInNDays = secondsInDay * numOfDays;
+        return calendar.getTimeInMillis() / 1000 + secondsInNDays;
     }
 }

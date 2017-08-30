@@ -1,7 +1,6 @@
 package by.reshetnikov.proweather.presentation.nowforecast;
 
 import android.support.v4.util.Pair;
-import android.util.Log;
 
 import com.github.mikephil.charting.data.Entry;
 
@@ -12,9 +11,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.business.nowforecast.NowForecastInteractorContract;
+import by.reshetnikov.proweather.data.exception.NoSavedForecastDataException;
+import by.reshetnikov.proweather.data.exception.NoSavedLocationException;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
-import by.reshetnikov.proweather.exception.NoSavedForecastDataException;
-import by.reshetnikov.proweather.exception.NoSavedLocationException;
 import by.reshetnikov.proweather.utils.UnitUtils;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.annotations.NonNull;
@@ -54,7 +53,6 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
     }
 
     private void updateWeather() {
-        Log.d("CURRENT_FORECAST_PR", "update weather call");
         compositeDisposable.add(interactor.getForecastDataPair()
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
@@ -76,7 +74,6 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
     }
 
     private void onErrorResponseReceived(Throwable exception) {
-        Log.e("Error", exception.getMessage(), exception);
         if (exception instanceof NoSavedLocationException) {
             viewRef.get().showLocationManager();
         }
@@ -85,7 +82,6 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
     }
 
     private void getHourlyForecastForChartSuccessfully(@NonNull HourlyForecastForChartViewModel viewModel) {
-        Log.d("CURRENT_FORECAST_PR", "chart ready to update");
         int elementsNumber = 8;
         List<Entry> temperatureData = getTemperatureDataForChart(viewModel, elementsNumber);
         char unitSign = UnitUtils.getSign(viewModel.getTemperatureUnit());
@@ -94,7 +90,6 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
     }
 
     private void getNowForecastSuccessfully(@NonNull NowForecastViewModel nowForecastViewModel) {
-        Log.d("CURRENT_FORECAST_PR", "nowForecast ready to update");
         getView().showCurrentWeather(nowForecastViewModel);
     }
 

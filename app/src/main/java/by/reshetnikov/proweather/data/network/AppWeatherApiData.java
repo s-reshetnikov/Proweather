@@ -42,6 +42,12 @@ public class AppWeatherApiData implements WeatherApiDataContract {
     }
 
     @Override
+    public Single<HourlyForecastApiModel> getDailyForecast(LocationEntity location) {
+        HashMap<String, String> queryMap = getQueryForRequest(location, 0);
+        return api.getHourlyForecastWeather(queryMap);
+    }
+
+    @Override
     public Single<LocationForecastApiModel> getLocationsByName(String locationName, int maxResults) {
         Log.d(TAG, "getSavedDailyForecast location " + locationName + " call");
         HashMap<String, String> queryMap = getQuery(locationName, maxResults);
@@ -77,6 +83,8 @@ public class AppWeatherApiData implements WeatherApiDataContract {
     }
 
     private HashMap<String, String> getQuery(String locationName, int maxResults) {
+        if (maxResults == 0)
+            return new ApiQuery().addLocationName(locationName).build();
         return new ApiQuery().addLocationName(locationName).addCount(maxResults).build();
     }
 

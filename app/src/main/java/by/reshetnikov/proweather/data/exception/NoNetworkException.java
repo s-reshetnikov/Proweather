@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.exception;
+package by.reshetnikov.proweather.data.exception;
 
 import java.io.IOException;
 

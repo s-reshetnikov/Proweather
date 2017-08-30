@@ -33,7 +33,7 @@ public class HourlyForecastForChartViewModel {
         List<Pair<Integer, String>> temperatureHourPairs = new ArrayList<>();
         for (int i = 0; i < entities.size(); i++) {
             int temperature = UnitUtils.getTemperature(entities.get(i).getTemperature(), units.getTemperature());
-            String date = CalendarUtil.getTime(entities.get(i).getDate());
+            String date = CalendarUtil.getTimeInHours(entities.get(i).getDate());
             Pair<Integer, String> tempHourPair = new Pair<>(temperature, date);
             temperatureHourPairs.add(tempHourPair);
         }
@@ -44,7 +44,7 @@ public class HourlyForecastForChartViewModel {
         List<Pair<Double, String>> precipitationHourPairs = new ArrayList<>();
         for (int i = 0; i < entities.size(); i++) {
             double precipitation = entities.get(i).getSnow() + entities.get(i).getRain();
-            String date = CalendarUtil.getTime(entities.get(i).getDate());
+            String date = CalendarUtil.getTimeInHours(entities.get(i).getDate());
             Pair<Double, String> precipitationHourPair = new Pair<>(precipitation, date);
             precipitationHourPairs.add(precipitationHourPair);
         }

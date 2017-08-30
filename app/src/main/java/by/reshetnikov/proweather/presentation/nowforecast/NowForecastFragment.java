@@ -68,15 +68,13 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     ImageView ivStateWind;
     @BindView(R.id.tvHumidity)
     TextView tvHumidity;
-    @BindView(R.id.tvWindDirection)
+    @BindView(R.id.tvWindDirectionDataValue)
     TextView tvWindDirection;
-    @BindView(R.id.tvWindSpeed)
+    @BindView(R.id.tvWindSpeedDataValue)
     TextView tvWind;
 
     @Inject
     NowForecastPresenter presenter;
-    @Inject
-    WeatherStateIconUtil iconUtil;
 
     private ActivityComponent component;
     private OnFragmentInteractionListener mListener;
@@ -164,7 +162,7 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     @Override
     public void showCurrentWeather(NowForecastViewModel nowForecast) {
         tvWeekDay.setText(nowForecast.getWeekDay());
-        ivWeatherState.setImageDrawable(iconUtil.getIcon(nowForecast.getWeatherIconId()));
+        ivWeatherState.setImageDrawable(WeatherStateIconUtil.getIcon(nowForecast.getWeatherIconId()));
         tvLocationName.setText(nowForecast.getLocationName());
         tvTemperature.setText(nowForecast.getTemperature());
         tvHumidity.setText(nowForecast.getHumidity());
