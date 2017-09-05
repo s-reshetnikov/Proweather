@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,12 +30,10 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 @Singleton
 public class DataManager implements DataContract {
-
-    private static final String TAG = DataManager.class.getSimpleName();
 
     private DbContract dbData;
     private WeatherApiDataContract apiData;
@@ -71,7 +68,7 @@ public class DataManager implements DataContract {
 
     @Override
     public Single<List<HoursForecastEntity>> getHourForecasts(@NonNull LocationEntity location) {
-        Log.d(TAG, "getHourForecasts(), Is location null? " + (location == null));
+        Timber.d("getHourForecasts(), Is location null? " + (location == null));
         if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getHourlyForecast(location)
                     .map(new Function<HourlyForecastApiModel, List<HoursForecastEntity>>() {
@@ -86,7 +83,7 @@ public class DataManager implements DataContract {
 
     @Override
     public Single<List<DailyForecastEntity>> getDailyForecasts(LocationEntity location) {
-        Log.d(TAG, "getDailyForecasts(), Is location null? " + (location == null));
+        Timber.d("getDailyForecasts(), Is location null? " + (location == null));
         if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getDailyForecast(location)
                     .map(new Function<HourlyForecastApiModel, List<DailyForecastEntity>>() {
@@ -123,7 +120,7 @@ public class DataManager implements DataContract {
 
     @Override
     public Single<LocationEntity> getChosenLocation() {
-        Log.d(TAG, "getSavedLocation()");
+        Timber.d("getSavedLocation()");
         return dbData.getChosenLocation();
     }
 
@@ -157,38 +154,8 @@ public class DataManager implements DataContract {
     }
 
     @Override
-    public Completable updateLocationPosition(final int fromPosition, final int toPosition) {
-        final List<LocationEntity> locations = dbData.getSavedLocations().blockingGet();
-        return Completable.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return updateEntitiesOrderPosition(locations, fromPosition, toPosition);
-            }
-        });
+    public Completable updateLocationPositions(final List<LocationEntity> locations) {
+        return dbData.updateLocations(locations);
     }
 
-    private Boolean updateEntitiesOrderPosition(List<LocationEntity> locations, int oldPosition, int newPosition) {
-        updateCollectionItemsOrder(locations, oldPosition, newPosition);
-        boolean areAnyLocationUpdated = false;
-        for (LocationEntity entity : locations) {
-            int newIndex = locations.indexOf(entity);
-            if (newIndex != entity.getPosition()) {
-                areAnyLocationUpdated = true;
-                entity.setPosition(newIndex);
-                dbData.updateLocation(entity).subscribeOn(Schedulers.io()).subscribe();
-            }
-        }
-        return areAnyLocationUpdated;
-    }
-
-    private void updateCollectionItemsOrder(List<LocationEntity> locations, int fromPosition, int toPosition) {
-        if (fromPosition < toPosition) {
-            toPosition++;
-        }
-        Log.d(TAG, "from = " + fromPosition + "; to = " + toPosition);
-        locations.add(toPosition, locations.get(fromPosition));
-        int toRemovePosition = fromPosition > toPosition ? fromPosition + 1 : fromPosition;
-        Log.d(TAG, "Item to remove position is " + toRemovePosition);
-        locations.remove(toRemovePosition);
-    }
 }

@@ -27,9 +27,9 @@ public interface LocationManagerContract {
 
         void setView(LocationManagerContract.View viewRef);
 
-        void getSavedLocations();
+        void onLocationsRefreshed();
 
-        void saveLocation(LocationEntity location);
+        void onLocationFromDropDownClicked(LocationEntity location);
 
         void onLocationItemMoved(int fromPosition, int toPosition);
 
@@ -37,6 +37,6 @@ public interface LocationManagerContract {
 
         void onFabClicked(boolean isAutocompleteVisible);
 
-        void onLocationByNameSearch(String searchText);
+        void onSearchLocationByName(String searchText);
     }
 }

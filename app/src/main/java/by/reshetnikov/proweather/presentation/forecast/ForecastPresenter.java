@@ -23,9 +23,9 @@ public class ForecastPresenter implements ForecastContract.Presenter {
     private CompositeDisposable disposables;
 
     @Inject
-    public ForecastPresenter(ForecastInteractor interactor, SchedulerProvider scheduler) {
+    public ForecastPresenter(ForecastInteractor interactor, SchedulerProvider scheduler, CompositeDisposable disposables) {
         this.interactor = interactor;
-        this.disposables = new CompositeDisposable();
+        this.disposables = disposables;
         this.scheduler = scheduler;
     }
 

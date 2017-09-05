@@ -30,10 +30,10 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
     private NowForecastInteractorContract interactor;
 
     @Inject
-    public NowForecastPresenter(NowForecastInteractorContract interactor, SchedulerProvider scheduler) {
+    public NowForecastPresenter(NowForecastInteractorContract interactor, SchedulerProvider scheduler, CompositeDisposable disposables) {
         this.interactor = interactor;
         this.scheduler = scheduler;
-        compositeDisposable = new CompositeDisposable();
+        compositeDisposable = disposables;
     }
 
     @Override

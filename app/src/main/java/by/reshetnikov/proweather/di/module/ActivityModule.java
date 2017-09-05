@@ -3,6 +3,10 @@ package by.reshetnikov.proweather.di.module;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
+import by.reshetnikov.proweather.business.forecast.ForecastInteractor;
+import by.reshetnikov.proweather.business.forecast.ForecastInteractorContract;
+import by.reshetnikov.proweather.business.locationmanager.LocationManagerInteractor;
+import by.reshetnikov.proweather.business.locationmanager.LocationManagerInteractorContract;
 import by.reshetnikov.proweather.business.nowforecast.NowForecastInteractor;
 import by.reshetnikov.proweather.business.nowforecast.NowForecastInteractorContract;
 import by.reshetnikov.proweather.di.ActivityContext;
@@ -18,6 +22,7 @@ import by.reshetnikov.proweather.utils.scheduler.AppSchedulerProvider;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 public class ActivityModule {
@@ -72,7 +77,22 @@ public class ActivityModule {
     }
 
     @Provides
+    CompositeDisposable provideCompositeDisposable() {
+        return new CompositeDisposable();
+    }
+
+    @Provides
     NowForecastInteractorContract provideNowForecastInteractor(NowForecastInteractor interactor) {
+        return interactor;
+    }
+
+    @Provides
+    ForecastInteractorContract provideForecastInteractor(ForecastInteractor interactor) {
+        return interactor;
+    }
+
+    @Provides
+    LocationManagerInteractorContract provideLocationManagerInteractor(LocationManagerInteractor interactor) {
         return interactor;
     }
 }

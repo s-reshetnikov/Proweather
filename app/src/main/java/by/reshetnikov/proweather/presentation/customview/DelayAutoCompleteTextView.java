@@ -5,14 +5,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+
+import timber.log.Timber;
 
 
 public class DelayAutoCompleteTextView extends AppCompatAutoCompleteTextView {
 
-    private static final String TAG = DelayAutoCompleteTextView.class.getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final int DEFAULT_AUTOCOMPLETE_DELAY = 750;
 
@@ -48,7 +48,7 @@ public class DelayAutoCompleteTextView extends AppCompatAutoCompleteTextView {
 
     @Override
     protected void performFiltering(CharSequence text, int keyCode) {
-        Log.d(TAG, "performFiltering");
+        Timber.d("performFiltering");
         if (text.length() >= getThreshold()) {
             if (loadingIndicator != null) {
                 loadingIndicator.setVisibility(View.VISIBLE);

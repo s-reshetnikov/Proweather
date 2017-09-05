@@ -34,7 +34,7 @@ public interface DataContract {
 
     Single<Units> getUnits();
 
-    Completable updateLocationPosition(int fromPosition, int toPosition);
+    Completable updateLocationPositions(List<LocationEntity> locations);
 
     Single<List<DailyForecastEntity>> getDailyForecasts(LocationEntity location);
 }

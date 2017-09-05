@@ -25,8 +25,6 @@ import io.reactivex.Single;
 
 public class AppDbData implements DbContract {
 
-    private static final String TAG = AppDbData.class.getSimpleName();
-
     private final NowForecastEntityDao nowForecastEntityDao;
     private final HoursForecastEntityDao hourlyForecastDao;
     private final DailyForecastEntityDao dailyForecastEntityDao;
@@ -158,6 +156,16 @@ public class AppDbData implements DbContract {
     }
 
     @Override
+    public Completable updateLocations(final List<LocationEntity> locations) {
+        return Completable.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return updateLocationEntities(locations);
+            }
+        });
+    }
+
+    @Override
     public Completable removeLocation(final LocationEntity locationEntity) {
         return Completable.fromCallable(new Callable<Boolean>() {
             @Override
@@ -214,15 +222,11 @@ public class AppDbData implements DbContract {
     }
 
     private LocationEntity getChosenLocationEntity() {
+        int firstPosition = 0;
         LocationEntity defaultLocation = locationDao.queryBuilder()
-                .where(LocationEntityDao.Properties.IsCurrent.eq(true))
+                .where(LocationEntityDao.Properties.Position.eq(firstPosition))
                 .build()
                 .unique();
-        if (defaultLocation == null)
-            return locationDao.queryBuilder()
-                    .where(LocationEntityDao.Properties.Position.eq(0))
-                    .build()
-                    .unique();
 
         return defaultLocation;
     }
@@ -236,6 +240,11 @@ public class AppDbData implements DbContract {
 
     private Boolean updateLocationEntity(LocationEntity locationEntity) {
         locationDao.insertOrReplace(locationEntity);
+        return Boolean.TRUE;
+    }
+
+    private Boolean updateLocationEntities(List<LocationEntity> locations) {
+        locationDao.updateInTx(locations);
         return Boolean.TRUE;
     }
 

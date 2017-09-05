@@ -71,17 +71,6 @@ public class ForecastViewHolder extends RecyclerView.ViewHolder implements Forec
         super(inflater.inflate(R.layout.item_daily_forecast, parent, false));
         ButterKnife.bind(this, itemView);
 
-//        itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.i("VH", "clicked");
-//                if (isExpanded)
-//                    collapse();
-//                else
-//                    expand();
-//            }
-//        });
-
         btnDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,34 +160,10 @@ public class ForecastViewHolder extends RecyclerView.ViewHolder implements Forec
     }
 
     private void rotateExpandableState() {
-//        ivExpandedState.setRotation(ivExpandedState.getRotation() + 180);
-//        Log.i("VH-CARD", isExpanded + " " + String.valueOf(ivExpandedState.getRotation()));
-//        int fromDegrees;
-//        int toDegrees;
-//        if (isExpanded) {
-//            fromDegrees = 180;
-//            toDegrees = 360;
-//        } else {
-//            fromDegrees = 0;
-//            toDegrees = 180;
-//        }
-//        RotateAnimation rotateAnim = new RotateAnimation(fromDegrees, toDegrees, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-//        rotateAnim.setDuration(400);
-//        rotateAnim.setInterpolator(new LinearInterpolator());
-//
-//        ivExpandedState.startAnimation(rotateAnim);
-
-//        ivExpandedState.setPivotX(0.5f);
-//        ivExpandedState.setPivotY(0.5f);
-//        ivExpandedState.animate().rotation(ivExpandedState.getRotation() + 180).start();
-//        if (isExpanded)
-//            ivExpandedState.startAnimation(
-//                    AnimationUtils.loadAnimation(ProWeatherApp.getAppContext(), R.anim.rotatation_up));
-//        ivExpandedState.startAnimation(
-//                AnimationUtils.loadAnimation(ProWeatherApp.getAppContext(), R.anim.rotation_down));
+        int rotationDegrees = 180;
         ivExpandedState.setPivotX(ivExpandedState.getWidth() / 2);
         ivExpandedState.setPivotY(ivExpandedState.getHeight() / 2);
-        ivExpandedState.setRotation(ivExpandedState.getRotation() + 180);
+        ivExpandedState.setRotation(ivExpandedState.getRotation() + rotationDegrees);
     }
 
     void setVisibilityForDetails(boolean isVisible) {

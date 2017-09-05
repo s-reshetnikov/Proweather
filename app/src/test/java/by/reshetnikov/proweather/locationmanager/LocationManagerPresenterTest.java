@@ -12,7 +12,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
-import by.reshetnikov.proweather.data.DataContract;
+import by.reshetnikov.proweather.business.locationmanager.LocationManagerInteractor;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.presentation.location.LocationManagerContract;
 import by.reshetnikov.proweather.presentation.location.LocationManagerPresenter;
@@ -22,6 +22,7 @@ import io.reactivex.CompletableObserver;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
@@ -34,7 +35,7 @@ public class LocationManagerPresenterTest {
     private static final int TIME_OUT = 5000;
 
     @Mock
-    private DataContract repository;
+    private LocationManagerInteractor interactor;
 
     @Mock
     private LocationManagerContract.View view;
@@ -48,14 +49,14 @@ public class LocationManagerPresenterTest {
     @Before
     public void setupPresenterTest() {
         MockitoAnnotations.initMocks(this);
-        presenter = new LocationManagerPresenter(repository, ImmediateSchedulerProvider.getInstance());
+        presenter = new LocationManagerPresenter(interactor, ImmediateSchedulerProvider.getInstance(), new CompositeDisposable());
         presenter.setView(view);
     }
 
     @Test
     public void onStartTest() {
         List<LocationEntity> locations = getMockedLocations();
-        when(repository.getSavedLocations()).thenReturn(Single.just(locations));
+        when(interactor.getSavedLocations()).thenReturn(Single.just(locations));
         presenter.start();
         verify(view).refreshSavedLocations(adapterModelsCaptor.capture());
     }
@@ -72,22 +73,22 @@ public class LocationManagerPresenterTest {
     @Test
     public void getSavedLocationsErrorTest() {
         List<LocationEntity> locations = getMockedLocations();
-        when(repository.getSavedLocations()).thenReturn(new Single<List<LocationEntity>>() {
+        when(interactor.getSavedLocations()).thenReturn(new Single<List<LocationEntity>>() {
 
             @Override
             protected void subscribeActual(@NonNull SingleObserver<? super List<LocationEntity>> observer) {
                 observer.onError(new RuntimeException());
             }
         });
-        presenter.getSavedLocations();
+        presenter.onLocationsRefreshed();
         verify(view).showError(Mockito.anyString());
     }
 
     @Test
     public void loadLocationsFromRepositoryAndLoadIntoViewTest() throws Exception {
         List<LocationEntity> locations = getMockedLocations();
-        when(repository.getSavedLocations()).thenReturn(Single.just(locations));
-        presenter.getSavedLocations();
+        when(interactor.getSavedLocations()).thenReturn(Single.just(locations));
+        presenter.onLocationsRefreshed();
         verify(view).refreshSavedLocations(adapterModelsCaptor.capture());
     }
 
@@ -107,30 +108,30 @@ public class LocationManagerPresenterTest {
     public void saveLocationSuccessfullyTest() {
         List<LocationEntity> locations = getMockedLocations();
         LocationEntity location = getMockedLocation();
-        when(repository.saveNewLocation(location))
+        when(interactor.saveLocation(location))
                 .thenReturn(Completable.complete());
-        when(repository.getSavedLocations()).thenReturn(Single.just(locations));
-        presenter.saveLocation(location);
+        when(interactor.getSavedLocations()).thenReturn(Single.just(locations));
+        presenter.onLocationFromDropDownClicked(location);
         verify(view).refreshSavedLocations(adapterModelsCaptor.capture());
     }
 
     @Test
     public void saveLocationNullErrorTest() {
-        presenter.saveLocation(null);
+        presenter.onLocationFromDropDownClicked(null);
         verify(view).showError(Mockito.anyString());
     }
 
     @Test
     public void saveLocationOnSaveErrorTest() {
         LocationEntity adapterModel = getMockedLocation();
-        when(repository.saveNewLocation(adapterModel))
+        when(interactor.saveLocation(adapterModel))
                 .thenReturn(new Completable() {
                     @Override
                     protected void subscribeActual(CompletableObserver completableObserver) {
                         completableObserver.onError(new RuntimeException());
                     }
                 });
-        presenter.saveLocation(adapterModel);
+        presenter.onLocationFromDropDownClicked(adapterModel);
         verify(view).showError(Mockito.anyString());
     }
 
@@ -138,9 +139,9 @@ public class LocationManagerPresenterTest {
     public void onLocationItemMovedSuccessfullyTest() {
         int from = 0, to = 5;
         List<LocationEntity> locations = getMockedLocations();
-        when(repository.updateLocationPosition(from, to))
+        when(interactor.updateLocationPosition(from, to))
                 .thenReturn(Completable.complete());
-        when(repository.getSavedLocations()).thenReturn(Single.just(locations));
+        when(interactor.getSavedLocations()).thenReturn(Single.just(locations));
         presenter.onLocationItemMoved(from, to);
         verify(view).refreshSavedLocations(adapterModelsCaptor.capture());
     }
@@ -149,14 +150,14 @@ public class LocationManagerPresenterTest {
     public void onLocationItemMovedErrorTest() {
         int from = 0, to = 5;
         List<LocationEntity> locations = getMockedLocations();
-        when(repository.updateLocationPosition(from, to))
+        when(interactor.updateLocationPosition(from, to))
                 .thenReturn(new Completable() {
                     @Override
                     protected void subscribeActual(CompletableObserver completableObserver) {
                         completableObserver.onError(new RuntimeException());
                     }
                 });
-        when(repository.getSavedLocations()).thenReturn(Single.just(locations));
+        when(interactor.getSavedLocations()).thenReturn(Single.just(locations));
         presenter.onLocationItemMoved(from, to);
         InOrder inOrder = inOrder(view);
         inOrder.verify(view).showError(Mockito.anyString());
@@ -168,9 +169,9 @@ public class LocationManagerPresenterTest {
     public void removeLocationSuccessfullyTest() {
         List<LocationEntity> locations = getMockedLocations();
         LocationEntity location = getMockedLocation();
-        when(repository.removeLocation(location))
+        when(interactor.removeLocation(location))
                 .thenReturn(Completable.complete());
-        when(repository.getSavedLocations()).thenReturn(Single.just(locations));
+        when(interactor.getSavedLocations()).thenReturn(Single.just(locations));
         presenter.onLocationItemRemoved(location);
         verify(view).refreshSavedLocations(adapterModelsCaptor.capture());
     }
@@ -179,14 +180,14 @@ public class LocationManagerPresenterTest {
     public void removeLocationWithErrorTest() {
         List<LocationEntity> locations = getMockedLocations();
         LocationEntity location = getMockedLocation();
-        when(repository.removeLocation(location))
+        when(interactor.removeLocation(location))
                 .thenReturn(new Completable() {
                     @Override
                     protected void subscribeActual(CompletableObserver s) {
                         s.onError(new RuntimeException());
                     }
                 });
-        when(repository.getSavedLocations()).thenReturn(Single.just(locations));
+        when(interactor.getSavedLocations()).thenReturn(Single.just(locations));
         presenter.onLocationItemRemoved(location);
         verify(view).showError(Mockito.anyString());
     }
@@ -195,9 +196,9 @@ public class LocationManagerPresenterTest {
     public void onLocationByNameSearchTest() {
         List<LocationEntity> locations = getMockedLocations();
         String searchText = Mockito.anyString();
-        when(repository.getAllLocationsByName(searchText, Mockito.anyInt()))
+        when(interactor.findLocation(searchText))
                 .thenReturn(Single.just(locations));
-        presenter.onLocationByNameSearch(searchText);
+        presenter.onSearchLocationByName(searchText);
         verify(view).refreshSearchedLocations(adapterModelsCaptor.capture());
     }
 

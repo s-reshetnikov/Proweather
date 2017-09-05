@@ -1,7 +1,6 @@
 package by.reshetnikov.proweather.presentation.location;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +18,9 @@ import butterknife.ButterKnife;
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.presentation.location.listener.OnAutoCompleteLocationSearchListener;
+import timber.log.Timber;
 
 public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filterable {
-
-    private static final String TAG = AutoCompleteLocationsAdapter.class.getSimpleName();
 
     @BindView(R.id.tv_dropdown_location)
     TextView tvLocation;
@@ -80,7 +78,7 @@ public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filtera
 
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
-                    Log.d(TAG, "performFiltering() in getFilter(): " + constraint.toString());
+                    Timber.d("performFiltering() in getFilter(): " + constraint.toString());
                     AutoCompleteLocationsAdapter.this.loadLocations(constraint.toString());
                     filterResults.values = results;
                     filterResults.count = results.size();
@@ -91,7 +89,7 @@ public class AutoCompleteLocationsAdapter extends BaseAdapter implements Filtera
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (results != null && results.count > 0 && constraint != null) {
-                    Log.d(TAG, "performFiltering() in getFilter(): " + constraint.toString());
+                    Timber.d("performFiltering() in getFilter(): " + constraint.toString());
                     AutoCompleteLocationsAdapter.this.results = (List<LocationEntity>) results.values;
                     notifyDataSetChanged();
                 } else {

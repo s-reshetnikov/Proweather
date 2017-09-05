@@ -35,5 +35,7 @@ public interface DbContract {
 
     Completable updateLocation(LocationEntity locationEntity);
 
+    Completable updateLocations(List<LocationEntity> locations);
+
     Completable removeLocation(LocationEntity locationEntity);
 }

@@ -13,6 +13,7 @@ import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.model.unit.Units;
 import by.reshetnikov.proweather.presentation.forecast.DailyForecastViewModel;
+import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.annotations.NonNull;
@@ -24,23 +25,26 @@ import io.reactivex.functions.Function;
  */
 
 public class ForecastInteractor implements ForecastInteractorContract {
-
+    private SchedulerProvider scheduler;
     private DataContract data;
 
     @Inject
-    public ForecastInteractor(DataContract data) {
+    public ForecastInteractor(DataContract data, SchedulerProvider scheduler) {
         this.data = data;
+        this.scheduler = scheduler;
     }
 
     @Override
     public Single<List<DailyForecastViewModel>> getForecasts() {
         return data.getChosenLocation()
+                .subscribeOn(scheduler.ui())
                 .flatMap(new Function<LocationEntity, SingleSource<List<DailyForecastEntity>>>() {
                     @Override
                     public SingleSource<List<DailyForecastEntity>> apply(@NonNull LocationEntity locationEntity) throws Exception {
                         return data.getDailyForecasts(locationEntity);
                     }
                 })
+                .subscribeOn(scheduler.ui())
                 .zipWith(data.getUnits(), new BiFunction<List<DailyForecastEntity>, Units, Pair<List<DailyForecastEntity>, Units>>() {
                     @Override
                     public Pair<List<DailyForecastEntity>, Units> apply(@NonNull List<DailyForecastEntity> entities, @NonNull Units units)
@@ -49,6 +53,7 @@ public class ForecastInteractor implements ForecastInteractorContract {
                         return new Pair<>(entities, units);
                     }
                 })
+                .subscribeOn(scheduler.computation())
                 .flatMap(new Function<Pair<List<DailyForecastEntity>, Units>, SingleSource<List<DailyForecastViewModel>>>() {
                     @Override
                     public SingleSource<List<DailyForecastViewModel>> apply

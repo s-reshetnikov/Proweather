@@ -11,8 +11,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
-import by.reshetnikov.proweather.business.forecast.ForecastInteractor;
-import by.reshetnikov.proweather.business.forecast.ForecastInteractorContract;
 import by.reshetnikov.proweather.data.DataContract;
 import by.reshetnikov.proweather.data.DataManager;
 import by.reshetnikov.proweather.data.db.AppDbData;
@@ -139,12 +137,7 @@ public class ApplicationModule {
     }
 
     @Provides
-    CompositeDisposable provideCompositeDisposable(CompositeDisposable disposable) {
-        return disposable;
-    }
-
-    @Provides
-    ForecastInteractorContract provideInteractor(ForecastInteractor interactor) {
-        return interactor;
+    CompositeDisposable provideCompositeDisposable() {
+        return new CompositeDisposable();
     }
 }

@@ -37,8 +37,7 @@ public class LocationsDiffUtilCallback extends DiffUtil.Callback {
         LocationEntity oldLocation = oldLocations.get(oldItemPosition);
         LocationEntity newLocation = newLocations.get(oldItemPosition);
 
-        return oldLocation.getPosition() == newLocation.getPosition() &&
-                oldLocation.isCurrent() == newLocation.isCurrent();
+        return oldLocation.getLocationId() == newLocation.getLocationId();
     }
 
 }

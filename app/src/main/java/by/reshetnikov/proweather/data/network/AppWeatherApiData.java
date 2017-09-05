@@ -1,7 +1,6 @@
 package by.reshetnikov.proweather.data.network;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
@@ -15,17 +14,16 @@ import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweath
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationForecastApiModel;
 import by.reshetnikov.proweather.utils.ApiQuery;
 import io.reactivex.Single;
+import timber.log.Timber;
 
 
 public class AppWeatherApiData implements WeatherApiDataContract {
-
-    private static final String TAG = AppWeatherApiData.class.getSimpleName();
 
     private OpenWeatherMapApiService api;
 
     @Inject
     public AppWeatherApiData(OpenWeatherMapApiService api) {
-        Log.d(TAG, "createNowForecastFromAPI AppWeatherApiData");
+        Timber.d("createNowForecastFromAPI AppWeatherApiData");
         this.api = api;
     }
 
@@ -49,7 +47,7 @@ public class AppWeatherApiData implements WeatherApiDataContract {
 
     @Override
     public Single<LocationForecastApiModel> getLocationsByName(String locationName, int maxResults) {
-        Log.d(TAG, "getSavedDailyForecast location " + locationName + " call");
+        Timber.d("getSavedDailyForecast location " + locationName + " call");
         HashMap<String, String> queryMap = getQuery(locationName, maxResults);
         return api.getLocations(queryMap);
     }

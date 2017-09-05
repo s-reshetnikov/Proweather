@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,10 +42,9 @@ import by.reshetnikov.proweather.presentation.location.listener.OnAutoCompleteLo
 import by.reshetnikov.proweather.presentation.location.listener.OnLocationRemovedListener;
 import by.reshetnikov.proweather.presentation.location.listener.OnLocationsOrderChangedListener;
 import by.reshetnikov.proweather.utils.ToastUtils;
+import timber.log.Timber;
 
 public class LocationManagerFragment extends Fragment implements LocationManagerContract.View {
-
-    private static final String TAG = LocationManagerFragment.class.getSimpleName();
 
     @BindView(R.id.rv_locations)
     RecyclerView rvLocations;
@@ -89,7 +87,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(TAG, "onAttach() called");
+        Timber.d("onAttach() called");
         if (context instanceof AppCompatActivity) {
             component = DaggerActivityComponent.builder()
                     .activityModule(new ActivityModule((AppCompatActivity) context))
@@ -100,7 +98,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "view created");
+        Timber.d("view created");
         super.onViewCreated(view, savedInstanceState);
         presenter.start();
     }
@@ -144,24 +142,41 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     public void setupLocationsRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         rvLocations.setLayoutManager(layoutManager);
-        LocationsRecyclerViewAdapter locationsAdapter = new LocationsRecyclerViewAdapter();
-        locationsAdapter.setOnLocationsOrderChangedListener(new OnLocationsOrderChangedListener() {
-            @Override
-            public void onOrderChange(int fromPosition, int toPosition) {
-                Log.d(TAG, "onOrderChange listener from " + fromPosition + " to " + toPosition);
-                presenter.onLocationItemMoved(fromPosition, toPosition);
-            }
-        });
-        locationsAdapter.setOnLocationRemovedListener(new OnLocationRemovedListener() {
-            @Override
-            public void onRemove(LocationEntity location) {
-                presenter.onLocationItemRemoved(location);
-            }
-        });
+        LocationsRecyclerViewAdapter locationsAdapter = getLocationsRecyclerViewAdapter();
         rvLocations.setAdapter(locationsAdapter);
         rvLocations.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvLocations.addItemDecoration(getDividerItemDecoration());
         setupItemTouchHelper();
+    }
+
+    @NonNull
+    private LocationsRecyclerViewAdapter getLocationsRecyclerViewAdapter() {
+        LocationsRecyclerViewAdapter locationsAdapter = new LocationsRecyclerViewAdapter();
+        setOnLocationOrderChangeListenerToAdapter(locationsAdapter);
+        setOnLocationRemovedListenerToAdapter(locationsAdapter);
+        return locationsAdapter;
+    }
+
+    private void setOnLocationOrderChangeListenerToAdapter(LocationsRecyclerViewAdapter locationsAdapter) {
+        locationsAdapter.setOnLocationsOrderChangedListener(new OnLocationsOrderChangedListener() {
+            @Override
+            public void onOrderChange(int fromPosition, int toPosition) {
+                Timber.d("onLocationsOrderChangedListener, from " + fromPosition + " to " + toPosition);
+                presenter.onLocationItemMoved(fromPosition, toPosition);
+            }
+        });
+    }
+
+    private void setOnLocationRemovedListenerToAdapter(LocationsRecyclerViewAdapter locationsAdapter) {
+        locationsAdapter.setOnLocationRemovedListener(new OnLocationRemovedListener() {
+            @Override
+            public void onRemove(LocationEntity location) {
+                String message = "onRemoveLocationListener, (" + location.getLocationId() + ") - " + location.getLocationName() +
+                        " " + location.getPosition();
+                Timber.d(message);
+                presenter.onLocationItemRemoved(location);
+            }
+        });
     }
 
     @NonNull
@@ -189,7 +204,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
         adapter.setOnPerformSearchListener(new OnAutoCompleteLocationSearchListener() {
             @Override
             public void performSearch(String searchText) {
-                presenter.onLocationByNameSearch(searchText);
+                presenter.onSearchLocationByName(searchText);
             }
         });
     }
@@ -202,7 +217,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
                 Toast.makeText(view.getContext(), location.getLocationName(), Toast.LENGTH_LONG).show();
                 tvAutoCompleteLocation.setText("");
                 hideSearchLocation();
-                presenter.saveLocation(location);
+                presenter.onLocationFromDropDownClicked(location);
             }
         });
         rvLocations.setOnDragListener(new View.OnDragListener() {

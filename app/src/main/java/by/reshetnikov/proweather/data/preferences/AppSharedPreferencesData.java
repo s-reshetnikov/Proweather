@@ -17,8 +17,6 @@ import by.reshetnikov.proweather.di.ApplicationContext;
 
 public class AppSharedPreferencesData implements PreferencesContract {
 
-    private static final String TAG = AppSharedPreferencesData.class.getSimpleName();
-
     private static final String USE_CURRENT_LOCATION_KEY = "use_current_location";
     private static final String TEMPERATURE_UNIT_KEY = "temperature_unit";
     private static final String DISTANCE_UNIT_KEY = "distance_unit";

@@ -14,6 +14,7 @@ import by.reshetnikov.proweather.presentation.location.callback.LocationsDiffUti
 import by.reshetnikov.proweather.presentation.location.listener.OnLocationRemovedListener;
 import by.reshetnikov.proweather.presentation.location.listener.OnLocationsOrderChangedListener;
 import by.reshetnikov.proweather.presentation.location.viewholder.LocationViewHolder;
+import timber.log.Timber;
 
 public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationViewHolder> implements LocationsViewAdapterContract {
     private final static boolean DETECT_MOVES = true;
@@ -30,22 +31,25 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     }
 
     @Override
-    public void onBindViewHolder(LocationViewHolder holder, int position) {
-
-        LocationEntity location = getLocationAtPosition(position);
-        holder.setLocationName(location.getLocationName());
-        holder.setCircleCountryCode(location.getCountryCode());
-        if (location.isCurrent())
-            holder.markAsCurrent(true);
+    public void onViewRecycled(LocationViewHolder holder) {
+        super.onViewRecycled(holder);
+        Timber.d("onViewRecycled(), holder pos = " + holder.getAdapterPosition());
     }
 
-    private LocationEntity getLocationAtPosition(int position) {
-        for (LocationEntity model :
-                locations) {
-            if (model.getPosition() == position)
-                return model;
+    @Override
+    public void onBindViewHolder(LocationViewHolder holder, int position) {
+        LocationEntity location;
+        try {
+            location = getLocationAtPosition(position);
+        } catch (IndexOutOfBoundsException e) {
+            Timber.e("No such position at list, size is " + locations.size(), e);
+            return;
         }
-        throw new IndexOutOfBoundsException("Position " + position + " was not found at list");
+        holder.setLocationName(location.getLocationName());
+        holder.setCircleCountryCode(location.getCountryCode());
+        int firstPosition = 0;
+        boolean isCurrent = location.getPosition() == firstPosition;
+        holder.markAsCurrent(isCurrent);
     }
 
     @Override
@@ -55,13 +59,15 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
 
     @Override
     public void updateView(List<LocationEntity> updatedLocations) {
+        Timber.d("updateView(), called");
         LocationsDiffUtilCallback diffCallback = new LocationsDiffUtilCallback(this.locations, updatedLocations);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback, DETECT_MOVES);
-
+        Timber.d("updateView(), changed locations size from " + diffCallback.getOldListSize() + " to " + diffCallback.getNewListSize());
         locations.clear();
         locations.addAll(updatedLocations);
         diffResult.dispatchUpdatesTo(this);
         locations = updatedLocations;
+        Timber.d("updateView(), ends");
     }
 
     @Override
@@ -89,9 +95,13 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
 
     @Override
     public void removeLocation(int position) {
+        Timber.d("removeLocation(), called");
+        Timber.d("removeLocation(), location #" + position + " of " + locations.size());
         if (locationRemovedListener != null) {
-            locationRemovedListener.onRemove(locations.get(position));
+            locationRemovedListener.onRemove(getLocationAtPosition(position));
         }
+//        notifyItemRemoved(position);
+        Timber.d("removeLocation(), ends");
     }
 
     @Override
@@ -102,5 +112,14 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     @Override
     public void setOnLocationRemovedListener(OnLocationRemovedListener listener) {
         this.locationRemovedListener = listener;
+    }
+
+    private LocationEntity getLocationAtPosition(int position) {
+        for (LocationEntity model :
+                locations) {
+            if (model.getPosition() == position)
+                return model;
+        }
+        throw new IndexOutOfBoundsException("Position " + position + " was not found at list");
     }
 }

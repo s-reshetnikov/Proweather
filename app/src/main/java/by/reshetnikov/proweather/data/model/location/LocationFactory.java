@@ -16,10 +16,8 @@ public class LocationFactory {
         locationEntity.setLocationId(apiModel.getLocationId());
         locationEntity.setLocationName(apiModel.getLocationName());
         locationEntity.setCountryCode(apiModel.getCountryCode());
-        locationEntity.setLatitude(apiModel.getLatitude());
-        locationEntity.setLongitude(apiModel.getLongitude());
+        locationEntity.setCoordinates(apiModel.getLatitude(), apiModel.getLongitude());
         locationEntity.setPosition(0);
-        locationEntity.setCurrent(false);
         return locationEntity;
     }
 }

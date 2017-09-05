@@ -46,7 +46,6 @@ import by.reshetnikov.proweather.utils.WeatherStateIconUtil;
 
 public class NowForecastFragment extends Fragment implements NowForecastContract.View {
     private static final String ARG_SECTION_NUMBER = "SECTION_NUMBER";
-    private static final String TAG = NowForecastFragment.class.getSimpleName();
 
     @BindView(R.id.swipeNowForecast)
     SwipeRefreshLayout refreshLayout;

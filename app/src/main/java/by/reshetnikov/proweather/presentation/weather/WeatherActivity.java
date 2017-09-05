@@ -20,7 +20,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,12 +31,15 @@ import by.reshetnikov.proweather.presentation.location.LocationActivity;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastFragment;
 import by.reshetnikov.proweather.presentation.settings.SettingsActivity;
 import by.reshetnikov.proweather.utils.ToastUtils;
+import timber.log.Timber;
 
 
 public class WeatherActivity extends AppCompatActivity
         implements WeatherContract.View, NavigationView.OnNavigationItemSelectedListener,
         NowForecastFragment.OnFragmentInteractionListener {
 
+    private final int PERMISSION_REQUEST_CODE = 1409;
+    private final String locationPermission = Manifest.permission.ACCESS_COARSE_LOCATION;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -47,23 +49,16 @@ public class WeatherActivity extends AppCompatActivity
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private ForecastSectionsPagerAdapter forecastSectionsPagerAdapter;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
-    private final String TAG = WeatherActivity.class.getSimpleName();
-    private final int PERMISSION_REQUEST_CODE = 1409;
-    private final String locationPermission = Manifest.permission.ACCESS_COARSE_LOCATION;
-
-
     private WeatherPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "stop start");
+        Timber.d("onCreate() start");
         setContentView(R.layout.activity_weather);
 
         forecastSectionsPagerAdapter = new ForecastSectionsPagerAdapter(getSupportFragmentManager());
@@ -96,20 +91,20 @@ public class WeatherActivity extends AppCompatActivity
 //                    R.id.weather_fragment_placeholder,
 //                    NowForecastFragment.newInstance());
 //        }
-        Log.d(TAG, "stop end");
+        Timber.d("onCreate() end");
     }
 
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "onBackPressed start");
+        Timber.d("onBackPressed() start");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.weather_view);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
-            Log.d(TAG, "close drawer");
+            Timber.d("close drawer");
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
-        Log.d(TAG, "onBackPressed end");
+        Timber.d("onBackPressed() end");
     }
 
     @Override

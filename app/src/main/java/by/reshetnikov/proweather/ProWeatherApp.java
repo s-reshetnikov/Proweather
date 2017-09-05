@@ -4,19 +4,21 @@ import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
 
 import java.util.concurrent.Callable;
 
 import by.reshetnikov.proweather.di.component.ApplicationComponent;
 import by.reshetnikov.proweather.di.component.DaggerApplicationComponent;
 import by.reshetnikov.proweather.di.module.ApplicationModule;
+import io.fabric.sdk.android.Fabric;
 import io.reactivex.Observable;
+import timber.log.Timber;
 
 
 public class ProWeatherApp extends Application {
 
-    private static final String TAG = ProWeatherApp.class.getSimpleName();
     private static ProWeatherApp proWeatherApp;
     private static ApplicationComponent applicationComponent;
 
@@ -31,8 +33,14 @@ public class ProWeatherApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
-        Log.d(TAG, "start application");
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
+
+        Timber.d("start application");
 
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
@@ -51,7 +59,7 @@ public class ProWeatherApp extends Application {
                 return true;
             }
         });
-        Log.d(TAG, "stop() end");
+        Timber.d("stop() end");
     }
 
     private void setPreferenceDefaultValues(boolean canReadAgain) {
@@ -64,5 +72,24 @@ public class ProWeatherApp extends Application {
         return applicationComponent;
 
     }
+
+//    private static class CrashReportingTree extends Timber.Tree {
+//        @Override
+//        protected void log(int priority, String tag, String message, Throwable t) {
+//            if (priority == Log.VERBOSE || priority == Timber.dEBUG) {
+//                return;
+//            }
+//
+//            FakeCrashLibrary.log(priority, tag, message);
+//
+//            if (t != null) {
+//                if (priority == Log.ERROR) {
+//                    FakeCrashLibrary.logError(t);
+//                } else if (priority == Log.WARN) {
+//                    FakeCrashLibrary.logWarning(t);
+//                }
+//            }
+//        }
+//    }
 
 }

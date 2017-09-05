@@ -6,7 +6,6 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 
-
 @Entity
 public class LocationEntity {
 
@@ -21,20 +20,18 @@ public class LocationEntity {
     private double longitude;
     @NotNull
     private double latitude;
-    private boolean isCurrent = false;
+    @NotNull
     private int position;
 
-    @Generated(hash = 939177862)
+    @Generated(hash = 809444569)
     public LocationEntity(Long Id, int locationId, @NotNull String locationName,
-                          String countryCode, double longitude, double latitude,
-                          boolean isCurrent, int position) {
+                          String countryCode, double longitude, double latitude, int position) {
         this.Id = Id;
         this.locationId = locationId;
         this.locationName = locationName;
         this.countryCode = countryCode;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.isCurrent = isCurrent;
         this.position = position;
     }
 
@@ -62,35 +59,16 @@ public class LocationEntity {
         return countryCode;
     }
 
-
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
     }
-
 
     public double getLongitude() {
         return longitude;
     }
 
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public boolean isCurrent() {
-        return false;
-    }
-
-    public void setCurrent(boolean isCurrent) {
-        this.isCurrent = isCurrent;
-    }
-
     public double getLatitude() {
         return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
     }
 
     public void setCoordinates(double latitude, double longitude) {
@@ -114,12 +92,12 @@ public class LocationEntity {
         this.Id = Id;
     }
 
-    public boolean getIsCurrent() {
-        return this.isCurrent;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public void setIsCurrent(boolean isCurrent) {
-        this.isCurrent = isCurrent;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
 }

@@ -30,6 +30,10 @@
             android:name=".presentation.location.LocationActivity"
             android:label="@string/title_activity_locations"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="f3d514613ac0f9839c3765e8a4c47b673eff6b63" />
     </application>
 
 </manifest>

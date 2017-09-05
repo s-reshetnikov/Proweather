@@ -2,13 +2,13 @@ package by.reshetnikov.proweather.presentation.location.callback;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 
 import by.reshetnikov.proweather.presentation.location.adapter.LocationsViewAdapterContract;
+import timber.log.Timber;
 
 
 public class LocationItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
-    private static final String TAG = LocationItemTouchHelperCallback.class.getSimpleName();
+
     private final LocationsViewAdapterContract adapter;
     private int dragFromPosition = -1;
     private int dragToPosition = -1;
@@ -55,14 +55,15 @@ public class LocationItemTouchHelperCallback extends ItemTouchHelper.SimpleCallb
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
-        adapter.removeLocation(position);
         viewHolder.setIsRecyclable(false);
+        adapter.removeLocation(position);
+
     }
 
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
-        Log.d(TAG, "clearView()");
+        Timber.d("clearView()");
         if (dragFromPosition != -1 && dragToPosition != -1 && dragFromPosition != dragToPosition) {
             int fromPosition = dragFromPosition;
             int toPosition = dragToPosition;
@@ -70,8 +71,6 @@ public class LocationItemTouchHelperCallback extends ItemTouchHelper.SimpleCallb
             boolean saveChanges = true;
             adapter.moveLocationItem(fromPosition, toPosition, saveChanges);
         }
-
     }
-
 
 }

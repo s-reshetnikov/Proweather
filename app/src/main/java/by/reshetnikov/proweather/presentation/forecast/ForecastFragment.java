@@ -28,11 +28,11 @@ import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
 import by.reshetnikov.proweather.di.module.ActivityModule;
 import by.reshetnikov.proweather.presentation.forecast.adapter.ForecastRecyclerViewAdapter;
 import by.reshetnikov.proweather.utils.ToastUtils;
+import timber.log.Timber;
 
 
 public class ForecastFragment extends Fragment implements ForecastContract.View {
 
-    private static final String TAG = ForecastFragment.class.getSimpleName();
     private static final String ARG_SECTION_NUMBER = "SECTION_NUMBER";
 
     @Inject
@@ -104,7 +104,7 @@ public class ForecastFragment extends Fragment implements ForecastContract.View 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(TAG, "onAttach() called");
+        Timber.d("onAttach() called");
         if (context instanceof AppCompatActivity) {
             component = DaggerActivityComponent.builder()
                     .activityModule(new ActivityModule((AppCompatActivity) context))

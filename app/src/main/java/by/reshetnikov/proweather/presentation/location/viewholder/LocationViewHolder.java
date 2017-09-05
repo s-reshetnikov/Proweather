@@ -1,27 +1,33 @@
 package by.reshetnikov.proweather.presentation.location.viewholder;
 
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
+import timber.log.Timber;
 
 public class LocationViewHolder extends RecyclerView.ViewHolder implements LocationViewHolderContract {
 
-    private static final String TAG = LocationViewHolder.class.getSimpleName();
     @BindView(R.id.tv_item_location_name)
     protected TextView tvLocationName;
     @BindView(R.id.tv_item_first_symbols)
     protected TextView tvCircleIcon;
+    @BindView(R.id.defaultLocationMark)
+    ImageButton defaultMark;
     @BindView(R.id.item_location)
     RelativeLayout layout;
+
+    private boolean isPressed = false;
 
     public LocationViewHolder(LayoutInflater inflater, ViewGroup parent) {
         super(inflater.inflate(R.layout.item_location, parent, false));
@@ -31,7 +37,7 @@ public class LocationViewHolder extends RecyclerView.ViewHolder implements Locat
             @Override
             public void onClick(View v) {
                 String message = "Clicked # " + getAdapterPosition();
-                Log.d(TAG, message);
+                Timber.d(message);
             }
         });
 
@@ -39,7 +45,7 @@ public class LocationViewHolder extends RecyclerView.ViewHolder implements Locat
             @Override
             public boolean onDrag(View v, DragEvent event) {
                 String message = "Dragged # " + getAdapterPosition();
-                Log.d(TAG, message);
+                Timber.d(message);
                 return false;
             }
         });
@@ -57,5 +63,10 @@ public class LocationViewHolder extends RecyclerView.ViewHolder implements Locat
 
     @Override
     public void markAsCurrent(boolean isCurrent) {
+        if (isCurrent)
+            defaultMark.setImageDrawable(AppCompatResources.getDrawable(ProWeatherApp.getAppContext(), R.drawable.ic_star_filled_24dp));
+        else
+            defaultMark.setVisibility(View.GONE);
+//            defaultMark.setImageDrawable(AppCompatResources.getDrawable(ProWeatherApp.getAppContext(), R.drawable.ic_star_border_24dp));
     }
 }
