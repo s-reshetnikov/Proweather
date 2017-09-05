@@ -1,8 +1,7 @@
 package by.reshetnikov.proweather.presentation.location.viewholder;
 
-import android.support.v7.content.res.AppCompatResources;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,8 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
-import timber.log.Timber;
+import by.reshetnikov.proweather.utils.ResourcesUtil;
 
 public class LocationViewHolder extends RecyclerView.ViewHolder implements LocationViewHolderContract {
 
@@ -32,23 +30,6 @@ public class LocationViewHolder extends RecyclerView.ViewHolder implements Locat
     public LocationViewHolder(LayoutInflater inflater, ViewGroup parent) {
         super(inflater.inflate(R.layout.item_location, parent, false));
         ButterKnife.bind(this, itemView);
-
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String message = "Clicked # " + getAdapterPosition();
-                Timber.d(message);
-            }
-        });
-
-        itemView.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                String message = "Dragged # " + getAdapterPosition();
-                Timber.d(message);
-                return false;
-            }
-        });
     }
 
     @Override
@@ -64,9 +45,18 @@ public class LocationViewHolder extends RecyclerView.ViewHolder implements Locat
     @Override
     public void markAsCurrent(boolean isCurrent) {
         if (isCurrent)
-            defaultMark.setImageDrawable(AppCompatResources.getDrawable(ProWeatherApp.getAppContext(), R.drawable.ic_star_filled_24dp));
+            defaultMark.setImageDrawable(ResourcesUtil.getDrawable(R.drawable.ic_star_filled_24dp));
         else
             defaultMark.setVisibility(View.GONE);
-//            defaultMark.setImageDrawable(AppCompatResources.getDrawable(ProWeatherApp.getAppContext(), R.drawable.ic_star_border_24dp));
+    }
+
+    @Override
+    public void onItemSelected() {
+        itemView.setBackgroundColor(ResourcesUtil.getColor(R.color.colorGreyLight));
+    }
+
+    @Override
+    public void onItemClear() {
+        itemView.setBackgroundColor(Color.TRANSPARENT);
     }
 }

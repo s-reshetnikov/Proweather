@@ -37,14 +37,12 @@ public class ForecastInteractor implements ForecastInteractorContract {
     @Override
     public Single<List<DailyForecastViewModel>> getForecasts() {
         return data.getChosenLocation()
-                .subscribeOn(scheduler.ui())
                 .flatMap(new Function<LocationEntity, SingleSource<List<DailyForecastEntity>>>() {
                     @Override
-                    public SingleSource<List<DailyForecastEntity>> apply(@NonNull LocationEntity locationEntity) throws Exception {
+                    public SingleSource<List<DailyForecastEntity>> apply(LocationEntity locationEntity) throws Exception {
                         return data.getDailyForecasts(locationEntity);
                     }
                 })
-                .subscribeOn(scheduler.ui())
                 .zipWith(data.getUnits(), new BiFunction<List<DailyForecastEntity>, Units, Pair<List<DailyForecastEntity>, Units>>() {
                     @Override
                     public Pair<List<DailyForecastEntity>, Units> apply(@NonNull List<DailyForecastEntity> entities, @NonNull Units units)
@@ -53,7 +51,6 @@ public class ForecastInteractor implements ForecastInteractorContract {
                         return new Pair<>(entities, units);
                     }
                 })
-                .subscribeOn(scheduler.computation())
                 .flatMap(new Function<Pair<List<DailyForecastEntity>, Units>, SingleSource<List<DailyForecastViewModel>>>() {
                     @Override
                     public SingleSource<List<DailyForecastViewModel>> apply

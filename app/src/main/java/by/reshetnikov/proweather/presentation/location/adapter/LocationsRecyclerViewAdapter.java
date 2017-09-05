@@ -31,12 +31,6 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     }
 
     @Override
-    public void onViewRecycled(LocationViewHolder holder) {
-        super.onViewRecycled(holder);
-        Timber.d("onViewRecycled(), holder pos = " + holder.getAdapterPosition());
-    }
-
-    @Override
     public void onBindViewHolder(LocationViewHolder holder, int position) {
         LocationEntity location;
         try {
@@ -96,11 +90,12 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     @Override
     public void removeLocation(int position) {
         Timber.d("removeLocation(), called");
-        Timber.d("removeLocation(), location #" + position + " of " + locations.size());
         if (locationRemovedListener != null) {
             locationRemovedListener.onRemove(getLocationAtPosition(position));
         }
-//        notifyItemRemoved(position);
+        if (position == 0)
+
+            notifyItemRemoved(position);
         Timber.d("removeLocation(), ends");
     }
 

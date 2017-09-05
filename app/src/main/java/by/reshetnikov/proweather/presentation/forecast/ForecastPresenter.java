@@ -13,6 +13,7 @@ import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
+import timber.log.Timber;
 
 
 public class ForecastPresenter implements ForecastContract.Presenter {
@@ -60,7 +61,7 @@ public class ForecastPresenter implements ForecastContract.Presenter {
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        Log.e("ForecastPresenter", "getForecast()", e);
+                        Timber.e("getForecast()", e);
                         getView().onError(e.getMessage());
                         getView().hideLoading();
                     }
@@ -70,11 +71,42 @@ public class ForecastPresenter implements ForecastContract.Presenter {
     private ForecastContract.View getView() {
         if (viewRef.get() != null)
             return viewRef.get();
-        throw new NullPointerException("View disposed in presenter!");
+        Timber.e("View disposed in presenter", new IllegalStateException("View disposed in presenter"));
+        return getDummyView();
     }
 
     @Override
     public void setView(ForecastContract.View view) {
         this.viewRef = new WeakReference<>(view);
+    }
+
+    @android.support.annotation.NonNull
+    private ForecastContract.View getDummyView() {
+        return new ForecastContract.View() {
+            @Override
+            public void showWeatherForecast(List<DailyForecastViewModel> forecast) {
+
+            }
+
+            @Override
+            public void showLoading() {
+
+            }
+
+            @Override
+            public void hideLoading() {
+
+            }
+
+            @Override
+            public void showMessage(String message) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        };
     }
 }

@@ -10,4 +10,8 @@ interface LocationViewHolderContract {
     void setCircleCountryCode(String countryCode);
 
     void markAsCurrent(boolean isCurrent);
+
+    void onItemSelected();
+
+    void onItemClear();
 }
