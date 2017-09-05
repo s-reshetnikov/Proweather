@@ -33,7 +33,7 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="${crashlyticsApiKey}" />
+            android:value="f3d514613ac0f9839c3765e8a4c47b673eff6b63" />
     </application>
 
 </manifest>

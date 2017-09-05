@@ -10,7 +10,7 @@ def getProperty(String filename, String propName) {
         if (props[propName] != null) {
             return props[propName]
         } else {
-            print(propName + " does not exist in " + filename + "!")
+            print(propName + " does not exist in " + filename + "!");
         }
     } else {
         print(filename + " does not exist!")
@@ -28,13 +28,12 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        manifestPlaceholders = [crashlyticsApiKey: getProperty("local.properties", "crashlytics_api_key")]
         buildConfigField "String", "OWM_API_KEY", "\"${getProperty("local.properties", "owm_api_key")}\""
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 
     configurations.all {
@@ -68,7 +67,6 @@ ext {
     daoVersion = '3.2.2'
     timberVersion = '4.5.1'
     MPAndroidChartVersion = 'v3.0.2'
-    crashlyticsVersion = '2.6.8'
     // tests
     jUnitVersion = '4.12'
     mockitoVersion = '1.10.19'
@@ -125,8 +123,8 @@ dependencies {
 
     // Logging
     compile "com.jakewharton.timber:timber:${timberVersion}"
-    compile("com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}@aar") {
-        transitive = true
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
     }
     // Chart
     compile "com.github.PhilJay:MPAndroidChart:${MPAndroidChartVersion}"
