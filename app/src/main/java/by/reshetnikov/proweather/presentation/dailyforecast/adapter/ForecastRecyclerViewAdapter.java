@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.presentation.forecast.adapter;
+package by.reshetnikov.proweather.presentation.dailyforecast.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.reshetnikov.proweather.presentation.forecast.DailyForecastViewModel;
-import by.reshetnikov.proweather.presentation.forecast.viewholder.ForecastViewHolder;
+import by.reshetnikov.proweather.presentation.dailyforecast.DailyForecastViewModel;
+import by.reshetnikov.proweather.presentation.dailyforecast.viewholder.ForecastViewHolder;
 
 /**
  * Created by s-reshetnikov.

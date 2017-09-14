@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.presentation.forecast;
+package by.reshetnikov.proweather.presentation.dailyforecast;
 
 import java.util.List;
 

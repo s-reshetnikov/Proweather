@@ -35,7 +35,7 @@ public class LocationsDiffUtilCallback extends DiffUtil.Callback {
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         LocationEntity oldLocation = oldLocations.get(oldItemPosition);
-        LocationEntity newLocation = newLocations.get(oldItemPosition);
+        LocationEntity newLocation = newLocations.get(newItemPosition);
 
         return oldLocation.getLocationId() == newLocation.getLocationId();
     }

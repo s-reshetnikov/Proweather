@@ -49,7 +49,35 @@ public class LocationManagerInteractor implements LocationManagerInteractorContr
 
     @Override
     public Completable removeLocation(LocationEntity location) {
-        return dataManager.removeLocation(location);
+        return dataManager.removeLocation(location)
+                .andThen(dataManager.getSavedLocations())
+                .flatMapCompletable(new Function<List<LocationEntity>, CompletableSource>() {
+                    @Override
+                    public CompletableSource apply(List<LocationEntity> locations) throws Exception {
+                        updateLocationsPositions(locations, location);
+                        Timber.d("positions updated ");
+                        logNewPositions(locations);
+                        return dataManager.updateLocationPositions(locations);
+                    }
+                });
+    }
+
+    private void logNewPositions(List<LocationEntity> locations) {
+        for (LocationEntity locationEntity : locations) {
+            Timber.d(locationEntity.getLocationName() + " - " + locationEntity.getPosition());
+        }
+    }
+
+    private void updateLocationsPositions(List<LocationEntity> locations, LocationEntity location) {
+        for (int newPosition = location.getPosition(); newPosition < locations.size(); newPosition++) {
+            int positionToChange = newPosition + 1;
+            for (LocationEntity entity : locations) {
+                if (entity.getPosition() == positionToChange) {
+                    entity.setPosition(newPosition);
+                    break;
+                }
+            }
+        }
     }
 
     @Override

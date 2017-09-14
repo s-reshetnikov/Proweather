@@ -17,7 +17,8 @@ import by.reshetnikov.proweather.presentation.location.viewholder.LocationViewHo
 import timber.log.Timber;
 
 public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationViewHolder> implements LocationsViewAdapterContract {
-    private final static boolean DETECT_MOVES = true;
+
+    private final static boolean DETECT_MOVES = false;
     private List<LocationEntity> locations = new ArrayList<>();
     private OnLocationsOrderChangedListener orderChangedListener = null;
     private OnLocationRemovedListener locationRemovedListener = null;
@@ -96,11 +97,10 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     @Override
     public void removeLocation(int position) {
         Timber.d("removeLocation(), called");
-        Timber.d("removeLocation(), location #" + position + " of " + locations.size());
         if (locationRemovedListener != null) {
             locationRemovedListener.onRemove(getLocationAtPosition(position));
         }
-//        notifyItemRemoved(position);
+
         Timber.d("removeLocation(), ends");
     }
 

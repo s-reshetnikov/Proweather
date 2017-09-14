@@ -136,7 +136,6 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeWith(new DisposableSingleObserver<List<LocationEntity>>() {
-
                     @Override
                     public void onSuccess(@NonNull List<LocationEntity> locations) {
                         Timber.d("onLocationsRefreshed(), success");

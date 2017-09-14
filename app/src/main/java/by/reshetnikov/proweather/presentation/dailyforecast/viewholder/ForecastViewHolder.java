@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.presentation.forecast.viewholder;
+package by.reshetnikov.proweather.presentation.dailyforecast.viewholder;
 
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;

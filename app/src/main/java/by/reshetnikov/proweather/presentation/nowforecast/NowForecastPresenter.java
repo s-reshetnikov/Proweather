@@ -18,6 +18,9 @@ import by.reshetnikov.proweather.utils.UnitUtils;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableSingleObserver;
 
 
@@ -56,17 +59,27 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
         compositeDisposable.add(interactor.getForecastDataPair()
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        getView().showLoading();
+                    }
+                })
+                .doAfterTerminate(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        getView().hideLoading();
+                    }
+                })
                 .subscribeWith(new DisposableSingleObserver<Pair<NowForecastViewModel, HourlyForecastForChartViewModel>>() {
                     @Override
                     public void onSuccess(@NonNull Pair<NowForecastViewModel, HourlyForecastForChartViewModel> pair) {
                         getNowForecastSuccessfully(pair.first);
                         getHourlyForecastForChartSuccessfully(pair.second);
-                        getView().hideLoading();
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        getView().hideLoading();
                         onErrorResponseReceived(e);
                     }
                 }));

@@ -2,7 +2,7 @@ package by.reshetnikov.proweather.business.forecast;
 
 import java.util.List;
 
-import by.reshetnikov.proweather.presentation.forecast.DailyForecastViewModel;
+import by.reshetnikov.proweather.presentation.dailyforecast.DailyForecastViewModel;
 import io.reactivex.Single;
 
 /**

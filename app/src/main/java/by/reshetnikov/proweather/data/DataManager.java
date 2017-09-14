@@ -131,16 +131,12 @@ public class DataManager implements DataContract {
 
     @Override
     public Completable saveNewLocation(@NonNull LocationEntity location) {
-        if (location instanceof LocationEntity)
-            return dbData.saveNewLocation(location);
-        return Completable.error(new ClassCastException());
+        return dbData.saveNewLocation(location);
     }
 
     @Override
     public Completable removeLocation(@NonNull LocationEntity location) {
-        if (location instanceof LocationEntity)
-            return dbData.removeLocation(location);
-        return Completable.error(new ClassCastException());
+        return dbData.removeLocation(location);
     }
 
     @Override

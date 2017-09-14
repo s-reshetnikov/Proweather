@@ -2,8 +2,8 @@ package by.reshetnikov.proweather.di.component;
 
 import by.reshetnikov.proweather.di.PerActivity;
 import by.reshetnikov.proweather.di.module.ActivityModule;
-import by.reshetnikov.proweather.presentation.forecast.ForecastFragment;
-import by.reshetnikov.proweather.presentation.forecast.ForecastPresenter;
+import by.reshetnikov.proweather.presentation.dailyforecast.ForecastFragment;
+import by.reshetnikov.proweather.presentation.dailyforecast.ForecastPresenter;
 import by.reshetnikov.proweather.presentation.location.LocationActivity;
 import by.reshetnikov.proweather.presentation.location.LocationManagerFragment;
 import by.reshetnikov.proweather.presentation.location.LocationManagerPresenter;

@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.presentation.forecast;
+package by.reshetnikov.proweather.presentation.dailyforecast;
 
 import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
 import by.reshetnikov.proweather.data.model.unit.Units;

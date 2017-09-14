@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.presentation.forecast.viewholder;
+package by.reshetnikov.proweather.presentation.dailyforecast.viewholder;
 
 /**
  * Created by s-reshetnikov.

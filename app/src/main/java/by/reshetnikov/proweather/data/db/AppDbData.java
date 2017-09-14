@@ -21,6 +21,7 @@ import by.reshetnikov.proweather.data.exception.NoSavedLocationException;
 import by.reshetnikov.proweather.utils.CalendarUtil;
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import timber.log.Timber;
 
 
 public class AppDbData implements DbContract {
@@ -127,6 +128,9 @@ public class AppDbData implements DbContract {
 
     @Override
     public Single<List<LocationEntity>> getSavedLocations() {
+        if (getSavedLocationEntities().size() == 0)
+            return Single.error(new NoSavedLocationException());
+
         return Single.fromCallable(new Callable<List<LocationEntity>>() {
             @Override
             public List<LocationEntity> call() {
@@ -227,7 +231,8 @@ public class AppDbData implements DbContract {
                 .where(LocationEntityDao.Properties.Position.eq(firstPosition))
                 .build()
                 .unique();
-
+        if (defaultLocation == null)
+            Timber.w("default location is not set");
         return defaultLocation;
     }
 

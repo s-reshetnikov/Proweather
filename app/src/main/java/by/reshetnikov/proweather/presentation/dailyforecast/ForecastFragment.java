@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.presentation.forecast;
+package by.reshetnikov.proweather.presentation.dailyforecast;
 
 import android.content.Context;
 import android.net.Uri;
@@ -26,7 +26,7 @@ import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.di.component.ActivityComponent;
 import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
 import by.reshetnikov.proweather.di.module.ActivityModule;
-import by.reshetnikov.proweather.presentation.forecast.adapter.ForecastRecyclerViewAdapter;
+import by.reshetnikov.proweather.presentation.dailyforecast.adapter.ForecastRecyclerViewAdapter;
 import by.reshetnikov.proweather.utils.ToastUtils;
 import timber.log.Timber;
 

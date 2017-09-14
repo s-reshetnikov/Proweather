@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -33,19 +34,19 @@ public class ProWeatherApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         Fabric.with(this, new Crashlytics());
 
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
-        }
-
-        Timber.d("start application");
-
-        if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
+        } else {
+            Timber.plant(new CrashReportingTree());
         }
+
+        Fabric.getLogger().i("Test", "for test");
 
         applicationComponent = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this)).build();
@@ -59,7 +60,6 @@ public class ProWeatherApp extends Application {
                 return true;
             }
         });
-        Timber.d("stop() end");
     }
 
     private void setPreferenceDefaultValues(boolean canReadAgain) {
@@ -73,23 +73,25 @@ public class ProWeatherApp extends Application {
 
     }
 
-//    private static class CrashReportingTree extends Timber.Tree {
-//        @Override
-//        protected void log(int priority, String tag, String message, Throwable t) {
-//            if (priority == Log.VERBOSE || priority == Timber.dEBUG) {
-//                return;
-//            }
-//
-//            FakeCrashLibrary.log(priority, tag, message);
-//
-//            if (t != null) {
-//                if (priority == Log.ERROR) {
-//                    FakeCrashLibrary.logError(t);
-//                } else if (priority == Log.WARN) {
-//                    FakeCrashLibrary.logWarning(t);
-//                }
-//            }
-//        }
-//    }
+    private static class CrashReportingTree extends Timber.Tree {
+        @Override
+        protected void log(int priority, String tag, String message, Throwable throwable) {
+            if (priority == Log.VERBOSE || priority == Log.DEBUG)
+                return;
+
+            if (priority == Log.INFO) {
+                Fabric.getLogger().i(tag, message);
+                return;
+            }
+
+            if (throwable != null) {
+                if (priority == Log.ERROR) {
+                    Crashlytics.logException(throwable);
+                } else if (priority == Log.WARN) {
+                    Crashlytics.log(Log.WARN, tag, message);
+                }
+            }
+        }
+    }
 
 }

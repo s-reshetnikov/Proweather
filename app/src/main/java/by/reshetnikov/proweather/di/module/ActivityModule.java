@@ -10,8 +10,8 @@ import by.reshetnikov.proweather.business.locationmanager.LocationManagerInterac
 import by.reshetnikov.proweather.business.nowforecast.NowForecastInteractor;
 import by.reshetnikov.proweather.business.nowforecast.NowForecastInteractorContract;
 import by.reshetnikov.proweather.di.ActivityContext;
-import by.reshetnikov.proweather.presentation.forecast.ForecastContract;
-import by.reshetnikov.proweather.presentation.forecast.ForecastPresenter;
+import by.reshetnikov.proweather.presentation.dailyforecast.ForecastContract;
+import by.reshetnikov.proweather.presentation.dailyforecast.ForecastPresenter;
 import by.reshetnikov.proweather.presentation.location.AutoCompleteLocationsAdapter;
 import by.reshetnikov.proweather.presentation.location.LocationManagerContract;
 import by.reshetnikov.proweather.presentation.location.LocationManagerPresenter;

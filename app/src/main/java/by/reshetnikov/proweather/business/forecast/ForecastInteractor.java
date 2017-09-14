@@ -1,7 +1,6 @@
 package by.reshetnikov.proweather.business.forecast;
 
 import android.support.v4.util.Pair;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +11,14 @@ import by.reshetnikov.proweather.data.DataContract;
 import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.model.unit.Units;
-import by.reshetnikov.proweather.presentation.forecast.DailyForecastViewModel;
+import by.reshetnikov.proweather.presentation.dailyforecast.DailyForecastViewModel;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
+import timber.log.Timber;
 
 /**
  * Created by s-reshetnikov.
@@ -37,19 +37,19 @@ public class ForecastInteractor implements ForecastInteractorContract {
     @Override
     public Single<List<DailyForecastViewModel>> getForecasts() {
         return data.getChosenLocation()
-                .subscribeOn(scheduler.ui())
+                .subscribeOn(scheduler.io())
                 .flatMap(new Function<LocationEntity, SingleSource<List<DailyForecastEntity>>>() {
                     @Override
                     public SingleSource<List<DailyForecastEntity>> apply(@NonNull LocationEntity locationEntity) throws Exception {
+                        Timber.d("Get daily forecast: ");
                         return data.getDailyForecasts(locationEntity);
                     }
                 })
-                .subscribeOn(scheduler.ui())
+                .subscribeOn(scheduler.io())
                 .zipWith(data.getUnits(), new BiFunction<List<DailyForecastEntity>, Units, Pair<List<DailyForecastEntity>, Units>>() {
                     @Override
-                    public Pair<List<DailyForecastEntity>, Units> apply(@NonNull List<DailyForecastEntity> entities, @NonNull Units units)
-                            throws Exception {
-                        Log.i("InteractorZip", "size of incoming array is " + entities.size());
+                    public Pair<List<DailyForecastEntity>, Units> apply(@NonNull List<DailyForecastEntity> entities, @NonNull Units units) throws Exception {
+                        Timber.d("size of incoming array is " + entities.size());
                         return new Pair<>(entities, units);
                     }
                 })
@@ -64,7 +64,7 @@ public class ForecastInteractor implements ForecastInteractorContract {
                             viewModel.applyUnits(forecastsUnitsPair.second);
                             dailyForecastViewModels.add(viewModel);
                         }
-                        Log.i("InteractorFM", "size of incoming array is " + forecastsUnitsPair.first.size());
+                        Timber.d("size of incoming array is " + forecastsUnitsPair.first.size());
                         return Single.just(dailyForecastViewModels);
                     }
                 });

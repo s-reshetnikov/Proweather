@@ -1,6 +1,4 @@
-package by.reshetnikov.proweather.presentation.forecast;
-
-import android.util.Log;
+package by.reshetnikov.proweather.presentation.dailyforecast;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -12,7 +10,11 @@ import by.reshetnikov.proweather.business.forecast.ForecastInteractorContract;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableSingleObserver;
+import timber.log.Timber;
 
 
 public class ForecastPresenter implements ForecastContract.Presenter {
@@ -46,23 +48,31 @@ public class ForecastPresenter implements ForecastContract.Presenter {
     }
 
     private void getForecast() {
-        getView().showLoading();
         disposables.add(interactor.getForecasts()
-                .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        getView().showLoading();
+                    }
+                })
+                .doAfterTerminate(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        getView().hideLoading();
+                    }
+                })
+                .subscribeOn(scheduler.io())
                 .subscribeWith(new DisposableSingleObserver<List<DailyForecastViewModel>>() {
                     @Override
                     public void onSuccess(@NonNull List<DailyForecastViewModel> forecast) {
-                        Log.i("ForecastPresenter", "size is " + forecast.size());
                         getView().showWeatherForecast(forecast);
-                        getView().hideLoading();
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        Log.e("ForecastPresenter", "getForecast()", e);
-                        getView().onError(e.getMessage());
-                        getView().hideLoading();
+                        Timber.e("ForecastPresenter", "getForecast()", e);
+                        getView().onError("Forecast loading failed");
                     }
                 }));
     }

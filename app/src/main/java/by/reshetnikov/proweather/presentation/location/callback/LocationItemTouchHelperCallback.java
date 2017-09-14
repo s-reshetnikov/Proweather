@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 import by.reshetnikov.proweather.presentation.location.adapter.LocationsViewAdapterContract;
+import by.reshetnikov.proweather.presentation.location.viewholder.LocationViewHolderContract;
 import timber.log.Timber;
 
 
@@ -37,6 +38,14 @@ public class LocationItemTouchHelperCallback extends ItemTouchHelper.SimpleCallb
     }
 
     @Override
+    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+        super.onSelectedChanged(viewHolder, actionState);
+        if (viewHolder instanceof LocationViewHolderContract) {
+            ((LocationViewHolderContract) viewHolder).onSelectedChanged();
+        }
+    }
+
+    @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                           RecyclerView.ViewHolder target) {
         int from = viewHolder.getAdapterPosition();
@@ -46,7 +55,17 @@ public class LocationItemTouchHelperCallback extends ItemTouchHelper.SimpleCallb
             dragFromPosition = from;
         }
         dragToPosition = to;
+        if (dragFromPosition == 0 && dragToPosition == 1) {
+            LocationViewHolderContract viewHolderToMark = (LocationViewHolderContract) recyclerView.findViewHolderForAdapterPosition(dragToPosition);
+            viewHolderToMark.markAsCurrent(true);
+            ((LocationViewHolderContract) viewHolder).markAsCurrent(false);
+        }
 
+        if (dragToPosition == 0) {
+            LocationViewHolderContract viewHolderToMark = (LocationViewHolderContract) recyclerView.findViewHolderForAdapterPosition(0);
+            viewHolderToMark.markAsCurrent(false);
+            ((LocationViewHolderContract) viewHolder).markAsCurrent(true);
+        }
         boolean saveChanges = false;
         adapter.moveLocationItem(from, to, saveChanges);
         return true;
@@ -57,7 +76,6 @@ public class LocationItemTouchHelperCallback extends ItemTouchHelper.SimpleCallb
         int position = viewHolder.getAdapterPosition();
         viewHolder.setIsRecyclable(false);
         adapter.removeLocation(position);
-
     }
 
     @Override
@@ -70,6 +88,9 @@ public class LocationItemTouchHelperCallback extends ItemTouchHelper.SimpleCallb
             dragFromPosition = dragToPosition = -1;
             boolean saveChanges = true;
             adapter.moveLocationItem(fromPosition, toPosition, saveChanges);
+        }
+        if (viewHolder instanceof LocationViewHolderContract) {
+            ((LocationViewHolderContract) viewHolder).onItemClear();
         }
     }
 

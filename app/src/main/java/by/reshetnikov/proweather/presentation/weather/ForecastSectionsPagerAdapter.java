@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import by.reshetnikov.proweather.presentation.forecast.ForecastFragment;
+import by.reshetnikov.proweather.presentation.dailyforecast.ForecastFragment;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastFragment;
 
 /**

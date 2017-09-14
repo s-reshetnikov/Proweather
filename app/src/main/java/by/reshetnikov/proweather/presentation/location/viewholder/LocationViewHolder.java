@@ -1,6 +1,6 @@
 package by.reshetnikov.proweather.presentation.location.viewholder;
 
-import android.support.v7.content.res.AppCompatResources;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
+import by.reshetnikov.proweather.utils.ResourcesUtil;
 import timber.log.Timber;
 
 public class LocationViewHolder extends RecyclerView.ViewHolder implements LocationViewHolderContract {
@@ -64,9 +64,18 @@ public class LocationViewHolder extends RecyclerView.ViewHolder implements Locat
     @Override
     public void markAsCurrent(boolean isCurrent) {
         if (isCurrent)
-            defaultMark.setImageDrawable(AppCompatResources.getDrawable(ProWeatherApp.getAppContext(), R.drawable.ic_star_filled_24dp));
+            defaultMark.setVisibility(View.VISIBLE);
         else
             defaultMark.setVisibility(View.GONE);
-//            defaultMark.setImageDrawable(AppCompatResources.getDrawable(ProWeatherApp.getAppContext(), R.drawable.ic_star_border_24dp));
+    }
+
+    @Override
+    public void onSelectedChanged() {
+        itemView.setBackgroundColor(ResourcesUtil.getColor(R.color.colorGreyLight));
+    }
+
+    @Override
+    public void onItemClear() {
+        itemView.setBackgroundColor(Color.TRANSPARENT);
     }
 }

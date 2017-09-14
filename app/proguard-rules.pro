@@ -50,3 +50,10 @@
 
 #MPAndroidChart
 -keep class com.github.mikephil.charting.** { *; }
+
+#Crashlytics
+-keepattributes *Annotation*
+#to provide details reports
+-keepattributes SourceFile,LineNumberTable
+#for custom exceptions
+-keep public class * extends java.lang.Exception
