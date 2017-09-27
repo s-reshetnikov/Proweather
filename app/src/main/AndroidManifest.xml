@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <application
         android:name=".ProWeatherApp"
@@ -19,7 +21,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -28,12 +29,23 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".presentation.location.LocationActivity"
+            android:hardwareAccelerated="true"
             android:label="@string/title_activity_locations"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="f3d514613ac0f9839c3765e8a4c47b673eff6b63" />
+            android:value="${crashlyticsKey}" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${googleMapsKey}" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
     </application>
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"></uses-feature>
 
 </manifest>

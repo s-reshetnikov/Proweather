@@ -53,7 +53,7 @@ public class AppWeatherApiData implements WeatherApiDataContract {
     }
 
     @Override
-    public Single<LocationForecastApiModel> getLocationsByCoordinates(int latitude, int longitude, int maxResults) {
+    public Single<LocationForecastApiModel> getLocationsByCoordinates(double latitude, double longitude, int maxResults) {
         HashMap<String, String> queryMap = new ApiQuery().addLatitudeAndLongitude(latitude, longitude)
                 .addCount(maxResults).build();
         return api.getLocations(queryMap);

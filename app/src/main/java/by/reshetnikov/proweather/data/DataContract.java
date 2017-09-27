@@ -1,5 +1,6 @@
 package by.reshetnikov.proweather.data;
 
+import android.location.Location;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
 import by.reshetnikov.proweather.data.model.unit.Units;
 import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 
@@ -22,6 +24,8 @@ public interface DataContract {
 
     Single<List<LocationEntity>> getAllLocationsByName(String locationName, int resultsCount);
 
+    Single<List<LocationEntity>> getLocationsByCoordinates(double latitude, double longitude, int resultsCount);
+
     Single<LocationEntity> getChosenLocation();
 
     Single<List<LocationEntity>> getSavedLocations();
@@ -30,11 +34,13 @@ public interface DataContract {
 
     Completable removeLocation(@NonNull LocationEntity location);
 
-    boolean getCanUseCurrentLocationPreference();
+    boolean canUseCurrentLocation();
 
     Single<Units> getUnits();
 
     Completable updateLocationPositions(List<LocationEntity> locations);
 
     Single<List<DailyForecastEntity>> getDailyForecasts(LocationEntity location);
+
+    Observable<Location> getLastLocation();
 }

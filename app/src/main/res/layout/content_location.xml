@@ -2,8 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_location_manager"
-    android:name="by.reshetnikov.proweather.presentation.location.LocationManagerFragment"
+    android:name="by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:layout="@layout/fragment_location" />
+    tools:context=".presentation.location.LocationActivity"
+    tools:layout="@layout/fragment_location"/>

@@ -7,8 +7,8 @@ import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.DataContract;
-import by.reshetnikov.proweather.di.ApplicationContext;
 import by.reshetnikov.proweather.di.module.ApplicationModule;
+import by.reshetnikov.proweather.di.qualifier.ApplicationContext;
 import dagger.Component;
 
 @Singleton

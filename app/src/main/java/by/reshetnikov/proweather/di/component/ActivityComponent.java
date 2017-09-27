@@ -1,12 +1,14 @@
 package by.reshetnikov.proweather.di.component;
 
-import by.reshetnikov.proweather.di.PerActivity;
 import by.reshetnikov.proweather.di.module.ActivityModule;
-import by.reshetnikov.proweather.presentation.dailyforecast.ForecastFragment;
-import by.reshetnikov.proweather.presentation.dailyforecast.ForecastPresenter;
+import by.reshetnikov.proweather.di.scope.PerActivity;
+import by.reshetnikov.proweather.presentation.dailyforecast.DailyForecastFragment;
+import by.reshetnikov.proweather.presentation.dailyforecast.DailyForecastPresenter;
 import by.reshetnikov.proweather.presentation.location.LocationActivity;
-import by.reshetnikov.proweather.presentation.location.LocationManagerFragment;
-import by.reshetnikov.proweather.presentation.location.LocationManagerPresenter;
+import by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerFragment;
+import by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerPresenter;
+import by.reshetnikov.proweather.presentation.location.map.MapFragment;
+import by.reshetnikov.proweather.presentation.location.map.MapPresenter;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastFragment;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastPresenter;
 import by.reshetnikov.proweather.presentation.weather.WeatherActivity;
@@ -24,13 +26,17 @@ public interface ActivityComponent {
 
     void inject(LocationManagerPresenter presenter);
 
+    void inject(MapFragment fragment);
+
+    void inject(MapPresenter presenter);
+
     void inject(NowForecastFragment fragment);
 
     void inject(NowForecastPresenter presenter);
 
-    void inject(ForecastFragment fragment);
+    void inject(DailyForecastFragment fragment);
 
-    void inject(ForecastPresenter presenter);
+    void inject(DailyForecastPresenter presenter);
 
 
 }

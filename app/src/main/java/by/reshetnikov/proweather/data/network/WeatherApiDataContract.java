@@ -12,10 +12,10 @@ public interface WeatherApiDataContract {
 
     Single<HourlyForecastApiModel> getHourlyForecast(LocationEntity location);
 
-    // Daily forecast is paid, hourly forecast will be used instead
+    // Daily forecast is paid, hourly forecast will be used instead and transformed into daily
     Single<HourlyForecastApiModel> getDailyForecast(LocationEntity location);
 
     Single<LocationForecastApiModel> getLocationsByName(String locationName, int resultsCount);
 
-    Single<LocationForecastApiModel> getLocationsByCoordinates(int latitude, int longitude, int resultsCount);
+    Single<LocationForecastApiModel> getLocationsByCoordinates(double latitude, double longitude, int resultsCount);
 }

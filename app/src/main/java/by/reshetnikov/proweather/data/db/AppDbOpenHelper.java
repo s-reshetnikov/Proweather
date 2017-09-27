@@ -7,8 +7,8 @@ import org.greenrobot.greendao.database.Database;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.data.db.model.DaoMaster;
-import by.reshetnikov.proweather.di.ApplicationContext;
-import by.reshetnikov.proweather.di.DatabaseInfo;
+import by.reshetnikov.proweather.di.qualifier.ApplicationContext;
+import by.reshetnikov.proweather.di.qualifier.DatabaseInfo;
 import timber.log.Timber;
 
 

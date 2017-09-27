@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class Coordinates {
 
-    // Location geo location, longitude
+    // LocationModel geo location, longitude
     @SerializedName("lon")
     @Expose
     private double longitude;
-    // Location geo location, latitude
+    // LocationModel geo location, latitude
     @SerializedName("lat")
     @Expose
     private double latitude;

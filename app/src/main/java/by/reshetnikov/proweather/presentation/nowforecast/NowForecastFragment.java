@@ -91,6 +91,17 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof AppCompatActivity) {
+            component = DaggerActivityComponent.builder()
+                    .activityModule(new ActivityModule((AppCompatActivity) context))
+                    .applicationComponent(((ProWeatherApp) getActivity().getApplication()).getComponent())
+                    .build();
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -118,9 +129,25 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.setView(this);
-        presenter.refreshClicked();
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.setView(this);
+        presenter.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.stop();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @Override
@@ -140,23 +167,6 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof AppCompatActivity) {
-            component = DaggerActivityComponent.builder()
-                    .activityModule(new ActivityModule((AppCompatActivity) context))
-                    .applicationComponent(((ProWeatherApp) getActivity().getApplication()).getComponent())
-                    .build();
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-        presenter.start();
-    }
 
     @Override
     public void showCurrentWeather(NowForecastViewModel nowForecast) {
@@ -264,12 +274,14 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
 
     @Override
     public void showMessage(String message) {
-
+        Toast toast = Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG);
+        ToastUtils.showToast(toast);
     }
 
     @Override
     public void onError(String message) {
-
+        Toast toast = Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG);
+        ToastUtils.showToast(toast);
     }
 
     public interface OnFragmentInteractionListener {

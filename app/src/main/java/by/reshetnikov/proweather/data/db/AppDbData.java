@@ -16,8 +16,8 @@ import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntityDao;
 import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
 import by.reshetnikov.proweather.data.db.model.NowForecastEntityDao;
+import by.reshetnikov.proweather.data.exception.NoLocationException;
 import by.reshetnikov.proweather.data.exception.NoSavedForecastDataException;
-import by.reshetnikov.proweather.data.exception.NoSavedLocationException;
 import by.reshetnikov.proweather.utils.CalendarUtil;
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -116,7 +116,7 @@ public class AppDbData implements DbContract {
     @Override
     public Single<LocationEntity> getChosenLocation() {
         if (getSavedLocationEntities().size() == 0)
-            return Single.error(new NoSavedLocationException());
+            return Single.error(new NoLocationException());
 
         return Single.fromCallable(new Callable<LocationEntity>() {
             @Override
@@ -129,7 +129,7 @@ public class AppDbData implements DbContract {
     @Override
     public Single<List<LocationEntity>> getSavedLocations() {
         if (getSavedLocationEntities().size() == 0)
-            return Single.error(new NoSavedLocationException());
+            return Single.error(new NoLocationException());
 
         return Single.fromCallable(new Callable<List<LocationEntity>>() {
             @Override

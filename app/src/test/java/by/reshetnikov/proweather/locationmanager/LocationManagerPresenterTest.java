@@ -14,8 +14,8 @@ import java.util.List;
 
 import by.reshetnikov.proweather.business.locationmanager.LocationManagerInteractor;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import by.reshetnikov.proweather.presentation.location.LocationManagerContract;
-import by.reshetnikov.proweather.presentation.location.LocationManagerPresenter;
+import by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerContract;
+import by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerPresenter;
 import by.reshetnikov.proweather.utils.scheduler.ImmediateSchedulerProvider;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;

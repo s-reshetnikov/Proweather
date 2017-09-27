@@ -11,8 +11,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.business.nowforecast.NowForecastInteractorContract;
+import by.reshetnikov.proweather.data.exception.NoLocationException;
 import by.reshetnikov.proweather.data.exception.NoSavedForecastDataException;
-import by.reshetnikov.proweather.data.exception.NoSavedLocationException;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
 import by.reshetnikov.proweather.utils.UnitUtils;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
@@ -41,18 +41,18 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
 
     @Override
     public void start() {
-        compositeDisposable.clear();
+        updateWeather();
     }
 
     @Override
     public void stop() {
-        compositeDisposable.dispose();
+        compositeDisposable.clear();
+        viewRef.clear();
     }
 
     @Override
     public void refreshClicked() {
-        getView().showLoading();
-        updateWeather();
+
     }
 
     private void updateWeather() {
@@ -87,7 +87,7 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
     }
 
     private void onErrorResponseReceived(Throwable exception) {
-        if (exception instanceof NoSavedLocationException) {
+        if (exception instanceof NoLocationException) {
             viewRef.get().showLocationManager();
         }
         if (exception instanceof NoSavedForecastDataException)

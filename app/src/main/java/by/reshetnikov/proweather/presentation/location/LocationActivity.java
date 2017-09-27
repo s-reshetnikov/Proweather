@@ -17,7 +17,7 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void setToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.location_toolbar);
+        Toolbar toolbar = findViewById(R.id.location_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

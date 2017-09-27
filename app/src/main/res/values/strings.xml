@@ -106,4 +106,8 @@
     <string name="wind_label">Wind:</string>
     <string name="details_button_text">Details</string>
     <string name="hide_button_text">HIDE</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_location_permission">Location permission necessary</string>
+    <string name="text_location_permission">This permission is required to get your actual location</string>
+    <string name="ok">Ok</string>
 </resources>

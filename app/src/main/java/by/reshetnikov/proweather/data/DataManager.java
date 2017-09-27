@@ -1,6 +1,12 @@
 package by.reshetnikov.proweather.data;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.location.Location;
 import android.util.Log;
+
+import com.google.android.gms.location.LocationRequest;
+import com.patloew.rxlocation.RxLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +30,11 @@ import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweath
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationForecastApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationWeatherApiModel;
 import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
+import by.reshetnikov.proweather.di.qualifier.HighAccuracy;
+import by.reshetnikov.proweather.di.qualifier.LowPower;
 import by.reshetnikov.proweather.utils.NetworkUtils;
-import by.reshetnikov.proweather.utils.scheduler.AppSchedulerProvider;
 import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
@@ -38,16 +46,28 @@ public class DataManager implements DataContract {
     private DbContract dbData;
     private WeatherApiDataContract apiData;
     private AppSharedPreferencesData sharedPreferencesData;
-    private AppSchedulerProvider scheduler;
+    private RxLocation rxLocation;
+    private Context context;
+
+    private LocationRequest lowPowerLocationRequest;
+    private LocationRequest highAccuracyLocationRequest;
 
     @Inject
     public DataManager(DbContract dbData,
                        WeatherApiDataContract apiData,
-                       AppSharedPreferencesData sharedPreferencesData
+                       AppSharedPreferencesData sharedPreferencesData,
+                       RxLocation rxLocation
     ) {
         this.dbData = dbData;
         this.apiData = apiData;
         this.sharedPreferencesData = sharedPreferencesData;
+        this.rxLocation = rxLocation;
+    }
+
+    @Inject
+    void initializeLocationRequests(@LowPower LocationRequest lowPower, @HighAccuracy LocationRequest highAccuracy) {
+        this.lowPowerLocationRequest = lowPower;
+        this.highAccuracyLocationRequest = highAccuracy;
     }
 
     @Override
@@ -99,6 +119,19 @@ public class DataManager implements DataContract {
         return dbData.getSavedDailyForecast(location);
     }
 
+    @SuppressLint("MissingPermission")
+    @Override
+    public Observable<Location> getLastLocation() {
+
+        return rxLocation
+                .location()
+                .updates(highAccuracyLocationRequest);
+
+//        return rxLocation
+//                .location()
+//                .updates(lowPowerLocationRequest);
+    }
+
     @Override
     public Single<List<LocationEntity>> getAllLocationsByName(String locationName, int resultsCount) {
         if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
@@ -114,13 +147,30 @@ public class DataManager implements DataContract {
                         }
                     });
         }
+        return Single.error(new NoNetworkException());
+    }
 
+    @Override
+    public Single<List<LocationEntity>> getLocationsByCoordinates(double latitude, double longitude, int resultsCount) {
+        if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
+            return apiData.getLocationsByCoordinates(latitude, longitude, resultsCount)
+                    .map(new Function<LocationForecastApiModel, List<LocationEntity>>() {
+                        @Override
+                        public List<LocationEntity> apply(@NonNull LocationForecastApiModel locations) throws Exception {
+                            List<LocationEntity> locationAdapters = new ArrayList<>();
+                            for (LocationWeatherApiModel apiModel : locations.locationApiModelList) {
+                                locationAdapters.add(LocationFactory.create(apiModel));
+                            }
+                            return locationAdapters;
+                        }
+                    });
+        }
         return Single.error(new NoNetworkException());
     }
 
     @Override
     public Single<LocationEntity> getChosenLocation() {
-        Timber.d("getSavedLocation()");
+        Timber.d("getChosenLocation()");
         return dbData.getChosenLocation();
     }
 
@@ -140,7 +190,7 @@ public class DataManager implements DataContract {
     }
 
     @Override
-    public boolean getCanUseCurrentLocationPreference() {
+    public boolean canUseCurrentLocation() {
         return sharedPreferencesData.getCanUseCurrentLocationPreference();
     }
 

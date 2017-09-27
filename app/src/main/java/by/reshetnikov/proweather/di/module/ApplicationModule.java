@@ -3,9 +3,11 @@ package by.reshetnikov.proweather.di.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.google.android.gms.location.LocationRequest;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.patloew.rxlocation.RxLocation;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,8 +24,10 @@ import by.reshetnikov.proweather.data.network.AppWeatherApiData;
 import by.reshetnikov.proweather.data.network.WeatherApiDataContract;
 import by.reshetnikov.proweather.data.network.openweathermap.OpenWeatherMapApiService;
 import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
-import by.reshetnikov.proweather.di.ApplicationContext;
-import by.reshetnikov.proweather.di.DatabaseInfo;
+import by.reshetnikov.proweather.di.qualifier.ApplicationContext;
+import by.reshetnikov.proweather.di.qualifier.DatabaseInfo;
+import by.reshetnikov.proweather.di.qualifier.HighAccuracy;
+import by.reshetnikov.proweather.di.qualifier.LowPower;
 import by.reshetnikov.proweather.utils.AppConstants;
 import dagger.Module;
 import dagger.Provides;
@@ -139,5 +143,29 @@ public class ApplicationModule {
     @Provides
     CompositeDisposable provideCompositeDisposable() {
         return new CompositeDisposable();
+    }
+
+    //rxLocation
+    @Provides
+    @LowPower
+    LocationRequest provideLowPowerLocationRequest() {
+        int requestInterval = 15 * 1000;
+        return LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_LOW_POWER)
+                .setInterval(requestInterval);
+    }
+
+    @Provides
+    @HighAccuracy
+    LocationRequest provideHighAccuracyLocationRequest() {
+        int requestInterval = 5 * 1000;
+        return LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(requestInterval);
+    }
+
+    @Provides
+    RxLocation provideRxLocation(@ApplicationContext Context context) {
+        return new RxLocation(context);
     }
 }
