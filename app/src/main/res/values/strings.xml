@@ -110,4 +110,7 @@
     <string name="title_location_permission">Location permission necessary</string>
     <string name="text_location_permission">This permission is required to get your actual location</string>
     <string name="ok">Ok</string>
+    <string name="yes">yes</string>
+    <string name="no">No</string>
+    <string name="gps_disabled_quastion_message">Your GPS seems to be disabled, do you want to enable it?</string>
 </resources>

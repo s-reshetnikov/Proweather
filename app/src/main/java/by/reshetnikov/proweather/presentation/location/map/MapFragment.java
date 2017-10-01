@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -27,7 +28,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -59,8 +59,12 @@ public class MapFragment extends Fragment implements MapContract.View, OnMapRead
     MapContract.Presenter presenter;
     @BindView(R.id.mapView)
     MapView mapView;
+    @BindView(R.id.ivLocationPointer)
+    ImageView ivLocationPointer;
     @BindView(R.id.fab_add_location_to_list)
-    FloatingActionButton btnCurrentLocation;
+    FloatingActionButton fabCurrentLocation;
+    @BindView(R.id.fab_cancel_add_location_to_list)
+    FloatingActionButton fabCancelAddLocation;
     private GoogleMap map;
     private ActivityComponent component;
 
@@ -78,6 +82,7 @@ public class MapFragment extends Fragment implements MapContract.View, OnMapRead
                     .build();
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -168,10 +173,26 @@ public class MapFragment extends Fragment implements MapContract.View, OnMapRead
     }
 
     @OnClick(R.id.fab_add_location_to_list)
-    public void findCurrentLocation() {
-        presenter.onCurrentLocationClicked();
+    public void addNewLocation() {
+        boolean isPointerVisible = ivLocationPointer.getVisibility() == View.VISIBLE;
+        LatLng coordinates = map.getCameraPosition().target;
+        presenter.onAddNewLocationButtonClicked(isPointerVisible, coordinates.latitude, coordinates.longitude);
     }
 
+    @OnClick(R.id.fab_cancel_add_location_to_list)
+    public void cancelAddNewLocation() {
+        presenter.onCancelButtonClicked();
+    }
+
+    @Override
+    public void showCancelButton() {
+        fabCancelAddLocation.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideCancelButton() {
+        fabCancelAddLocation.setVisibility(View.INVISIBLE);
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -204,7 +225,10 @@ public class MapFragment extends Fragment implements MapContract.View, OnMapRead
     public void addMarkerOnMap(LocationEntity locationEntity, boolean moveCamera) {
 //        // Add a marker in Sydney, Australia, and move the camera.
         LatLng location = new LatLng(locationEntity.getLatitude(), locationEntity.getLongitude());
-        map.addMarker(new MarkerOptions().position(location).title(locationEntity.getLocationName()));
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(location)
+                .title(locationEntity.getLocationName());
+        map.addMarker(markerOptions);
         if (moveCamera) {
             int zoom = 10;
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoom));
@@ -229,9 +253,23 @@ public class MapFragment extends Fragment implements MapContract.View, OnMapRead
     }
 
     @Override
-    public void updateCentralMarkerPosition() {
-        LatLng coordinates = map.getCameraPosition().target;
+    public void showLocationPointer() {
+        ivLocationPointer.setVisibility(View.VISIBLE);
+    }
 
+    @Override
+    public void hideLocationPointer() {
+        ivLocationPointer.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void updateFabWithCheckIcon() {
+        fabCurrentLocation.setImageResource(R.drawable.ic_check_24dp);
+    }
+
+    @Override
+    public void updateFabWithAddIcon() {
+        fabCurrentLocation.setImageResource(R.drawable.ic_add_24dp);
     }
 
     private void setUpMap() {
@@ -242,26 +280,15 @@ public class MapFragment extends Fragment implements MapContract.View, OnMapRead
         }
         map.getUiSettings().setMyLocationButtonEnabled(true);
         map.setMyLocationEnabled(true);
+        map.getUiSettings().setMapToolbarEnabled(false);
         map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
             public boolean onMyLocationButtonClick() {
                 Toast.makeText(MapFragment.this.getContext(), "On my location button clicked", Toast.LENGTH_SHORT).show();
-                presenter.onCurrentLocationClicked();
+                presenter.onCurrentLocationButtonClicked();
                 return false;
             }
         });
-        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                presenter.cameraMoved();
-            }
-        });
-        MarkerOptions markerOptions = new MarkerOptions()
-                .position(map.getCameraPosition().target)
-                .title("Title")
-                .snippet("Snippet")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_my_location));
-        map.addMarker(markerOptions);
     }
 
     private boolean checkLocationPermission() {
@@ -314,19 +341,19 @@ public class MapFragment extends Fragment implements MapContract.View, OnMapRead
 
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+        builder.setMessage(getString(R.string.gps_disabled_quastion_message))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
                         startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
                         dialog.cancel();
                     }
                 });
-        final AlertDialog alert = builder.create();
-        alert.show();
+        final AlertDialog noGpsAlert = builder.create();
+        noGpsAlert.show();
     }
 }

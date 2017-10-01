@@ -13,6 +13,7 @@ import by.reshetnikov.proweather.business.map.MapInteractorContract;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Action;
 import io.reactivex.observers.DisposableSingleObserver;
 import timber.log.Timber;
 
@@ -51,7 +52,39 @@ public class MapPresenter implements MapContract.Presenter {
     }
 
     @Override
-    public void onCurrentLocationClicked() {
+    public void onAddNewLocationButtonClicked(boolean isPointerVisible, double latitude, double longitude) {
+        if (!isPointerVisible) {
+            getView().showLocationPointer();
+            getView().updateFabWithCheckIcon();
+            getView().showCancelButton();
+        } else {
+            disposables.add(interactor.getLocations(latitude, longitude)
+                    .doAfterTerminate(new Action() {
+                        @Override
+                        public void run() throws Exception {
+                            getView().hideCancelButton();
+                            getView().hideLocationPointer();
+                            getView().updateFabWithAddIcon();
+                        }
+                    })
+                    .observeOn(scheduler.ui())
+                    .subscribeOn(scheduler.io())
+                    .subscribeWith(new DisposableSingleObserver<LocationEntity>() {
+                        @Override
+                        public void onSuccess(LocationEntity locationEntity) {
+                            getView().addMarkerOnMap(locationEntity, false);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Timber.e(e);
+                        }
+                    }));
+        }
+    }
+
+    @Override
+    public void onCurrentLocationButtonClicked() {
         if (getView().checkOrRequestLocationPermissions()) {
             disposables.add(interactor.getCurrentLocation()
                     .observeOn(scheduler.ui())
@@ -78,8 +111,10 @@ public class MapPresenter implements MapContract.Presenter {
     }
 
     @Override
-    public void cameraMoved() {
-        getView().updateCentralMarkerPosition();
+    public void onCancelButtonClicked() {
+        getView().hideCancelButton();
+        getView().hideLocationPointer();
+        getView().updateFabWithAddIcon();
     }
 
     private MapContract.View getView() {
@@ -90,7 +125,6 @@ public class MapPresenter implements MapContract.Presenter {
     public void setView(@NonNull MapContract.View view) {
         viewRef = new WeakReference<>(view);
     }
-
 
     private void setAllLocationsOnMap() {
         disposables.add(interactor.getAllSavedLocations()

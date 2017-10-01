@@ -15,6 +15,10 @@ public interface MapContract {
 
     interface View {
 
+        void showCancelButton();
+
+        void hideCancelButton();
+
         boolean checkOrRequestLocationPermissions();
 
         void showLocationPermissionIsNotGranted();
@@ -27,7 +31,13 @@ public interface MapContract {
 
         void moveCameraToLocation(LatLng coordinates, int zoom);
 
-        void updateCentralMarkerPosition();
+        void showLocationPointer();
+
+        void hideLocationPointer();
+
+        void updateFabWithCheckIcon();
+
+        void updateFabWithAddIcon();
     }
 
     interface Presenter extends PresenterContract {
@@ -40,10 +50,12 @@ public interface MapContract {
 
         void onMapReady();
 
-        void onCurrentLocationClicked();
+        void onAddNewLocationButtonClicked(boolean isPointerVisible, double latitude, double longitude);
+
+        void onCurrentLocationButtonClicked();
 
         void playServicesNotInstalled();
 
-        void cameraMoved();
+        void onCancelButtonClicked();
     }
 }

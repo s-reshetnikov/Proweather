@@ -30,8 +30,8 @@ public class MapInteractor implements MapInteractorContract {
 
     @Override
     public Single<LocationEntity> getActualLocation() {
-       // if (dataManager.canUseCurrentLocation())
-            return getCurrentLocation();
+        // if (dataManager.canUseCurrentLocation())
+        return getCurrentLocation();
 
         //return dataManager.getChosenLocation();
     }
@@ -39,6 +39,38 @@ public class MapInteractor implements MapInteractorContract {
     @Override
     public Single<List<LocationEntity>> getAllSavedLocations() {
         return dataManager.getSavedLocations();
+    }
+
+    @Override
+    public Single<LocationEntity> getLocations(double latitude, double longitude) {
+        int resultsNumber = 5;
+        return dataManager.getLocationsByCoordinates(latitude, longitude, resultsNumber)
+                .flatMap(new Function<List<LocationEntity>, SingleSource<LocationEntity>>() {
+                    @Override
+                    public SingleSource<LocationEntity> apply(List<LocationEntity> locationEntities) throws Exception {
+                        return Single.just(getNearestLocation(locationEntities, latitude, longitude));
+                    }
+                });
+    }
+
+    private LocationEntity getNearestLocation(List<LocationEntity> locationEntities, double latitude, double longitude) {
+        double[] results = new double[locationEntities.size()];
+        double summary = Math.abs(longitude) + Math.abs(latitude);
+        for (int index = 0; index < locationEntities.size(); index++) {
+            LocationEntity entity = locationEntities.get(index);
+            double currentLocationSummary = Math.abs(entity.getLatitude()) + Math.abs(entity.getLongitude());
+            results[index] = Math.abs(summary - currentLocationSummary);
+        }
+        return getNearest(locationEntities, results);
+    }
+
+    private LocationEntity getNearest(List<LocationEntity> locationEntities, double[] results) {
+        int minIndex = 0;
+        for (int index = 1; index < results.length; index++) {
+            if (results[index] < results[minIndex])
+                minIndex = index;
+        }
+        return locationEntities.get(minIndex);
     }
 
     @Override
