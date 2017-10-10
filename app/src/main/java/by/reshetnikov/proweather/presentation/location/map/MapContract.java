@@ -38,6 +38,10 @@ public interface MapContract {
         void updateFabWithCheckIcon();
 
         void updateFabWithAddIcon();
+
+        void updateLocations();
+
+        void updateLocations(LocationEntity locationEntity);
     }
 
     interface Presenter extends PresenterContract {
@@ -57,5 +61,9 @@ public interface MapContract {
         void playServicesNotInstalled();
 
         void onCancelButtonClicked();
+
+        void updateLocations();
+
+        void updateLocations(LocationEntity location);
     }
 }

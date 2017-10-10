@@ -117,6 +117,16 @@ public class MapPresenter implements MapContract.Presenter {
         getView().updateFabWithAddIcon();
     }
 
+    @Override
+    public void updateLocations() {
+        getView().updateLocations();
+    }
+
+    @Override
+    public void updateLocations(LocationEntity location) {
+
+    }
+
     private MapContract.View getView() {
         return viewRef.get();
     }

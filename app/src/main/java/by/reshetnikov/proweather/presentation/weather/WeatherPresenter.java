@@ -22,39 +22,18 @@ public class WeatherPresenter implements WeatherContract.Presenter {
 
     }
 
-
     @Override
     public void start() {
 
     }
 
-
     @Override
-    public void getCitiesList() {
-
-    }
-
-    @Override
-    public void updateLocation() {
-//        if (repository.canUseCurrentLocation()) {
-        if (!view.hasLocationPermissions()) {
-            view.requestLocationPermission();
-        }
-        if (view.hasLocationPermissions()) {
-            view.updateCurrentLocation();
-        }
-//        }
+    public void setView(WeatherContract.View view) {
+        this.view = view;
     }
 
     @Override
     public void onLocationPermissionsGranted() {
-//        repository.getLastLocation();
-//        view.updateCurrentLocation();
-    }
 
-
-    @Override
-    public void setView(WeatherContract.View view) {
-        this.view = view;
     }
 }

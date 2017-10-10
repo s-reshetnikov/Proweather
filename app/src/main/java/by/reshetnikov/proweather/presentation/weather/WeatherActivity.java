@@ -8,12 +8,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -30,16 +30,19 @@ import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.presentation.location.LocationActivity;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastFragment;
 import by.reshetnikov.proweather.presentation.settings.SettingsActivity;
+import by.reshetnikov.proweather.utils.PermissionUtils;
 import by.reshetnikov.proweather.utils.ToastUtils;
 import timber.log.Timber;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 
 public class WeatherActivity extends AppCompatActivity
         implements WeatherContract.View, NavigationView.OnNavigationItemSelectedListener,
         NowForecastFragment.OnFragmentInteractionListener {
 
-    private final int PERMISSION_REQUEST_CODE = 1409;
-    private final String locationPermission = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final String ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private final int PERMISSION_REQUEST_CODE = 14091;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -64,21 +67,21 @@ public class WeatherActivity extends AppCompatActivity
         forecastSectionsPagerAdapter = new ForecastSectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(forecastSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.location_toolbar);
+        Toolbar toolbar = findViewById(R.id.location_toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.weather_view);
+        DrawerLayout drawer = findViewById(R.id.weather_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 //        if (findViewById(R.id.weather_fragment_placeholder) != null) {
@@ -97,7 +100,7 @@ public class WeatherActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         Timber.d("onBackPressed() start");
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.weather_view);
+        DrawerLayout drawer = findViewById(R.id.weather_view);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             Timber.d("close drawer");
             drawer.closeDrawer(GravityCompat.START);
@@ -143,7 +146,7 @@ public class WeatherActivity extends AppCompatActivity
                 break;
             }
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.weather_view);
+        DrawerLayout drawer = findViewById(R.id.weather_view);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -153,60 +156,27 @@ public class WeatherActivity extends AppCompatActivity
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void showProgress() {
-        Toast loadingToast = Toast.makeText(this, "Loading ...", Toast.LENGTH_LONG);
-        ToastUtils.showToast(loadingToast);
-    }
-
-    @Override
-    public void hideProgress() {
-        Toast loadedToast = Toast.makeText(this, "Loaded!!!", Toast.LENGTH_SHORT);
-        ToastUtils.showToast(loadedToast);
-    }
-
-    @Override
-    public void showError(String message) {
-        Toast errorToast = Toast.makeText(this, "Some error :(", Toast.LENGTH_SHORT);
-        ToastUtils.showToast(errorToast);
-    }
-
-    @Override
     public boolean hasLocationPermissions() {
-        int permissionStatus = ContextCompat.checkSelfPermission(this, locationPermission);
-        return permissionStatus == PackageManager.PERMISSION_GRANTED;
+        return PermissionUtils.isFineLocationGranted(this) && PermissionUtils.isCoarseLocationGranted(this);
     }
 
-
-    private void requestPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                Toast warning = Toast.makeText(this, R.string.location_permission_denied, Toast.LENGTH_SHORT);
-                ToastUtils.showToast(warning);
-
-            } else {
-                showNoLocationPermissionSnackbar();
-            }
-        }
-
-
-    }
-
-    @Override
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void requestLocationPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            final String message = getString(R.string.location_needed_to_locate_position);
-            Snackbar.make(this.findViewById(R.id.weather_view), message, Snackbar.LENGTH_LONG)
+        final String[] permissions = {ACCESS_FINE_LOCATION};
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION) &&
+                ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_FINE_LOCATION)) {
+            final String permissionsRequestMessage = getString(R.string.location_needed_to_locate_position);
+
+            Snackbar.make(this.findViewById(R.id.weather_view), permissionsRequestMessage, Snackbar.LENGTH_LONG)
                     .setAction(R.string.grant_snackbar, new View.OnClickListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
                         public void onClick(View v) {
-                            requestPermissions();
+                            requestPermissions(permissions, PERMISSION_REQUEST_CODE);
                         }
-                    })
-                    .show();
+                    }).show();
         } else {
-            requestPermissions();
+            requestPermissions(permissions, PERMISSION_REQUEST_CODE);
         }
     }
 
@@ -214,16 +184,6 @@ public class WeatherActivity extends AppCompatActivity
     public void startLocationActivity() {
         Intent locationManagerActivityIntent = new Intent(this, LocationActivity.class);
         startActivity(locationManagerActivityIntent);
-    }
-
-    @Override
-    public void updateCurrentLocation() {
-
-    }
-
-    @Override
-    public void showSavedCities() {
-
     }
 
     @Override
@@ -236,7 +196,7 @@ public class WeatherActivity extends AppCompatActivity
         if (allowed) {
             presenter.onLocationPermissionsGranted();
         } else {
-
+            Snackbar.make(mViewPager, getString(R.string.permissions_not_granted), Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 
@@ -263,17 +223,6 @@ public class WeatherActivity extends AppCompatActivity
                 BuildConfig.APPLICATION_ID, null));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivityForResult(intent, PERMISSION_REQUEST_CODE);
-    }
-
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
-    public void onError(String message) {
-
     }
 }
 

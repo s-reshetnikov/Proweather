@@ -94,13 +94,13 @@ public class LocationManagerPresenterTest {
 
     @Test
     public void addLocationWhenSearchTextViewVisibleTest() {
-        presenter.onFabClicked(true);
+        presenter.onFabClicked();
         verify(view).hideSearchLocation();
     }
 
     @Test
     public void addLocationWhenSearchTextViewInvisibleTest() {
-        presenter.onFabClicked(false);
+        presenter.onFabClicked();
         verify(view).showSearchLocation();
     }
 

@@ -165,6 +165,7 @@ public class ApplicationModule {
     }
 
     @Provides
+    @Singleton
     RxLocation provideRxLocation(@ApplicationContext Context context) {
         return new RxLocation(context);
     }

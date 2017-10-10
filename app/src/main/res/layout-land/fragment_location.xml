@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     tools:context="by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerFragment"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="137dp"
     tools:showIn="@layout/activity_location">
 
     <by.reshetnikov.proweather.presentation.customview.DelayAutoCompleteTextView

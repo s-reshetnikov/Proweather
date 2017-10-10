@@ -201,7 +201,8 @@ public class DataManager implements DataContract {
 
     @Override
     public Completable updateLocationPositions(final List<LocationEntity> locations) {
-        return dbData.updateLocations(locations);
+        //return dbData.updateLocations(locations);
+        return Completable.complete();
     }
 
 }

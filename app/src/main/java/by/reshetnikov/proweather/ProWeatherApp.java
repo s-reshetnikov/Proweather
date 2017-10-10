@@ -46,8 +46,6 @@ public class ProWeatherApp extends Application {
             Timber.plant(new CrashReportingTree());
         }
 
-        Fabric.getLogger().i("Test", "for test");
-
         applicationComponent = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this)).build();
         proWeatherApp = this;

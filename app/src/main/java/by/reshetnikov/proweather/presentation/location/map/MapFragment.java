@@ -1,6 +1,7 @@
 package by.reshetnikov.proweather.presentation.location.map;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,6 +43,7 @@ import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.di.component.ActivityComponent;
 import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
 import by.reshetnikov.proweather.di.module.ActivityModule;
+import by.reshetnikov.proweather.utils.PermissionUtils;
 import by.reshetnikov.proweather.utils.ToastUtils;
 import timber.log.Timber;
 
@@ -49,7 +51,7 @@ import timber.log.Timber;
  * Created by s-reshetnikov.
  */
 
-public class MapFragment extends Fragment implements MapContract.View, OnMapReadyCallback {
+public class MapFragment extends Fragment implements MapContract.View, MapFragmentCommunication, OnMapReadyCallback {
     //GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final int REQUEST_PERMISSION_LOCATION = 14121;
     //private LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -272,10 +274,20 @@ public class MapFragment extends Fragment implements MapContract.View, OnMapRead
         fabCurrentLocation.setImageResource(R.drawable.ic_add_24dp);
     }
 
+    @Override
+    public void updateLocations() {
+        presenter.updateLocations();
+    }
+
+    @Override
+    public void updateLocations(LocationEntity locationEntity) {
+        presenter.updateLocations(locationEntity);
+    }
+
+    @SuppressLint("MissingPermission")
     private void setUpMap() {
-        if (ActivityCompat.checkSelfPermission(this.getContext(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this.getContext(), ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Timber.i("location permissions denied");
+        if (PermissionUtils.isCoarseLocationGranted(this.getActivity()) || PermissionUtils.isFineLocationGranted(this.getActivity())) {
+            Timber.d("location permissions denied");
             return;
         }
         map.getUiSettings().setMyLocationButtonEnabled(true);
@@ -292,8 +304,7 @@ public class MapFragment extends Fragment implements MapContract.View, OnMapRead
     }
 
     private boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this.getContext(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this.getContext(), ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (PermissionUtils.isCoarseLocationGranted(this.getActivity()) && PermissionUtils.isFineLocationGranted(this.getActivity())) {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(), ACCESS_FINE_LOCATION)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(), ACCESS_COARSE_LOCATION)) {
@@ -355,5 +366,15 @@ public class MapFragment extends Fragment implements MapContract.View, OnMapRead
                 });
         final AlertDialog noGpsAlert = builder.create();
         noGpsAlert.show();
+    }
+
+    @Override
+    public void updateLocationMarkers() {
+        presenter.updateLocations();
+    }
+
+    @Override
+    public void updateLocationMarkersWithZoom(LocationEntity location) {
+        presenter.updateLocations(location);
     }
 }

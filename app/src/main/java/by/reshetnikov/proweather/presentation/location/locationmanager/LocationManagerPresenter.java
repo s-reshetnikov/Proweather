@@ -106,11 +106,8 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
     }
 
     @Override
-    public void onFabClicked(boolean isAutocompleteVisible) {
-        if (isAutocompleteVisible)
-            getView().hideSearchLocation();
-        else
-            getView().showSearchLocation();
+    public void onFabClicked() {
+        getView().openMap();
     }
 
     @Override

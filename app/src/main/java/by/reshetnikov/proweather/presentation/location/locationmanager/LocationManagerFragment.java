@@ -7,20 +7,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -29,6 +25,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Optional;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
@@ -37,17 +35,18 @@ import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
 import by.reshetnikov.proweather.di.module.ActivityModule;
 import by.reshetnikov.proweather.presentation.customview.DelayAutoCompleteTextView;
 import by.reshetnikov.proweather.presentation.decoration.SimpleDividerItemDecoration;
+import by.reshetnikov.proweather.presentation.location.LocationActivity;
 import by.reshetnikov.proweather.presentation.location.locationmanager.adapter.LocationsRecyclerViewAdapter;
 import by.reshetnikov.proweather.presentation.location.locationmanager.adapter.LocationsViewAdapterContract;
 import by.reshetnikov.proweather.presentation.location.locationmanager.callback.LocationItemTouchHelperCallback;
+import by.reshetnikov.proweather.presentation.location.locationmanager.callback.LocationManagerCallback;
 import by.reshetnikov.proweather.presentation.location.locationmanager.listener.OnAutoCompleteLocationSearchListener;
 import by.reshetnikov.proweather.presentation.location.locationmanager.listener.OnLocationRemovedListener;
 import by.reshetnikov.proweather.presentation.location.locationmanager.listener.OnLocationsOrderChangedListener;
-import by.reshetnikov.proweather.presentation.location.map.MapFragment;
 import by.reshetnikov.proweather.utils.ToastUtils;
 import timber.log.Timber;
 
-public class LocationManagerFragment extends Fragment implements LocationManagerContract.View {
+public class LocationManagerFragment extends Fragment implements LocationManagerContract.View, LocationManagerCommunication {
 
     @BindView(R.id.rv_locations)
     RecyclerView rvLocations;
@@ -55,11 +54,13 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     DelayAutoCompleteTextView tvAutoCompleteLocation;
     @BindView(R.id.pb_loading_indicator)
     ProgressBar progressBar;
-    @BindView(R.id.fab_add_location)
+    @Nullable
+    @BindView(R.id.fab_show_map)
     FloatingActionButton fabAddLocation;
     @Inject
     LocationManagerContract.Presenter presenter;
     private ActivityComponent component;
+    private LocationManagerCallback locationManagerCallback;
 
     public LocationManagerFragment() {
     }
@@ -83,39 +84,29 @@ public class LocationManagerFragment extends Fragment implements LocationManager
         ButterKnife.bind(this, view);
         setupAutoCompleteView();
         setupLocationsRecyclerView();
-        setupAddLocationButton();
         return view;
     }
 
-    private void setupAddLocationButton() {
-        fabAddLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.onFabClicked(tvAutoCompleteLocation.getVisibility() == TextView.VISIBLE);
-            }
-        });
-        fabAddLocation.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.fragment_location_manager, new MapFragment(), "map");
-                transaction.addToBackStack(null);
-                transaction.commit();
-                return false;
-            }
-        });
+    @Optional
+    @OnClick(R.id.fab_show_map)
+    void onOpenMapClick() {
+        presenter.onFabClicked();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         Timber.d("onAttach() called");
-        if (context instanceof AppCompatActivity) {
+        if (context instanceof LocationActivity) {
             component = DaggerActivityComponent.builder()
                     .activityModule(new ActivityModule((AppCompatActivity) context))
                     .applicationComponent(((ProWeatherApp) getActivity().getApplication()).getComponent())
                     .build();
+        }
+        try {
+            locationManagerCallback = (LocationManagerCallback) context;
+        } catch (ClassCastException e) {
+            Timber.e(e);
         }
     }
 
@@ -132,17 +123,22 @@ public class LocationManagerFragment extends Fragment implements LocationManager
         presenter.stop();
     }
 
-    @Override
-    public void showSearchLocation() {
-        tvAutoCompleteLocation.setVisibility(View.VISIBLE);
-        tvAutoCompleteLocation.requestFocus();
-        fabAddLocation.setVisibility(View.GONE);
-    }
+//    @Override
+//    public void showSearchLocation() {
+//        tvAutoCompleteLocation.setVisibility(View.VISIBLE);
+//        tvAutoCompleteLocation.requestFocus();
+//        fabAddLocation.setVisibility(View.GONE);
+//    }
+
+//    @Override
+//    public void hideSearchLocation() {
+//        tvAutoCompleteLocation.setVisibility(View.GONE);
+//        fabAddLocation.setVisibility(View.VISIBLE);
+//    }
 
     @Override
-    public void hideSearchLocation() {
-        tvAutoCompleteLocation.setVisibility(View.GONE);
-        fabAddLocation.setVisibility(View.VISIBLE);
+    public void openMap() {
+        locationManagerCallback.onOpenMapClicked();
     }
 
     @Override
@@ -186,6 +182,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
             public void onOrderChange(int fromPosition, int toPosition) {
                 Timber.d("onLocationsOrderChangedListener, from " + fromPosition + " to " + toPosition);
                 presenter.onLocationItemMoved(fromPosition, toPosition);
+                locationManagerCallback.onLocationsChanged();
             }
         });
     }
@@ -198,6 +195,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
                         " " + location.getPosition();
                 Timber.d(message);
                 presenter.onLocationItemRemoved(location);
+                locationManagerCallback.onLocationRemoved();
             }
         });
     }
@@ -239,16 +237,16 @@ public class LocationManagerFragment extends Fragment implements LocationManager
                 LocationEntity location = (LocationEntity) adapterView.getItemAtPosition(position);
                 Toast.makeText(view.getContext(), location.getLocationName(), Toast.LENGTH_LONG).show();
                 tvAutoCompleteLocation.setText("");
-                hideSearchLocation();
                 presenter.onLocationFromDropDownClicked(location);
+                locationManagerCallback.onLocationAdded(location);
             }
         });
-        rvLocations.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                return false;
-            }
-        });
+//        rvLocations.setOnDragListener(new View.OnDragListener() {
+//            @Override
+//            public boolean onDrag(View v, DragEvent event) {
+//                return false;
+//            }
+//        });
     }
 
     @Override
@@ -259,5 +257,10 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     @Override
     public void onError(String message) {
 
+    }
+
+    @Override
+    public void updateLocationsList() {
+        presenter.onLocationsRefreshed();
     }
 }

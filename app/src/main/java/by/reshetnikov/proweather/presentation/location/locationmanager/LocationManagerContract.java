@@ -10,9 +10,7 @@ public interface LocationManagerContract {
 
     interface View extends ViewContract<Presenter> {
 
-        void showSearchLocation();
-
-        void hideSearchLocation();
+        void openMap();
 
         void refreshSavedLocations(List<LocationEntity> savedLocations);
 
@@ -35,7 +33,7 @@ public interface LocationManagerContract {
 
         void onLocationItemRemoved(LocationEntity location);
 
-        void onFabClicked(boolean isAutocompleteVisible);
+        void onFabClicked();
 
         void onSearchLocationByName(String searchText);
     }
