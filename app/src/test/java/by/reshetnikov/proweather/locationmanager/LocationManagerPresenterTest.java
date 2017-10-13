@@ -92,17 +92,17 @@ public class LocationManagerPresenterTest {
         verify(view).refreshSavedLocations(adapterModelsCaptor.capture());
     }
 
-    @Test
-    public void addLocationWhenSearchTextViewVisibleTest() {
-        presenter.onFabClicked();
-        verify(view).hideSearchLocation();
-    }
-
-    @Test
-    public void addLocationWhenSearchTextViewInvisibleTest() {
-        presenter.onFabClicked();
-        verify(view).showSearchLocation();
-    }
+//    @Test
+//    public void addLocationWhenSearchTextViewVisibleTest() {
+//        presenter.onFabClicked();
+//        verify(view).hideSearchLocation();
+//    }
+//
+//    @Test
+//    public void addLocationWhenSearchTextViewInvisibleTest() {
+//        presenter.onFabClicked();
+//        verify(view).showSearchLocation();
+//    }
 
     @Test
     public void saveLocationSuccessfullyTest() {

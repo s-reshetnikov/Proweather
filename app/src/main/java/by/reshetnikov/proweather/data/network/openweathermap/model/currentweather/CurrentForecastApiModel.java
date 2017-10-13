@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import by.reshetnikov.proweather.data.network.openweathermap.model.Clouds;
-import by.reshetnikov.proweather.data.network.openweathermap.model.Coordinates;
 import by.reshetnikov.proweather.data.network.openweathermap.model.Main;
+import by.reshetnikov.proweather.data.network.openweathermap.model.OWMCoordinates;
 import by.reshetnikov.proweather.data.network.openweathermap.model.Rain;
 import by.reshetnikov.proweather.data.network.openweathermap.model.Snow;
 import by.reshetnikov.proweather.data.network.openweathermap.model.Sys;
@@ -18,7 +18,7 @@ public class CurrentForecastApiModel {
 
     @SerializedName("coord")
     @Expose
-    private Coordinates coordinates;
+    private OWMCoordinates coordinates;
 
     @SerializedName("weather")
     @Expose
@@ -62,11 +62,11 @@ public class CurrentForecastApiModel {
     @Expose
     private String name;
 
-    public Coordinates getCoordinates() {
+    public OWMCoordinates getCoordinates() {
         return coordinates;
     }
 
-    public void setCoordinates(Coordinates coordinates) {
+    public void setCoordinates(OWMCoordinates coordinates) {
         this.coordinates = coordinates;
     }
 

@@ -3,6 +3,7 @@ package by.reshetnikov.proweather.presentation.location.locationmanager.adapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.presentation.location.locationmanager.callback.LocationsDiffUtilCallback;
+import by.reshetnikov.proweather.presentation.location.locationmanager.listener.OnLocationClickedListener;
 import by.reshetnikov.proweather.presentation.location.locationmanager.listener.OnLocationRemovedListener;
 import by.reshetnikov.proweather.presentation.location.locationmanager.listener.OnLocationsOrderChangedListener;
 import by.reshetnikov.proweather.presentation.location.locationmanager.viewholder.LocationViewHolder;
@@ -22,6 +24,7 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     private List<LocationEntity> locations = new ArrayList<>();
     private OnLocationsOrderChangedListener orderChangedListener = null;
     private OnLocationRemovedListener locationRemovedListener = null;
+    private OnLocationClickedListener locationClickedListener = null;
 
     public LocationsRecyclerViewAdapter() {
     }
@@ -46,6 +49,15 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
             Timber.e("No such position at list, size is " + locations.size(), e);
             return;
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (locationClickedListener != null)
+                    locationClickedListener.onLocationItemClicked(location);
+                else
+                    Timber.w("locationClickedListener is null");
+            }
+        });
         holder.setLocationName(location.getLocationName());
         holder.setCircleCountryCode(location.getCountryCode());
         int firstPosition = 0;
@@ -112,6 +124,11 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     @Override
     public void setOnLocationRemovedListener(OnLocationRemovedListener listener) {
         this.locationRemovedListener = listener;
+    }
+
+    @Override
+    public void setOnLocationClickedListener(OnLocationClickedListener listener) {
+        this.locationClickedListener = listener;
     }
 
     private LocationEntity getLocationAtPosition(int position) {

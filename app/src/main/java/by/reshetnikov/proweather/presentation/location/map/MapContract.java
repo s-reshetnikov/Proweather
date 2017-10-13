@@ -2,8 +2,6 @@ package by.reshetnikov.proweather.presentation.location.map;
 
 import android.support.annotation.NonNull;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.presentation.base.PresenterContract;
 
@@ -25,11 +23,7 @@ public interface MapContract {
 
         void addMarkerOnMap(LocationEntity locationEntity, boolean moveCamera);
 
-        void showCurrentLocation(LocationEntity location);
-
-        void setCurrentLocation(LocationEntity location);
-
-        void moveCameraToLocation(LatLng coordinates, int zoom);
+        void moveCameraToCoordinates(double latitude, double longitude, int zoom);
 
         void showLocationPointer();
 
@@ -39,9 +33,11 @@ public interface MapContract {
 
         void updateFabWithAddIcon();
 
-        void updateLocations();
+        void refreshLocationMarkersOnMap();
 
-        void updateLocations(LocationEntity locationEntity);
+        void refreshLocationMarkersOnMap(LocationEntity locationEntity);
+
+        void clearAllMapMarkers();
     }
 
     interface Presenter extends PresenterContract {
@@ -62,8 +58,12 @@ public interface MapContract {
 
         void onCancelButtonClicked();
 
-        void updateLocations();
+        void updateLocationMarkers();
 
-        void updateLocations(LocationEntity location);
+        void updateLocationMarkersWithZoom(LocationEntity location);
+
+        void zoomToMarker(LocationEntity location);
+
+        void locationPermissionsDenied();
     }
 }

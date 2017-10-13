@@ -1,27 +1,24 @@
 package by.reshetnikov.proweather.presentation.location;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerCommunication;
+import by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerFragment;
 import by.reshetnikov.proweather.presentation.location.locationmanager.callback.LocationManagerCallback;
 import by.reshetnikov.proweather.presentation.location.map.MapCallback;
 import by.reshetnikov.proweather.presentation.location.map.MapFragment;
-import by.reshetnikov.proweather.presentation.location.map.MapFragmentCommunication;
 import by.reshetnikov.proweather.utils.FragmentUtils;
 import timber.log.Timber;
 
 public class LocationActivity extends AppCompatActivity implements LocationManagerCallback, MapCallback {
-
+    private static final String MAP_FRAGMENT_TAG = "MAP";
+    private static final String LOCATION_MANAGER_FRAGMENT_TAG = "location_manager";
     private boolean twoPaneMode = false;
-    private LocationManagerCommunication locationManagerCommunication;
-    private MapFragmentCommunication mapCommunication;
+    private LocationManagerFragment locationManagerFragment;
     private MapFragment mapFragment;
 
     @Override
@@ -29,14 +26,18 @@ public class LocationActivity extends AppCompatActivity implements LocationManag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location);
         setToolbar();
-        locationManagerCommunication = (LocationManagerCommunication) getSupportFragmentManager().findFragmentById(R.id.fragment_location_manager);
+        locationManagerFragment = (LocationManagerFragment) getSupportFragmentManager().findFragmentByTag(LOCATION_MANAGER_FRAGMENT_TAG);
+        if (locationManagerFragment == null)
+            locationManagerFragment = new LocationManagerFragment();
+
+        FragmentUtils.replaceFragment(getSupportFragmentManager(), R.id.location_container, locationManagerFragment, LOCATION_MANAGER_FRAGMENT_TAG);
+
 
         if (findViewById(R.id.map_fragment_container) != null) {
             Timber.d("2 panes view");
             twoPaneMode = true;
             mapFragment = new MapFragment();
-            mapCommunication = mapFragment;
-            FragmentUtils.replaceFragment(getSupportFragmentManager(), R.id.map_fragment_container, mapFragment);
+            FragmentUtils.replaceFragment(getSupportFragmentManager(), R.id.map_fragment_container, mapFragment, MAP_FRAGMENT_TAG);
         } else
             Timber.i("Map fragment container is not present on view");
     }
@@ -57,35 +58,43 @@ public class LocationActivity extends AppCompatActivity implements LocationManag
     @Override
     public void onLocationRemoved() {
         if (twoPaneMode) {
-            mapFragment.updateLocations();
+            mapFragment.refreshLocationMarkersOnMap();
         }
     }
 
     @Override
     public void onLocationAdded(LocationEntity locationEntity) {
         if (twoPaneMode) {
-            mapFragment.updateLocations(locationEntity);
+            mapFragment.refreshLocationMarkersOnMap(locationEntity);
         }
     }
 
     @Override
     public void onLocationsChanged() {
         if (twoPaneMode) {
-            mapFragment.updateLocations();
+            mapFragment.refreshLocationMarkersOnMap();
         }
     }
 
     @Override
     public void onOpenMapClicked() {
         if (twoPaneMode) {
-            Timber.d("Button shouldn't be there");
+            Timber.w("Button shouldn't be displayed");
         } else {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.fragment_location_manager, new MapFragment(), "map");
-            transaction.addToBackStack(null);
-            transaction.commit();
+
+            mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
+
+            if (mapFragment == null)
+                mapFragment = new MapFragment();
+
+            FragmentUtils.replaceFragmentAndAddToBackStack(getSupportFragmentManager(), R.id.location_container, mapFragment, MAP_FRAGMENT_TAG);
         }
 
+    }
+
+    @Override
+    public void onLocationClicked(LocationEntity location) {
+        if (twoPaneMode)
+            mapFragment.zoomToMarkerRequest(location);
     }
 }

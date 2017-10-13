@@ -8,7 +8,9 @@ import by.reshetnikov.proweather.data.db.model.LocationEntity;
 
 public interface MapFragmentCommunication {
 
-    void updateLocationMarkers();
+    void updateLocationMarkersRequest();
 
-    void updateLocationMarkersWithZoom(LocationEntity locationEntity);
+    void updateLocationMarkersWithZoomRequest(LocationEntity location);
+
+    void zoomToMarkerRequest(LocationEntity location);
 }

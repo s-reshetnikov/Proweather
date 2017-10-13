@@ -11,7 +11,7 @@ import io.reactivex.Single;
 
 public interface MapInteractorContract {
 
-    Single<LocationEntity> getActualLocation();
+    boolean canUseCurrentLocation();
 
     Single<LocationEntity> getCurrentLocation();
 

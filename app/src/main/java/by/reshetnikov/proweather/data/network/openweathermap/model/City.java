@@ -16,7 +16,7 @@ public class City {
     public String name;
     @SerializedName("coord")
     @Expose
-    public Coordinates coord;
+    public OWMCoordinates coord;
     @SerializedName("country")
     @Expose
     public String country;
@@ -37,11 +37,11 @@ public class City {
         this.name = name;
     }
 
-    public Coordinates getCoord() {
+    public OWMCoordinates getCoord() {
         return coord;
     }
 
-    public void setCoord(Coordinates coord) {
+    public void setCoord(OWMCoordinates coord) {
         this.coord = coord;
     }
 

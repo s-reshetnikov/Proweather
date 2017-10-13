@@ -1,7 +1,5 @@
 package by.reshetnikov.proweather.business.map;
 
-import android.location.Location;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -9,6 +7,7 @@ import javax.inject.Inject;
 import by.reshetnikov.proweather.data.DataContract;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.exception.NoLocationException;
+import by.reshetnikov.proweather.data.model.Coordinates;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
@@ -29,12 +28,10 @@ public class MapInteractor implements MapInteractorContract {
     }
 
     @Override
-    public Single<LocationEntity> getActualLocation() {
-        // if (dataManager.canUseCurrentLocation())
-        return getCurrentLocation();
-
-        //return dataManager.getChosenLocation();
+    public boolean canUseCurrentLocation() {
+        return dataManager.canUseCurrentLocation();
     }
+
 
     @Override
     public Single<List<LocationEntity>> getAllSavedLocations() {
@@ -52,6 +49,29 @@ public class MapInteractor implements MapInteractorContract {
                     }
                 });
     }
+
+    @Override
+    public Single<LocationEntity> getCurrentLocation() {
+        Timber.d("getLastCoordinates in interactor");
+        return dataManager.getLastCoordinates()
+                .firstOrError()
+                .flatMap(new Function<Coordinates, SingleSource<List<LocationEntity>>>() {
+                    @Override
+                    public SingleSource<List<LocationEntity>> apply(Coordinates location) throws Exception {
+                        return dataManager.getLocationsByCoordinates(location.getLatitude(), location.getLongitude(), RESULTS_NUMBER);
+                    }
+                })
+                .flatMap(new Function<List<LocationEntity>, SingleSource<LocationEntity>>() {
+                    @Override
+                    public SingleSource<LocationEntity> apply(List<LocationEntity> locationEntities) throws Exception {
+                        Timber.d("size of locations list searched with coordinates is " + locationEntities.size());
+                        if (locationEntities.size() > 0)
+                            return Single.just(locationEntities.get(0));
+                        return Single.error(new NoLocationException());
+                    }
+                });
+    }
+
 
     private LocationEntity getNearestLocation(List<LocationEntity> locationEntities, double latitude, double longitude) {
         double[] results = new double[locationEntities.size()];
@@ -71,28 +91,6 @@ public class MapInteractor implements MapInteractorContract {
                 minIndex = index;
         }
         return locationEntities.get(minIndex);
-    }
-
-    @Override
-    public Single<LocationEntity> getCurrentLocation() {
-        Timber.d("getLastLocation in interactor");
-        return dataManager.getLastLocation()
-                .firstOrError()
-                .flatMap(new Function<Location, SingleSource<List<LocationEntity>>>() {
-                    @Override
-                    public SingleSource<List<LocationEntity>> apply(Location location) throws Exception {
-                        return dataManager.getLocationsByCoordinates(location.getLatitude(), location.getLongitude(), RESULTS_NUMBER);
-                    }
-                })
-                .flatMap(new Function<List<LocationEntity>, SingleSource<LocationEntity>>() {
-                    @Override
-                    public SingleSource<LocationEntity> apply(List<LocationEntity> locationEntities) throws Exception {
-                        Timber.d("size of locations list searched with coordinates is " + locationEntities.size());
-                        if (locationEntities.size() > 0)
-                            return Single.just(locationEntities.get(0));
-                        return Single.error(new NoLocationException());
-                    }
-                });
     }
 
     private Single<LocationEntity> getChosenLocation() {

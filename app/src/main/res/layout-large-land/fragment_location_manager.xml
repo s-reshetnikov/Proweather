@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context="by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerFragment"
-    tools:showIn="@layout/activity_location">
+    tools:context="by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerFragment">
 
     <by.reshetnikov.proweather.presentation.customview.DelayAutoCompleteTextView
         android:id="@+id/ac_location_search"

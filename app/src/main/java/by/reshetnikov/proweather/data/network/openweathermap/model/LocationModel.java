@@ -18,7 +18,7 @@ public class LocationModel {
     // LocationModel geo location
     @SerializedName("coord")
     @Expose
-    private Coordinates coordinates;
+    private OWMCoordinates coordinates;
 
     // Country code (GB, JP etc.)
     @SerializedName("country")
@@ -49,7 +49,7 @@ public class LocationModel {
         return coordinates.getLongitude();
     }
 
-    public void setCoordinates(Coordinates coordinates) {
+    public void setCoordinates(OWMCoordinates coordinates) {
         this.coordinates = coordinates;
     }
 

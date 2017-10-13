@@ -21,6 +21,7 @@ import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
 import by.reshetnikov.proweather.data.exception.NoNetworkException;
+import by.reshetnikov.proweather.data.model.Coordinates;
 import by.reshetnikov.proweather.data.model.OWMModelToDbModelFactory;
 import by.reshetnikov.proweather.data.model.location.LocationFactory;
 import by.reshetnikov.proweather.data.model.unit.Units;
@@ -121,15 +122,17 @@ public class DataManager implements DataContract {
 
     @SuppressLint("MissingPermission")
     @Override
-    public Observable<Location> getLastLocation() {
+    public Observable<Coordinates> getLastCoordinates() {
 
         return rxLocation
                 .location()
-                .updates(highAccuracyLocationRequest);
-
-//        return rxLocation
-//                .location()
-//                .updates(lowPowerLocationRequest);
+                .updates(highAccuracyLocationRequest)
+                .map(new Function<Location, Coordinates>() {
+                    @Override
+                    public Coordinates apply(Location location) throws Exception {
+                        return new Coordinates(location.getLatitude(), location.getLongitude());
+                    }
+                });
     }
 
     @Override
@@ -201,7 +204,7 @@ public class DataManager implements DataContract {
 
     @Override
     public Completable updateLocationPositions(final List<LocationEntity> locations) {
-        //return dbData.updateLocations(locations);
+        //return dbData.updateLocationMarkersWithZoom(locations);
         return Completable.complete();
     }
 

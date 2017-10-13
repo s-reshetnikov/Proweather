@@ -4,7 +4,7 @@ package by.reshetnikov.proweather.data.network.openweathermap.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Coordinates {
+public class OWMCoordinates {
 
     // LocationModel geo location, longitude
     @SerializedName("lon")

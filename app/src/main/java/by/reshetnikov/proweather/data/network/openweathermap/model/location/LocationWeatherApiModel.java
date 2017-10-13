@@ -3,7 +3,7 @@ package by.reshetnikov.proweather.data.network.openweathermap.model.location;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import by.reshetnikov.proweather.data.network.openweathermap.model.Coordinates;
+import by.reshetnikov.proweather.data.network.openweathermap.model.OWMCoordinates;
 import by.reshetnikov.proweather.data.network.openweathermap.model.Sys;
 
 public class LocationWeatherApiModel {
@@ -16,7 +16,7 @@ public class LocationWeatherApiModel {
     private String locationName;
     @SerializedName("coord")
     @Expose
-    private Coordinates coordinates;
+    private OWMCoordinates coordinates;
     @SerializedName("sys")
     @Expose
     private Sys sys;
@@ -50,7 +50,7 @@ public class LocationWeatherApiModel {
         return sys.getCountry();
     }
 
-    public void setCoordinates(Coordinates coordinates) {
+    public void setCoordinates(OWMCoordinates coordinates) {
         this.coordinates = coordinates;
     }
 

@@ -30,7 +30,11 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -54,7 +58,6 @@ import timber.log.Timber;
 public class MapFragment extends Fragment implements MapContract.View, MapFragmentCommunication, OnMapReadyCallback {
     //GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final int REQUEST_PERMISSION_LOCATION = 14121;
-    //private LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
     private final String ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private final String ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     @Inject
@@ -69,6 +72,7 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
     FloatingActionButton fabCancelAddLocation;
     private GoogleMap map;
     private ActivityComponent component;
+    private List<Marker> mapMarkers;
 
     public MapFragment() {
 
@@ -101,6 +105,7 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+        mapMarkers = new ArrayList<>();
     }
 
     @Override
@@ -166,7 +171,7 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
                     }
 
                 } else {
-                    // permission denied
+                    presenter.locationPermissionsDenied();
                 }
                 return;
             }
@@ -202,13 +207,12 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
             return;
 
         map = googleMap;
-        presenter.onMapReady();
         setUpMap();
+        presenter.onMapReady();
     }
 
     @Override
     public boolean checkOrRequestLocationPermissions() {
-
         final LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -225,31 +229,21 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
 
     @Override
     public void addMarkerOnMap(LocationEntity locationEntity, boolean moveCamera) {
-//        // Add a marker in Sydney, Australia, and move the camera.
         LatLng location = new LatLng(locationEntity.getLatitude(), locationEntity.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(location)
                 .title(locationEntity.getLocationName());
-        map.addMarker(markerOptions);
+
+        mapMarkers.add(map.addMarker(markerOptions));
         if (moveCamera) {
             int zoom = 10;
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoom));
         }
     }
 
-
     @Override
-    public void showCurrentLocation(LocationEntity location) {
-
-    }
-
-    @Override
-    public void setCurrentLocation(LocationEntity location) {
-
-    }
-
-    @Override
-    public void moveCameraToLocation(LatLng coordinates, int zoom) {
+    public void moveCameraToCoordinates(double latitude, double longitude, int zoom) {
+        LatLng coordinates = new LatLng(latitude, longitude);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
     }
@@ -275,15 +269,27 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
     }
 
     @Override
-    public void updateLocations() {
-        presenter.updateLocations();
+    public void refreshLocationMarkersOnMap() {
+        presenter.updateLocationMarkers();
+    }
+
+
+    @Override
+    public void refreshLocationMarkersOnMap(LocationEntity locationEntity) {
+        presenter.updateLocationMarkersWithZoom(locationEntity);
     }
 
     @Override
-    public void updateLocations(LocationEntity locationEntity) {
-        presenter.updateLocations(locationEntity);
+    public void clearAllMapMarkers() {
+        clearMarkers();
     }
 
+    private void clearMarkers() {
+        for (Marker marker : mapMarkers)
+            marker.remove();
+    }
+
+    // check performed at @class PermissionUtils
     @SuppressLint("MissingPermission")
     private void setUpMap() {
         if (PermissionUtils.isCoarseLocationGranted(this.getActivity()) || PermissionUtils.isFineLocationGranted(this.getActivity())) {
@@ -325,7 +331,6 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
 
 
             } else {
-                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this.getActivity(),
                         new String[]{ACCESS_FINE_LOCATION},
                         REQUEST_PERMISSION_LOCATION);
@@ -369,12 +374,17 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
     }
 
     @Override
-    public void updateLocationMarkers() {
-        presenter.updateLocations();
+    public void updateLocationMarkersRequest() {
+        presenter.updateLocationMarkers();
     }
 
     @Override
-    public void updateLocationMarkersWithZoom(LocationEntity location) {
-        presenter.updateLocations(location);
+    public void updateLocationMarkersWithZoomRequest(LocationEntity location) {
+        presenter.updateLocationMarkersWithZoom(location);
+    }
+
+    @Override
+    public void zoomToMarkerRequest(LocationEntity location) {
+        presenter.zoomToMarker(location);
     }
 }

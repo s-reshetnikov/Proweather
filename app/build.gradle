@@ -89,6 +89,7 @@ dependencies {
     })
 
     //debug only
+    debugCompile "com.amitshekhar.android:debug-db:${dbDebugVersion}"
 
     // Support libs
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
@@ -147,5 +148,4 @@ dependencies {
     testCompile "org.powermock:powermock-module-junit4:${powerMockitoVersion}"
     testCompile "org.powermock:powermock-api-mockito:${powerMockitoVersion}"
     testCompile "com.squareup.okhttp3:mockwebserver:${okhttpVersion}"
-    debugCompile "com.amitshekhar.android:debug-db:${dbDebugVersion}"
 }

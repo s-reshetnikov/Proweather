@@ -36,5 +36,7 @@ public interface LocationManagerContract {
         void onFabClicked();
 
         void onSearchLocationByName(String searchText);
+
+        void onLocationClicked(LocationEntity locationEntity);
     }
 }

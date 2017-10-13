@@ -1,14 +1,14 @@
 package by.reshetnikov.proweather.data;
 
-import android.location.Location;
-import android.support.annotation.NonNull;
-
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
+import by.reshetnikov.proweather.data.model.Coordinates;
 import by.reshetnikov.proweather.data.model.unit.Units;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -18,9 +18,9 @@ import io.reactivex.Single;
 public interface DataContract {
 
 
-    Single<NowForecastEntity> getNowForecast(@NonNull LocationEntity location);
+    Single<NowForecastEntity> getNowForecast(@Nonnull LocationEntity location);
 
-    Single<List<HoursForecastEntity>> getHourForecasts(@NonNull LocationEntity location);
+    Single<List<HoursForecastEntity>> getHourForecasts(@Nonnull LocationEntity location);
 
     Single<List<LocationEntity>> getAllLocationsByName(String locationName, int resultsCount);
 
@@ -30,9 +30,9 @@ public interface DataContract {
 
     Single<List<LocationEntity>> getSavedLocations();
 
-    Completable saveNewLocation(@NonNull LocationEntity location);
+    Completable saveNewLocation(@Nonnull LocationEntity location);
 
-    Completable removeLocation(@NonNull LocationEntity location);
+    Completable removeLocation(@Nonnull LocationEntity location);
 
     boolean canUseCurrentLocation();
 
@@ -42,5 +42,5 @@ public interface DataContract {
 
     Single<List<DailyForecastEntity>> getDailyForecasts(LocationEntity location);
 
-    Observable<Location> getLastLocation();
+    Observable<Coordinates> getLastCoordinates();
 }

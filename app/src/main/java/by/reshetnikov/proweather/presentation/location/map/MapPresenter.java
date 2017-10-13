@@ -1,9 +1,5 @@
 package by.reshetnikov.proweather.presentation.location.map;
 
-import android.support.annotation.NonNull;
-
-import com.google.android.gms.maps.model.LatLng;
-
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -85,14 +81,14 @@ public class MapPresenter implements MapContract.Presenter {
 
     @Override
     public void onCurrentLocationButtonClicked() {
-        if (getView().checkOrRequestLocationPermissions()) {
+        if (interactor.canUseCurrentLocation() && getView().checkOrRequestLocationPermissions()) {
             disposables.add(interactor.getCurrentLocation()
                     .observeOn(scheduler.ui())
                     .subscribeOn(scheduler.io())
                     .subscribeWith(new DisposableSingleObserver<LocationEntity>() {
                         @Override
                         public void onSuccess(LocationEntity location) {
-                            getView().showCurrentLocation(location);
+                            //getView().showCurrentLocation(location);
                         }
 
                         @Override
@@ -118,13 +114,27 @@ public class MapPresenter implements MapContract.Presenter {
     }
 
     @Override
-    public void updateLocations() {
-        getView().updateLocations();
+    public void updateLocationMarkers() {
+        getView().clearAllMapMarkers();
+        setAllLocationsOnMap();
     }
 
     @Override
-    public void updateLocations(LocationEntity location) {
+    public void updateLocationMarkersWithZoom(LocationEntity location) {
+        getView().refreshLocationMarkersOnMap();
+        int zoomScale = 10;
+        getView().moveCameraToCoordinates(location.getLatitude(), location.getLongitude(), zoomScale);
+    }
 
+    @Override
+    public void zoomToMarker(LocationEntity location) {
+        int zoomScale = 10;
+        getView().moveCameraToCoordinates(location.getLatitude(), location.getLongitude(), zoomScale);
+    }
+
+    @Override
+    public void locationPermissionsDenied() {
+        getView().showLocationPermissionIsNotGranted();
     }
 
     private MapContract.View getView() {
@@ -132,7 +142,7 @@ public class MapPresenter implements MapContract.Presenter {
     }
 
     @Override
-    public void setView(@NonNull MapContract.View view) {
+    public void setView(MapContract.View view) {
         viewRef = new WeakReference<>(view);
     }
 
@@ -144,7 +154,8 @@ public class MapPresenter implements MapContract.Presenter {
                     @Override
                     public void onSuccess(List<LocationEntity> locations) {
                         for (LocationEntity location : locations) {
-                            boolean moveCamera = false;
+                            // move view to default location
+                            boolean moveCamera = location.getPosition() == 0;
                             getView().addMarkerOnMap(location, moveCamera);
                         }
                     }
@@ -158,16 +169,14 @@ public class MapPresenter implements MapContract.Presenter {
     }
 
     private void setupActualLocation() {
-        disposables.add(interactor.getActualLocation()
+        disposables.add(interactor.getCurrentLocation()
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribeWith(new DisposableSingleObserver<LocationEntity>() {
                     @Override
                     public void onSuccess(LocationEntity location) {
-                        //boolean moveCamera = true;
-                        int zoom = 10;
-                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        getView().moveCameraToLocation(latLng, zoom);
+                        int zoomScale = 10;
+                        getView().moveCameraToCoordinates(location.getLatitude(), location.getLongitude(), zoomScale);
                     }
 
                     @Override

@@ -10,9 +10,11 @@ public interface LocationManagerCallback {
 
     void onLocationRemoved();
 
-    void onLocationAdded(LocationEntity locationEntity);
+    void onLocationAdded(LocationEntity location);
 
     void onLocationsChanged();
 
     void onOpenMapClicked();
+
+    void onLocationClicked(LocationEntity location);
 }

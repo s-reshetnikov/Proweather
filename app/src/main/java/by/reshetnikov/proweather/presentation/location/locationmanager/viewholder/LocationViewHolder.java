@@ -2,7 +2,6 @@ package by.reshetnikov.proweather.presentation.location.locationmanager.viewhold
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.utils.ResourcesUtil;
-import timber.log.Timber;
 
 public class LocationViewHolder extends RecyclerView.ViewHolder implements LocationViewHolderContract {
 
@@ -27,28 +25,28 @@ public class LocationViewHolder extends RecyclerView.ViewHolder implements Locat
     @BindView(R.id.item_location)
     RelativeLayout layout;
 
-    private boolean isPressed = false;
+    //private boolean isPressed = false;
 
     public LocationViewHolder(LayoutInflater inflater, ViewGroup parent) {
         super(inflater.inflate(R.layout.item_location, parent, false));
         ButterKnife.bind(this, itemView);
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String message = "Clicked # " + getAdapterPosition();
-                Timber.d(message);
-            }
-        });
-
-        itemView.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                String message = "Dragged # " + getAdapterPosition();
-                Timber.d(message);
-                return false;
-            }
-        });
+//        itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String message = "Clicked # " + getAdapterPosition();
+//                Timber.d(message);
+//            }
+//        });
+//
+//        itemView.setOnDragListener(new View.OnDragListener() {
+//            @Override
+//            public boolean onDrag(View v, DragEvent event) {
+//                String message = "Dragged # " + getAdapterPosition();
+//                Timber.d(message);
+//                return false;
+//            }
+//        });
     }
 
     @Override

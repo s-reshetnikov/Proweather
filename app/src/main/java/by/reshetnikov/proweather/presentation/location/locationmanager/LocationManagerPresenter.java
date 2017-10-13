@@ -107,6 +107,7 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
 
     @Override
     public void onFabClicked() {
+        Timber.d("onFabClicked(), called");
         getView().openMap();
     }
 
@@ -124,6 +125,12 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
                         })
                         .blockingGet();
         getView().refreshSearchedLocations(locations);
+    }
+
+    @Override
+    public void onLocationClicked(LocationEntity locationEntity) {
+        Timber.d("onLocationClicked(), called");
+        // nothing to do in single pane mode
     }
 
     @Override

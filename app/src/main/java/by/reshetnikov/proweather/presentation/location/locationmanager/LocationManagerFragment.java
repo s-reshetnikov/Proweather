@@ -41,6 +41,7 @@ import by.reshetnikov.proweather.presentation.location.locationmanager.adapter.L
 import by.reshetnikov.proweather.presentation.location.locationmanager.callback.LocationItemTouchHelperCallback;
 import by.reshetnikov.proweather.presentation.location.locationmanager.callback.LocationManagerCallback;
 import by.reshetnikov.proweather.presentation.location.locationmanager.listener.OnAutoCompleteLocationSearchListener;
+import by.reshetnikov.proweather.presentation.location.locationmanager.listener.OnLocationClickedListener;
 import by.reshetnikov.proweather.presentation.location.locationmanager.listener.OnLocationRemovedListener;
 import by.reshetnikov.proweather.presentation.location.locationmanager.listener.OnLocationsOrderChangedListener;
 import by.reshetnikov.proweather.utils.ToastUtils;
@@ -56,7 +57,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     ProgressBar progressBar;
     @Nullable
     @BindView(R.id.fab_show_map)
-    FloatingActionButton fabAddLocation;
+    FloatingActionButton fabShowMap;
     @Inject
     LocationManagerContract.Presenter presenter;
     private ActivityComponent component;
@@ -78,7 +79,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_location, container, false);
+        View view = inflater.inflate(R.layout.fragment_location_manager, container, false);
         component.inject(this);
         presenter.setView(this);
         ButterKnife.bind(this, view);
@@ -123,19 +124,6 @@ public class LocationManagerFragment extends Fragment implements LocationManager
         presenter.stop();
     }
 
-//    @Override
-//    public void showSearchLocation() {
-//        tvAutoCompleteLocation.setVisibility(View.VISIBLE);
-//        tvAutoCompleteLocation.requestFocus();
-//        fabAddLocation.setVisibility(View.GONE);
-//    }
-
-//    @Override
-//    public void hideSearchLocation() {
-//        tvAutoCompleteLocation.setVisibility(View.GONE);
-//        fabAddLocation.setVisibility(View.VISIBLE);
-//    }
-
     @Override
     public void openMap() {
         locationManagerCallback.onOpenMapClicked();
@@ -171,12 +159,23 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     @NonNull
     private LocationsRecyclerViewAdapter getLocationsRecyclerViewAdapter() {
         LocationsRecyclerViewAdapter locationsAdapter = new LocationsRecyclerViewAdapter();
-        setOnLocationOrderChangeListenerToAdapter(locationsAdapter);
-        setOnLocationRemovedListenerToAdapter(locationsAdapter);
+        setOnLocationItemClickedListener(locationsAdapter);
+        setOnLocationOrderChangeListener(locationsAdapter);
+        setOnLocationRemovedListener(locationsAdapter);
         return locationsAdapter;
     }
 
-    private void setOnLocationOrderChangeListenerToAdapter(LocationsRecyclerViewAdapter locationsAdapter) {
+    private void setOnLocationItemClickedListener(LocationsRecyclerViewAdapter locationsAdapter) {
+        locationsAdapter.setOnLocationClickedListener(new OnLocationClickedListener() {
+            @Override
+            public void onLocationItemClicked(LocationEntity location) {
+                presenter.onLocationClicked(location);
+                locationManagerCallback.onLocationClicked(location);
+            }
+        });
+    }
+
+    private void setOnLocationOrderChangeListener(LocationsRecyclerViewAdapter locationsAdapter) {
         locationsAdapter.setOnLocationsOrderChangedListener(new OnLocationsOrderChangedListener() {
             @Override
             public void onOrderChange(int fromPosition, int toPosition) {
@@ -187,7 +186,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
         });
     }
 
-    private void setOnLocationRemovedListenerToAdapter(LocationsRecyclerViewAdapter locationsAdapter) {
+    private void setOnLocationRemovedListener(LocationsRecyclerViewAdapter locationsAdapter) {
         locationsAdapter.setOnLocationRemovedListener(new OnLocationRemovedListener() {
             @Override
             public void onRemove(LocationEntity location) {
@@ -241,12 +240,6 @@ public class LocationManagerFragment extends Fragment implements LocationManager
                 locationManagerCallback.onLocationAdded(location);
             }
         });
-//        rvLocations.setOnDragListener(new View.OnDragListener() {
-//            @Override
-//            public boolean onDrag(View v, DragEvent event) {
-//                return false;
-//            }
-//        });
     }
 
     @Override
