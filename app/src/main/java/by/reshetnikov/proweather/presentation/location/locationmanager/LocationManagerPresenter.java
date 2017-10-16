@@ -13,6 +13,7 @@ import by.reshetnikov.proweather.data.exception.NoNetworkException;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -53,6 +54,12 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
         disposables.add(interactor.saveLocation(location)
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
+                .doAfterTerminate(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        getView().hideKeyboard();
+                    }
+                })
                 .subscribeWith(new DisposableCompletableObserver() {
                     @Override
                     public void onComplete() {

@@ -20,11 +20,22 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!--<include layout="@laycontent_location_managertion" />-->
-    <LinearLayout
-        android:id="@+id/location_container"
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:id="@+id/location_manager_container"
+            android:layout_width="350dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" />
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:id="@+id/map_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" />
+    </android.support.v7.widget.LinearLayoutCompat>
+
 </android.support.design.widget.CoordinatorLayout>

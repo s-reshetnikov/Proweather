@@ -1,6 +1,7 @@
 package by.reshetnikov.proweather.business.map;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -10,6 +11,7 @@ import by.reshetnikov.proweather.data.exception.NoLocationException;
 import by.reshetnikov.proweather.data.model.Coordinates;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import timber.log.Timber;
 
@@ -39,13 +41,27 @@ public class MapInteractor implements MapInteractorContract {
     }
 
     @Override
-    public Single<LocationEntity> getLocations(double latitude, double longitude) {
+    public Single<LocationEntity> getLocationByCoordinates(double latitude, double longitude) {
         int resultsNumber = 5;
         return dataManager.getLocationsByCoordinates(latitude, longitude, resultsNumber)
                 .flatMap(new Function<List<LocationEntity>, SingleSource<LocationEntity>>() {
                     @Override
                     public SingleSource<LocationEntity> apply(List<LocationEntity> locationEntities) throws Exception {
-                        return Single.just(getNearestLocation(locationEntities, latitude, longitude));
+                        LocationEntity location = getNearestLocation(locationEntities, latitude, longitude);
+                        location.setLatitude(latitude);
+                        location.setLongitude(longitude);
+                        return Single.just(location);
+                    }
+                })
+                .flatMap(new Function<LocationEntity, SingleSource<LocationEntity>>() {
+                    @Override
+                    public SingleSource<LocationEntity> apply(LocationEntity locationEntity) throws Exception {
+                        return dataManager.saveOrUpdateLocation(locationEntity).toSingle(new Callable<LocationEntity>() {
+                            @Override
+                            public LocationEntity call() throws Exception {
+                                return locationEntity;
+                            }
+                        });
                     }
                 });
     }

@@ -7,4 +7,12 @@ import java.io.IOException;
  */
 
 public class NoLocationException extends IOException {
+
+    public NoLocationException() {
+        super();
+    }
+
+    public NoLocationException(Throwable cause) {
+        super(cause);
+    }
 }

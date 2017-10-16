@@ -173,7 +173,6 @@ public class DataManager implements DataContract {
 
     @Override
     public Single<LocationEntity> getChosenLocation() {
-        Timber.d("getChosenLocation()");
         return dbData.getChosenLocation();
     }
 
@@ -185,6 +184,11 @@ public class DataManager implements DataContract {
     @Override
     public Completable saveNewLocation(@NonNull LocationEntity location) {
         return dbData.saveNewLocation(location);
+    }
+
+    @Override
+    public Completable saveOrUpdateLocation(@NonNull LocationEntity location) {
+        return dbData.saveOrUpdateLocation(location);
     }
 
     @Override
@@ -204,8 +208,7 @@ public class DataManager implements DataContract {
 
     @Override
     public Completable updateLocationPositions(final List<LocationEntity> locations) {
-        //return dbData.updateLocationMarkersWithZoom(locations);
-        return Completable.complete();
+        return dbData.updateLocations(locations);
     }
 
 }

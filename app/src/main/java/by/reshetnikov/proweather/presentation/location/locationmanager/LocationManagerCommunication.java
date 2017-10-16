@@ -6,6 +6,6 @@ package by.reshetnikov.proweather.presentation.location.locationmanager;
 
 public interface LocationManagerCommunication {
 
-    void updateLocationsList();
+    void updateLocationsListRequest();
 
 }

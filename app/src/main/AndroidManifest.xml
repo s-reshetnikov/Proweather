@@ -36,6 +36,7 @@
             android:name=".presentation.location.LocationActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_locations"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data

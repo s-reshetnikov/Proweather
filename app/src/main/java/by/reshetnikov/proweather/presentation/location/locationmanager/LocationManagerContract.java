@@ -16,6 +16,8 @@ public interface LocationManagerContract {
 
         void refreshSearchedLocations(List<LocationEntity> savedLocations);
 
+        void hideKeyboard();
+
         void showError(String errorText);
     }
 

@@ -141,6 +141,7 @@ public class AppDbData implements DbContract {
 
     @Override
     public Completable saveNewLocation(final LocationEntity locationEntity) {
+        Timber.d("saveNewLocation()");
         return Completable.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -179,12 +180,21 @@ public class AppDbData implements DbContract {
         });
     }
 
+    @Override
+    public Completable saveOrUpdateLocation(final LocationEntity location) {
+        return Completable.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return saveOrUpdateLocationEntity(location);
+            }
+        });
+    }
+
     private NowForecastEntity getCurrentForecastEntity(int locationId) {
         return nowForecastEntityDao.queryBuilder()
                 .where(NowForecastEntityDao.Properties.LocationId.eq(locationId))
                 .orderDesc(NowForecastEntityDao.Properties.DateOfUpdate)
                 .limit(1)
-                .build()
                 .unique();
     }
 
@@ -229,7 +239,6 @@ public class AppDbData implements DbContract {
         int firstPosition = 0;
         LocationEntity defaultLocation = locationDao.queryBuilder()
                 .where(LocationEntityDao.Properties.Position.eq(firstPosition))
-                .build()
                 .unique();
         if (defaultLocation == null)
             Timber.w("default location is not set");
@@ -243,8 +252,21 @@ public class AppDbData implements DbContract {
         return list;
     }
 
-    private Boolean updateLocationEntity(LocationEntity locationEntity) {
-        locationDao.insertOrReplace(locationEntity);
+    private Boolean saveOrUpdateLocationEntity(LocationEntity location) {
+        LocationEntity savedLocation = locationDao.queryBuilder()
+                .where(LocationEntityDao.Properties.LocationId.eq(location.getLocationId()))
+                .unique();
+
+        if (savedLocation != null) {
+            location.setPosition(savedLocation.getPosition());
+            return updateLocationEntity(location);
+        }
+
+        return saveNewLocationEntity(location);
+    }
+
+    private Boolean updateLocationEntity(LocationEntity location) {
+        locationDao.insertOrReplace(location);
         return Boolean.TRUE;
     }
 
@@ -254,16 +276,19 @@ public class AppDbData implements DbContract {
     }
 
     private Boolean saveNewLocationEntity(LocationEntity locationEntity) {
-        LocationEntity latestEntity = locationDao.queryBuilder()
-                .distinct()
-                .orderDesc(LocationEntityDao.Properties.Position)
-                .limit(1)
-                .build().unique();
-
-        setOrderPosition(locationEntity, latestEntity);
+        LocationEntity lastLocation = getLastLocation();
+        setOrderPosition(locationEntity, lastLocation);
 
         locationDao.save(locationEntity);
         return true;
+    }
+
+    private LocationEntity getLastLocation() {
+        return locationDao.queryBuilder()
+                .distinct()
+                .orderDesc(LocationEntityDao.Properties.Position)
+                .limit(1)
+                .unique();
     }
 
     private void setOrderPosition(LocationEntity locationEntity, LocationEntity latestEntity) {

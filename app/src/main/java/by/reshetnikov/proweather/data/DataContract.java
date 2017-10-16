@@ -13,6 +13,7 @@ import by.reshetnikov.proweather.data.model.unit.Units;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.annotations.NonNull;
 
 
 public interface DataContract {
@@ -31,6 +32,8 @@ public interface DataContract {
     Single<List<LocationEntity>> getSavedLocations();
 
     Completable saveNewLocation(@Nonnull LocationEntity location);
+
+    Completable saveOrUpdateLocation(@NonNull LocationEntity location);
 
     Completable removeLocation(@Nonnull LocationEntity location);
 

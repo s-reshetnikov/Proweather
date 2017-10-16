@@ -43,18 +43,21 @@ public class MapPresenter implements MapContract.Presenter {
 
     @Override
     public void onMapReady() {
+        Timber.d("onMapReady()");
         setupActualLocation();
         setAllLocationsOnMap();
     }
 
     @Override
     public void onAddNewLocationButtonClicked(boolean isPointerVisible, double latitude, double longitude) {
+        Timber.d("onAddNewLocationButtonClicked()");
         if (!isPointerVisible) {
             getView().showLocationPointer();
             getView().updateFabWithCheckIcon();
             getView().showCancelButton();
         } else {
-            disposables.add(interactor.getLocations(latitude, longitude)
+            disposables.add(interactor.getLocationByCoordinates(latitude, longitude)
+                    .observeOn(scheduler.ui())
                     .doAfterTerminate(new Action() {
                         @Override
                         public void run() throws Exception {
@@ -68,6 +71,7 @@ public class MapPresenter implements MapContract.Presenter {
                     .subscribeWith(new DisposableSingleObserver<LocationEntity>() {
                         @Override
                         public void onSuccess(LocationEntity locationEntity) {
+                            getView().clearAllMapMarkers();
                             getView().addMarkerOnMap(locationEntity, false);
                         }
 
@@ -81,6 +85,7 @@ public class MapPresenter implements MapContract.Presenter {
 
     @Override
     public void onCurrentLocationButtonClicked() {
+        Timber.d("onCurrentLocationButtonClicked()");
         if (interactor.canUseCurrentLocation() && getView().checkOrRequestLocationPermissions()) {
             disposables.add(interactor.getCurrentLocation()
                     .observeOn(scheduler.ui())
@@ -108,6 +113,7 @@ public class MapPresenter implements MapContract.Presenter {
 
     @Override
     public void onCancelButtonClicked() {
+        Timber.d("onCancelButtonClicked()");
         getView().hideCancelButton();
         getView().hideLocationPointer();
         getView().updateFabWithAddIcon();
@@ -115,25 +121,29 @@ public class MapPresenter implements MapContract.Presenter {
 
     @Override
     public void updateLocationMarkers() {
+        Timber.d("updateLocationMarkers()");
         getView().clearAllMapMarkers();
         setAllLocationsOnMap();
     }
 
     @Override
     public void updateLocationMarkersWithZoom(LocationEntity location) {
+        Timber.d("updateLocationMarkersWithZoom()");
         getView().refreshLocationMarkersOnMap();
-        int zoomScale = 10;
+        int zoomScale = 14;
         getView().moveCameraToCoordinates(location.getLatitude(), location.getLongitude(), zoomScale);
     }
 
     @Override
     public void zoomToMarker(LocationEntity location) {
-        int zoomScale = 10;
+        Timber.d("zoomToMarker()");
+        int zoomScale = 14;
         getView().moveCameraToCoordinates(location.getLatitude(), location.getLongitude(), zoomScale);
     }
 
     @Override
     public void locationPermissionsDenied() {
+        Timber.d("locationPermissionsDenied()");
         getView().showLocationPermissionIsNotGranted();
     }
 

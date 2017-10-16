@@ -17,5 +17,5 @@ public interface MapInteractorContract {
 
     Single<List<LocationEntity>> getAllSavedLocations();
 
-    Single<LocationEntity> getLocations(double latitude, double longitude);
+    Single<LocationEntity> getLocationByCoordinates(double latitude, double longitude);
 }

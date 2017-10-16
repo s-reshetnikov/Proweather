@@ -67,8 +67,16 @@ public class LocationEntity {
         return longitude;
     }
 
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     public double getLatitude() {
         return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
     public void setCoordinates(double latitude, double longitude) {
@@ -92,12 +100,8 @@ public class LocationEntity {
         this.Id = Id;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    @Override
+    public String toString() {
+        return getLocationName() + " (" + getCountryCode() + ", " + getLocationId() + ") - " + getPosition();
     }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
 }

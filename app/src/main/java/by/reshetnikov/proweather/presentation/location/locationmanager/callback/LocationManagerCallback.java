@@ -8,7 +8,7 @@ import by.reshetnikov.proweather.data.db.model.LocationEntity;
 
 public interface LocationManagerCallback {
 
-    void onLocationRemoved();
+    void onLocationRemoved(LocationEntity location);
 
     void onLocationAdded(LocationEntity location);
 

@@ -2,6 +2,7 @@ package by.reshetnikov.proweather.presentation.location.locationmanager.adapter;
 
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +60,7 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
             }
         });
         holder.setLocationName(location.getLocationName());
-        holder.setCircleCountryCode(location.getCountryCode());
+        holder.setCircleCountryCode(TextUtils.isEmpty(location.getCountryCode()) ? "?" : location.getCountryCode());
         int firstPosition = 0;
         boolean isCurrent = location.getPosition() == firstPosition;
         holder.markAsCurrent(isCurrent);
@@ -132,11 +133,13 @@ public class LocationsRecyclerViewAdapter extends RecyclerView.Adapter<LocationV
     }
 
     private LocationEntity getLocationAtPosition(int position) {
-        for (LocationEntity model :
-                locations) {
+        Timber.d("getLocationAtPosition() #" + position);
+        for (LocationEntity model : locations) {
+            Timber.d("Location position #" + model.getPosition());
             if (model.getPosition() == position)
                 return model;
         }
-        throw new IndexOutOfBoundsException("Position " + position + " was not found at list");
+        //TODO: remove exception throw
+        throw new IndexOutOfBoundsException("Position " + position + " was not found at list (size of " + locations.size() + ")");
     }
 }

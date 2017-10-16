@@ -30,14 +30,14 @@ public class LocationActivity extends AppCompatActivity implements LocationManag
         if (locationManagerFragment == null)
             locationManagerFragment = new LocationManagerFragment();
 
-        FragmentUtils.replaceFragment(getSupportFragmentManager(), R.id.location_container, locationManagerFragment, LOCATION_MANAGER_FRAGMENT_TAG);
+        FragmentUtils.replaceFragment(getSupportFragmentManager(), R.id.location_manager_container, locationManagerFragment, LOCATION_MANAGER_FRAGMENT_TAG);
 
 
-        if (findViewById(R.id.map_fragment_container) != null) {
+        if (findViewById(R.id.map_container) != null) {
             Timber.d("2 panes view");
             twoPaneMode = true;
             mapFragment = new MapFragment();
-            FragmentUtils.replaceFragment(getSupportFragmentManager(), R.id.map_fragment_container, mapFragment, MAP_FRAGMENT_TAG);
+            FragmentUtils.replaceFragment(getSupportFragmentManager(), R.id.map_container, mapFragment, MAP_FRAGMENT_TAG);
         } else
             Timber.i("Map fragment container is not present on view");
     }
@@ -56,9 +56,9 @@ public class LocationActivity extends AppCompatActivity implements LocationManag
 
 
     @Override
-    public void onLocationRemoved() {
+    public void onLocationRemoved(LocationEntity location) {
         if (twoPaneMode) {
-            mapFragment.refreshLocationMarkersOnMap();
+            mapFragment.removeMarkerForLocationRequest(location);
         }
     }
 
@@ -81,13 +81,11 @@ public class LocationActivity extends AppCompatActivity implements LocationManag
         if (twoPaneMode) {
             Timber.w("Button shouldn't be displayed");
         } else {
-
             mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
-
             if (mapFragment == null)
                 mapFragment = new MapFragment();
 
-            FragmentUtils.replaceFragmentAndAddToBackStack(getSupportFragmentManager(), R.id.location_container, mapFragment, MAP_FRAGMENT_TAG);
+            FragmentUtils.replaceFragmentAndAddToBackStack(getSupportFragmentManager(), R.id.location_manager_container, mapFragment, MAP_FRAGMENT_TAG);
         }
 
     }
@@ -96,5 +94,17 @@ public class LocationActivity extends AppCompatActivity implements LocationManag
     public void onLocationClicked(LocationEntity location) {
         if (twoPaneMode)
             mapFragment.zoomToMarkerRequest(location);
+    }
+
+    @Override
+    public void newLocationMarkerAdded(LocationEntity location) {
+        if (twoPaneMode)
+            locationManagerFragment.updateLocationsListRequest();
+
+    }
+
+    @Override
+    public void onMarkerClicked(LocationEntity location) {
+
     }
 }

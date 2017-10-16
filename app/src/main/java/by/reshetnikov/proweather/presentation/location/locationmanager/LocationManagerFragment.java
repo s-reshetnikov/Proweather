@@ -15,6 +15,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -142,6 +143,12 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     }
 
     @Override
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(tvAutoCompleteLocation.getWindowToken(), 0);
+    }
+
+    @Override
     public void showError(String errorText) {
         ToastUtils.showToast(Toast.makeText(this.getContext(), errorText, Toast.LENGTH_SHORT));
     }
@@ -194,7 +201,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
                         " " + location.getPosition();
                 Timber.d(message);
                 presenter.onLocationItemRemoved(location);
-                locationManagerCallback.onLocationRemoved();
+                locationManagerCallback.onLocationRemoved(location);
             }
         });
     }
@@ -253,7 +260,7 @@ public class LocationManagerFragment extends Fragment implements LocationManager
     }
 
     @Override
-    public void updateLocationsList() {
+    public void updateLocationsListRequest() {
         presenter.onLocationsRefreshed();
     }
 }

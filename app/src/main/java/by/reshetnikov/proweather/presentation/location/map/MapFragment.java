@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -55,8 +57,9 @@ import timber.log.Timber;
  * Created by s-reshetnikov.
  */
 
-public class MapFragment extends Fragment implements MapContract.View, MapFragmentCommunication, OnMapReadyCallback {
-    //GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapFragment extends Fragment implements MapContract.View, MapFragmentCommunication, OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
     private static final int REQUEST_PERMISSION_LOCATION = 14121;
     private final String ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private final String ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -72,6 +75,7 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
     FloatingActionButton fabCancelAddLocation;
     private GoogleMap map;
     private ActivityComponent component;
+    private MapCallback mapCallback;
     private List<Marker> mapMarkers;
 
     public MapFragment() {
@@ -86,6 +90,11 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
                     .activityModule(new ActivityModule((AppCompatActivity) context))
                     .applicationComponent(((ProWeatherApp) getActivity().getApplication()).getComponent())
                     .build();
+        }
+        try {
+            mapCallback = (MapCallback) context;
+        } catch (ClassCastException e) {
+            Timber.e(e);
         }
     }
 
@@ -228,23 +237,25 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
     }
 
     @Override
-    public void addMarkerOnMap(LocationEntity locationEntity, boolean moveCamera) {
-        LatLng location = new LatLng(locationEntity.getLatitude(), locationEntity.getLongitude());
+    public void addMarkerOnMap(LocationEntity location, boolean moveCamera) {
+        LatLng coordinates = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions()
-                .position(location)
-                .title(locationEntity.getLocationName());
+                .position(coordinates)
+                .title(location.getLocationName());
 
         mapMarkers.add(map.addMarker(markerOptions));
         if (moveCamera) {
             int zoom = 10;
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoom));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
         }
+
+        mapCallback.newLocationMarkerAdded(location);
+
     }
 
     @Override
     public void moveCameraToCoordinates(double latitude, double longitude, int zoom) {
         LatLng coordinates = new LatLng(latitude, longitude);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
     }
 
@@ -350,7 +361,7 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
             if (apiAvailability.isUserResolvableError(status)) {
                 apiAvailability.getErrorDialog(this.getActivity(), status, 1).show();
             } else {
-                Snackbar.make(mapView, "Google Play Services unavailable. This app will not work", Snackbar.LENGTH_INDEFINITE).show();
+                Snackbar.make(mapView, R.string.play_services_unavailiable, Snackbar.LENGTH_INDEFINITE).show();
             }
         }
     }
@@ -373,18 +384,34 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
         noGpsAlert.show();
     }
 
-    @Override
-    public void updateLocationMarkersRequest() {
-        presenter.updateLocationMarkers();
-    }
 
     @Override
-    public void updateLocationMarkersWithZoomRequest(LocationEntity location) {
+    public void addMarkerWithZoomRequest(LocationEntity location) {
         presenter.updateLocationMarkersWithZoom(location);
     }
 
     @Override
     public void zoomToMarkerRequest(LocationEntity location) {
         presenter.zoomToMarker(location);
+    }
+
+    @Override
+    public void removeMarkerForLocationRequest(LocationEntity location) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Timber.d("onConnectionFailed()");
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Timber.d("onConnected()");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Timber.d("onConnectionSuspended()");
     }
 }
