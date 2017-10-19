@@ -11,7 +11,6 @@ import by.reshetnikov.proweather.data.exception.NoLocationException;
 import by.reshetnikov.proweather.data.model.Coordinates;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import timber.log.Timber;
 
@@ -25,7 +24,7 @@ public class MapInteractor implements MapInteractorContract {
     private DataContract dataManager;
 
     @Inject
-    public MapInteractor(DataContract dataManager) {
+    MapInteractor(DataContract dataManager) {
         this.dataManager = dataManager;
     }
 
@@ -73,7 +72,7 @@ public class MapInteractor implements MapInteractorContract {
                 .firstOrError()
                 .flatMap(new Function<Coordinates, SingleSource<List<LocationEntity>>>() {
                     @Override
-                    public SingleSource<List<LocationEntity>> apply(Coordinates location) throws Exception {
+                    public SingleSource<List<LocationEntity>> apply(Coordinates location) {
                         return dataManager.getLocationsByCoordinates(location.getLatitude(), location.getLongitude(), RESULTS_NUMBER);
                     }
                 })

@@ -3,12 +3,9 @@ package by.reshetnikov.proweather.data.model.unit;
 import by.reshetnikov.proweather.data.preferences.units.DistanceUnits;
 import by.reshetnikov.proweather.data.preferences.units.SpeedUnit;
 import by.reshetnikov.proweather.data.preferences.units.TemperatureUnit;
-import io.reactivex.subjects.PublishSubject;
 
 
 public class Units {
-
-    public PublishSubject<Units> unitsStream = PublishSubject.create();
 
     private TemperatureUnit temperature;
     private DistanceUnits distance;

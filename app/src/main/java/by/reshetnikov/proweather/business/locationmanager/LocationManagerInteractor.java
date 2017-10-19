@@ -92,7 +92,7 @@ public class LocationManagerInteractor implements LocationManagerInteractorContr
                 })
                 .flatMapCompletable(new Function<List<LocationEntity>, CompletableSource>() {
                     @Override
-                    public CompletableSource apply(@NonNull List<LocationEntity> locations) throws Exception {
+                    public CompletableSource apply(@NonNull List<LocationEntity> locations) {
                         return dataManager.updateLocationPositions(locations);
                     }
                 });

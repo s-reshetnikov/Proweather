@@ -1,5 +1,6 @@
 package by.reshetnikov.proweather.presentation.dailyforecast;
 
+import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
 import by.reshetnikov.proweather.data.model.unit.Units;
 import by.reshetnikov.proweather.utils.CalendarUtil;
@@ -29,7 +30,7 @@ public class DailyForecastViewModel {
     }
 
     public String getDate() {
-        return CalendarUtil.getWeekDay(entity.getDate()) + COMMA +
+        return CalendarUtil.getWeekDay(ProWeatherApp.getAppContext(), entity.getDate()) + COMMA +
                 WHITESPACE + CalendarUtil.getLocaleDayAndMonth(entity.getDate());
     }
 

@@ -121,7 +121,7 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.refreshClicked();
+                presenter.swipedToRefresh();
             }
         });
     }
@@ -170,7 +170,7 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
 
     @Override
     public void showCurrentWeather(NowForecastViewModel nowForecast) {
-        tvWeekDay.setText(nowForecast.getWeekDay());
+        tvWeekDay.setText(nowForecast.getWeekDay(ProWeatherApp.getAppContext()));
         ivWeatherState.setImageDrawable(WeatherStateIconUtil.getIcon(nowForecast.getWeatherIconId()));
         tvLocationName.setText(nowForecast.getLocationName());
         tvTemperature.setText(nowForecast.getTemperature());
@@ -182,6 +182,8 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     @Override
     public void updateTemperatureChartData(List<Entry> temperatureForecast, final char unitSign, final List<String> xAxisDescription) {
         LineDataSet temperatureDataSet = getTemperatureDataSet(temperatureForecast);
+        int textSize = 16;
+        temperatureDataSet.setValueTextSize(textSize);
         final LineData lineData = new LineData(temperatureDataSet);
         lineData.setValueFormatter(new IValueFormatter() {
             @Override
@@ -220,6 +222,8 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
                 }
             }
         });
+        weatherChart.setNoDataTextColor(R.color.colorPrimary);
+        weatherChart.setNoDataText(getString(R.string.unable_to_load_forecast));
         int animationDuration = 2 * 1000;
         weatherChart.animateX(animationDuration);
         weatherChart.setHardwareAccelerationEnabled(true);
@@ -228,7 +232,6 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
         weatherChart.getDescription().setEnabled(false);
         weatherChart.getLegend().setEnabled(false);
         weatherChart.setScaleEnabled(false);
-        weatherChart.setNoDataText("No forecast was loaded");
         weatherChart.invalidate();
     }
 

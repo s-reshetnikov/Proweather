@@ -5,6 +5,7 @@ import android.support.v4.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
+import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
 import by.reshetnikov.proweather.data.model.unit.Units;
 import by.reshetnikov.proweather.data.preferences.units.TemperatureUnit;
@@ -33,7 +34,7 @@ public class HourlyForecastForChartViewModel {
         List<Pair<Integer, String>> temperatureHourPairs = new ArrayList<>();
         for (int i = 0; i < entities.size(); i++) {
             int temperature = UnitUtils.getTemperature(entities.get(i).getTemperature(), units.getTemperature());
-            String date = CalendarUtil.getTimeInHours(entities.get(i).getDate());
+            String date = CalendarUtil.getTimeInHours(ProWeatherApp.getAppContext(), entities.get(i).getDate());
             Pair<Integer, String> tempHourPair = new Pair<>(temperature, date);
             temperatureHourPairs.add(tempHourPair);
         }
@@ -44,7 +45,7 @@ public class HourlyForecastForChartViewModel {
         List<Pair<Double, String>> precipitationHourPairs = new ArrayList<>();
         for (int i = 0; i < entities.size(); i++) {
             double precipitation = entities.get(i).getSnow() + entities.get(i).getRain();
-            String date = CalendarUtil.getTimeInHours(entities.get(i).getDate());
+            String date = CalendarUtil.getTimeInHours(ProWeatherApp.getAppContext(), entities.get(i).getDate());
             Pair<Double, String> precipitationHourPair = new Pair<>(precipitation, date);
             precipitationHourPairs.add(precipitationHourPair);
         }

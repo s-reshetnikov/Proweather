@@ -51,8 +51,8 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
     }
 
     @Override
-    public void refreshClicked() {
-
+    public void swipedToRefresh() {
+        updateWeather();
     }
 
     private void updateWeather() {
@@ -88,10 +88,10 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
 
     private void onErrorResponseReceived(Throwable exception) {
         if (exception instanceof NoLocationException) {
-            viewRef.get().showLocationManager();
+            getView().showLocationManager();
         }
         if (exception instanceof NoSavedForecastDataException)
-            viewRef.get().showTurnInternetOn();
+            getView().showTurnInternetOn();
     }
 
     private void getHourlyForecastForChartSuccessfully(@NonNull HourlyForecastForChartViewModel viewModel) {
@@ -132,7 +132,7 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
     private NowForecastContract.View getView() {
         if (viewRef.get() != null)
             return viewRef.get();
-        throw new NullPointerException("NowForecastContract.View is null!!!");
+        throw new NullPointerException("Couldn't get view for presenter!");
     }
 
     @Override

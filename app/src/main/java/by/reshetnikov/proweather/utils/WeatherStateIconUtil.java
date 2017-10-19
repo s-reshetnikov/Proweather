@@ -10,7 +10,7 @@ import java.util.Date;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
 
-public class WeatherStateIconUtil {
+public final class WeatherStateIconUtil {
 
     private WeatherStateIconUtil() {
     }
@@ -34,7 +34,9 @@ public class WeatherStateIconUtil {
         Date date = new Date(dateTime);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        return calendar.get(Calendar.HOUR_OF_DAY) >= 5 && calendar.get(Calendar.HOUR_OF_DAY) < 21;
+        int startDayHours = 6;
+        int startNightHours = 21;
+        return calendar.get(Calendar.HOUR_OF_DAY) >= startDayHours && calendar.get(Calendar.HOUR_OF_DAY) < startNightHours;
 
     }
 
@@ -97,17 +99,25 @@ public class WeatherStateIconUtil {
     }
 
     private static int getIconCode(int iconCode, boolean isDay) {
-        if (iconCode >= 200 && iconCode < 300)
+        int thunderStormCode = 200;
+        int drizzleCode = 300;
+        int rainCode = 500;
+        int snowCode = 600;
+        int atmosphereCode = 700;
+        int clearSkyCodes = 800;
+        int extremeCode = 900;
+
+        if (iconCode >= thunderStormCode && iconCode < drizzleCode)
             return getThunderstormCodes(iconCode, isDay);
-        if (iconCode >= 300 && iconCode < 400)
+        if (iconCode >= drizzleCode && iconCode < rainCode)
             return getDrizzleCodes(iconCode, isDay);
-        if (iconCode >= 500 && iconCode < 600)
+        if (iconCode >= rainCode && iconCode < snowCode)
             return getRainCodes(iconCode, isDay);
-        if (iconCode >= 600 && iconCode < 700)
+        if (iconCode >= snowCode && iconCode < atmosphereCode)
             return getSnowCodes(iconCode, isDay);
-        if (iconCode >= 700 && iconCode < 800)
+        if (iconCode >= atmosphereCode && iconCode < clearSkyCodes)
             return getAtmosphereCodes(iconCode, isDay);
-        if (iconCode >= 800 && iconCode < 900)
+        if (iconCode >= clearSkyCodes && iconCode < extremeCode)
             return getClearCodes(iconCode, isDay);
         return getExtremeCodes(iconCode, isDay);
     }

@@ -12,7 +12,7 @@
         </menu>
     </item>
     <item
-        android:id="@+id/nav_location_manager"
+        android:id="@+id/nav_manage_location"
         android:icon="@drawable/ic_list_24dp"
         android:title="Manage locations" />
     <group>

@@ -12,7 +12,7 @@ import by.reshetnikov.proweather.ProWeatherApp;
  * Created by s-reshetnikov.
  */
 
-public class ResourcesUtil {
+public final class ResourcesUtil {
 
     @ColorInt
     public static int getColor(@ColorRes int color) {

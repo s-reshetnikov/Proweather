@@ -34,14 +34,13 @@ import by.reshetnikov.proweather.utils.PermissionUtils;
 import by.reshetnikov.proweather.utils.ToastUtils;
 import timber.log.Timber;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-
 
 public class WeatherActivity extends AppCompatActivity
         implements WeatherContract.View, NavigationView.OnNavigationItemSelectedListener,
         NowForecastFragment.OnFragmentInteractionListener {
 
     private static final String ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final String ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private final int PERMISSION_REQUEST_CODE = 14091;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -84,22 +83,11 @@ public class WeatherActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-//        if (findViewById(R.id.weather_fragment_placeholder) != null) {
-//
-//            if (savedInstanceState != null) {
-//                return;
-//            }
-//
-//            FragmentUtils.replaceFragment(getSupportFragmentManager(),
-//                    R.id.weather_fragment_placeholder,
-//                    NowForecastFragment.newInstance());
-//        }
         Timber.d("onCreate() end");
     }
 
     @Override
     public void onBackPressed() {
-        Timber.d("onBackPressed() start");
         DrawerLayout drawer = findViewById(R.id.weather_view);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             Timber.d("close drawer");
@@ -107,7 +95,6 @@ public class WeatherActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-        Timber.d("onBackPressed() end");
     }
 
     @Override
@@ -121,13 +108,14 @@ public class WeatherActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            startSettingsActivity();
+            presenter.onSettingsClicked();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void startSettingsActivity() {
+    @Override
+    public void startSettingsActivity() {
         Intent settingsActivityIntent = new Intent(this, SettingsActivity.class);
         startActivity(settingsActivityIntent);
     }
@@ -138,11 +126,11 @@ public class WeatherActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_settings: {
-                startSettingsActivity();
+                presenter.onSettingsClicked();
                 break;
             }
-            case R.id.nav_location_manager: {
-                startLocationActivity();
+            case R.id.nav_manage_location: {
+                presenter.onManageLocationsClicked();
                 break;
             }
         }
@@ -156,14 +144,15 @@ public class WeatherActivity extends AppCompatActivity
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
     public boolean hasLocationPermissions() {
         return PermissionUtils.isFineLocationGranted(this) && PermissionUtils.isCoarseLocationGranted(this);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
     public void requestLocationPermission() {
         final String[] permissions = {ACCESS_FINE_LOCATION};
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION) &&
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION) &&
                 ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_FINE_LOCATION)) {
             final String permissionsRequestMessage = getString(R.string.location_needed_to_locate_position);
 
@@ -176,7 +165,7 @@ public class WeatherActivity extends AppCompatActivity
                         }
                     }).show();
         } else {
-            requestPermissions(permissions, PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE);
         }
     }
 
@@ -187,34 +176,29 @@ public class WeatherActivity extends AppCompatActivity
     }
 
     @Override
+    public void showPermissionDenied() {
+        Snackbar.make(this.findViewById(R.id.weather_view), R.string.location_permission_not_granated, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.settings_snackbar, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.onOpenAppPermissionsClicked();
+                        openApplicationSettings();
+                    }
+                }).show();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         boolean allowed = true;
         if (requestCode == PERMISSION_REQUEST_CODE) {
             for (int result : grantResults)
                 allowed = allowed && result == PackageManager.PERMISSION_GRANTED;
         }
-        if (allowed) {
-            presenter.onLocationPermissionsGranted();
-        } else {
-            Snackbar.make(mViewPager, getString(R.string.permissions_not_granted), Snackbar.LENGTH_INDEFINITE).show();
-        }
+        presenter.onLocationPermissionsResult(allowed);
     }
 
-
-    public void showNoLocationPermissionSnackbar() {
-        Snackbar.make(this.findViewById(R.id.weather_view), R.string.location_permission_not_granated, Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.settings_snackbar, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        openApplicationSettings();
-                        Toast toast = Toast.makeText(getApplicationContext(),
-                                R.string.grant_location_permission, Toast.LENGTH_SHORT);
-                        ToastUtils.showToast(toast);
-                    }
-                }).show();
-    }
-
-    private void openApplicationSettings() {
+    @Override
+    public void openApplicationSettings() {
         Intent appSettingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.parse("package:" + getPackageName()));
         startActivityForResult(appSettingsIntent, PERMISSION_REQUEST_CODE);
@@ -223,6 +207,13 @@ public class WeatherActivity extends AppCompatActivity
                 BuildConfig.APPLICATION_ID, null));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivityForResult(intent, PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void showGrantPermissionsInSettingsMessage() {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                R.string.open_and_grant_location_permission, Toast.LENGTH_LONG);
+        ToastUtils.showToast(toast);
     }
 }
 

@@ -1,7 +1,7 @@
 package by.reshetnikov.proweather.utils;
 
 
-public class AppConstants {
+public final class AppConstants {
 
     public static final String DB_NAME = "proweatherDb";
 

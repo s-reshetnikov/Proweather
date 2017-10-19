@@ -1,18 +1,16 @@
 package by.reshetnikov.proweather.data;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.location.Location;
-import android.util.Log;
 
 import com.google.android.gms.location.LocationRequest;
 import com.patloew.rxlocation.RxLocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.data.db.DbContract;
@@ -30,25 +28,24 @@ import by.reshetnikov.proweather.data.network.openweathermap.model.currentweathe
 import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweather.HourlyForecastApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationForecastApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationWeatherApiModel;
-import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
+import by.reshetnikov.proweather.data.preferences.PreferencesContract;
 import by.reshetnikov.proweather.di.qualifier.HighAccuracy;
 import by.reshetnikov.proweather.di.qualifier.LowPower;
 import by.reshetnikov.proweather.utils.NetworkUtils;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import timber.log.Timber;
 
-@Singleton
 public class DataManager implements DataContract {
 
     private DbContract dbData;
     private WeatherApiDataContract apiData;
-    private AppSharedPreferencesData sharedPreferencesData;
+    private PreferencesContract sharedPreferencesData;
     private RxLocation rxLocation;
-    private Context context;
 
     private LocationRequest lowPowerLocationRequest;
     private LocationRequest highAccuracyLocationRequest;
@@ -56,7 +53,7 @@ public class DataManager implements DataContract {
     @Inject
     public DataManager(DbContract dbData,
                        WeatherApiDataContract apiData,
-                       AppSharedPreferencesData sharedPreferencesData,
+                       PreferencesContract sharedPreferencesData,
                        RxLocation rxLocation
     ) {
         this.dbData = dbData;
@@ -77,10 +74,20 @@ public class DataManager implements DataContract {
             return apiData.getCurrentForecast(location)
                     .map(new Function<CurrentForecastApiModel, NowForecastEntity>() {
                         @Override
-                        public NowForecastEntity apply(@NonNull CurrentForecastApiModel apiModel) throws Exception {
-                            NowForecastEntity model = OWMModelToDbModelFactory.createNowForecastFromAPI(apiModel);
-//                            dbData.saveCurrentWeather(model).subscribe();
-                            return model;
+                        public NowForecastEntity apply(@NonNull CurrentForecastApiModel apiModel) {
+                            return OWMModelToDbModelFactory.createNowForecastFromAPI(apiModel);
+                        }
+                    })
+                    .flatMap(new Function<NowForecastEntity, SingleSource<NowForecastEntity>>() {
+                        @Override
+                        public SingleSource<NowForecastEntity> apply(NowForecastEntity nowForecastEntity) throws Exception {
+                            return dbData.saveCurrentWeather(nowForecastEntity).toSingle(new Callable<NowForecastEntity>() {
+                                @Override
+                                public NowForecastEntity call() throws Exception {
+                                    Timber.d("save now forecast");
+                                    return nowForecastEntity;
+                                }
+                            });
                         }
                     });
         }
@@ -94,8 +101,19 @@ public class DataManager implements DataContract {
             return apiData.getHourlyForecast(location)
                     .map(new Function<HourlyForecastApiModel, List<HoursForecastEntity>>() {
                         @Override
-                        public List<HoursForecastEntity> apply(@NonNull HourlyForecastApiModel apiModel) throws Exception {
+                        public List<HoursForecastEntity> apply(@NonNull HourlyForecastApiModel apiModel) {
                             return OWMModelToDbModelFactory.createHourlyForecastsFromAPI(apiModel);
+                        }
+                    })
+                    .flatMap(new Function<List<HoursForecastEntity>, SingleSource<List<HoursForecastEntity>>>() {
+                        @Override
+                        public SingleSource<List<HoursForecastEntity>> apply(List<HoursForecastEntity> hoursForecastEntities) throws Exception {
+                            return dbData.saveHourlyForecasts(hoursForecastEntities).toSingle(new Callable<List<HoursForecastEntity>>() {
+                                @Override
+                                public List<HoursForecastEntity> call() throws Exception {
+                                    return hoursForecastEntities;
+                                }
+                            });
                         }
                     });
         }
@@ -103,17 +121,28 @@ public class DataManager implements DataContract {
     }
 
     @Override
-    public Single<List<DailyForecastEntity>> getDailyForecasts(LocationEntity location) {
+    public Single<List<DailyForecastEntity>> getDailyForecasts(@NonNull LocationEntity location) {
         Timber.d("getDailyForecasts(), Is location null? " + (location == null));
         if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getDailyForecast(location)
                     .map(new Function<HourlyForecastApiModel, List<DailyForecastEntity>>() {
                         @Override
                         public List<DailyForecastEntity> apply(@NonNull HourlyForecastApiModel apiModel) throws Exception {
-                            Log.i("DM", "api model size = " + apiModel.forecasts.size());
-                            List<DailyForecastEntity> dayModels = OWMModelToDbModelFactory.createDailyForecastsFromAPI(apiModel);
-                            Log.i("DM", "view model size = " + dayModels.size());
-                            return dayModels;
+                            Timber.d("received models = " + apiModel.forecasts.size());
+                            List<DailyForecastEntity> dayForecasts = OWMModelToDbModelFactory.createDailyForecastsFromAPI(apiModel);
+                            Timber.d("view model size = " + dayForecasts.size());
+                            return dayForecasts;
+                        }
+                    })
+                    .flatMap(new Function<List<DailyForecastEntity>, SingleSource<List<DailyForecastEntity>>>() {
+                        @Override
+                        public SingleSource<List<DailyForecastEntity>> apply(List<DailyForecastEntity> dailyForecastEntities) throws Exception {
+                            return dbData.saveDailyForecasts(dailyForecastEntities).toSingle(new Callable<List<DailyForecastEntity>>() {
+                                @Override
+                                public List<DailyForecastEntity> call() throws Exception {
+                                    return dailyForecastEntities;
+                                }
+                            });
                         }
                     });
         }
@@ -141,7 +170,7 @@ public class DataManager implements DataContract {
             return apiData.getLocationsByName(locationName, resultsCount)
                     .map(new Function<LocationForecastApiModel, List<LocationEntity>>() {
                         @Override
-                        public List<LocationEntity> apply(@NonNull LocationForecastApiModel locations) throws Exception {
+                        public List<LocationEntity> apply(@NonNull LocationForecastApiModel locations) {
                             List<LocationEntity> locationAdapters = new ArrayList<>();
                             for (LocationWeatherApiModel apiModel : locations.locationApiModelList) {
                                 locationAdapters.add(LocationFactory.create(apiModel));
@@ -159,7 +188,7 @@ public class DataManager implements DataContract {
             return apiData.getLocationsByCoordinates(latitude, longitude, resultsCount)
                     .map(new Function<LocationForecastApiModel, List<LocationEntity>>() {
                         @Override
-                        public List<LocationEntity> apply(@NonNull LocationForecastApiModel locations) throws Exception {
+                        public List<LocationEntity> apply(@NonNull LocationForecastApiModel locations) {
                             List<LocationEntity> locationAdapters = new ArrayList<>();
                             for (LocationWeatherApiModel apiModel : locations.locationApiModelList) {
                                 locationAdapters.add(LocationFactory.create(apiModel));

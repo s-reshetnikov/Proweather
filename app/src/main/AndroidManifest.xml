@@ -36,8 +36,10 @@
             android:name=".presentation.location.LocationActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_locations"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
+        <!--<service android:name=".data.service.ForecastUpdateService" />-->
 
         <meta-data
             android:name="io.fabric.ApiKey"

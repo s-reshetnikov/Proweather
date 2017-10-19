@@ -27,9 +27,9 @@ android {
         versionName '0.9'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        manifestPlaceholders = [crashlyticsKey: getProperty("local.properties", "crashlytics_api_key"),
-                                googleMapsKey : getProperty("local.properties", "google_maps_api_key")]
-        buildConfigField "String", "OWM_API_KEY", "\"${getProperty("local.properties", "owm_api_key")}\""
+        manifestPlaceholders = [crashlyticsKey: getProperty("keys.properties", "crashlytics_api_key"),
+                                googleMapsKey : getProperty("keys.properties", "google_maps_api_key")]
+        buildConfigField "String", "OWM_API_KEY", "\"${getProperty("keys.properties", "owm_api_key")}\""
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -91,7 +91,7 @@ dependencies {
     //debug only
     debugCompile "com.amitshekhar.android:debug-db:${dbDebugVersion}"
 
-    // Support libs
+    // support libs
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"
@@ -104,18 +104,18 @@ dependencies {
     compile "com.google.android.gms:play-services-location:${playServicesVerion}"
     compile "com.google.android.gms:play-services-maps:${playServicesVerion}"
 
-    // Reactive Java
+    // rxJava 2
     compile "io.reactivex.rxjava2:rxjava:${rxJavaVersion}"
     compile "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}"
 
-    // Network
+    // network
     compile "com.squareup.okhttp3:okhttp:${okhttpVersion}"
     compile "com.squareup.okhttp3:logging-interceptor:${okhttpVersion}"
     compile "com.squareup.retrofit2:converter-gson:${converterGsonVersion}"
     compile "com.squareup.retrofit2:adapter-rxjava2:${converterGsonVersion}"
     compile "com.google.code.gson:gson:${gsonVersion}"
 
-    // Dependency Injection
+    // dependency injection
     compile "com.google.dagger:dagger:${daggerVersion}"
     compile "com.google.dagger:dagger-android:${daggerVersion}"
     compile "com.google.dagger:dagger-android-support:${daggerVersion}"
@@ -125,20 +125,20 @@ dependencies {
     //rxLocation
     compile "com.patloew.rxlocation:rxlocation:${rxLocationVersion}"
 
-    // Green DAO
+    // green DAO
     compile "org.greenrobot:greendao:${daoVersion}"
 
-    // Other
+    // other
     compile "com.jakewharton:butterknife:${butterKnifeVersion}"
     annotationProcessor "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
 
-    // Logging
+    // logging
     compile "com.jakewharton.timber:timber:${timberVersion}"
     compile("com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}@aar") {
         transitive = true
     }
 
-    // Chart
+    // chart
     compile "com.github.PhilJay:MPAndroidChart:${MPAndroidChartVersion}"
 
     // testing

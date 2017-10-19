@@ -1,19 +1,17 @@
 package by.reshetnikov.proweather.presentation.weather;
 
-import javax.inject.Inject;
+import java.lang.ref.WeakReference;
 
-import by.reshetnikov.proweather.data.DataManager;
+import javax.inject.Inject;
 
 
 public class WeatherPresenter implements WeatherContract.Presenter {
 
-    DataManager dataManager;
-
-    WeatherContract.View view;
+    private WeakReference<WeatherContract.View> viewRef;
 
     @Inject
-    public WeatherPresenter(DataManager dataManager) {
-        this.dataManager = dataManager;
+    public WeatherPresenter() {
+
     }
 
 
@@ -28,12 +26,38 @@ public class WeatherPresenter implements WeatherContract.Presenter {
     }
 
     @Override
-    public void setView(WeatherContract.View view) {
-        this.view = view;
+    public void onLocationPermissionsResult(boolean allowed) {
+        if (allowed)
+            getView().requestLocationPermission();
+        else
+            getView().showPermissionDenied();
     }
 
     @Override
-    public void onLocationPermissionsGranted() {
-
+    public void onSettingsClicked() {
+        getView().startSettingsActivity();
     }
+
+    @Override
+    public void onManageLocationsClicked() {
+        getView().startLocationActivity();
+    }
+
+    @Override
+    public void onOpenAppPermissionsClicked() {
+        getView().showGrantPermissionsInSettingsMessage();
+        getView().openApplicationSettings();
+    }
+
+    private WeatherContract.View getView() {
+        if (viewRef != null)
+            return viewRef.get();
+        throw new NullPointerException("View is null");
+    }
+
+    @Override
+    public void setView(WeatherContract.View view) {
+        this.viewRef = new WeakReference<>(view);
+    }
+
 }

@@ -10,14 +10,15 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
 
 /**
  * Created by SacRahl on 8/7/2017.
  */
 
-public class CalendarUtil {
+public final class CalendarUtil {
+
+    public static final int MILLISECONDS_IN_ONE_SECOND = 1000;
 
     public static long getTodayDate() {
         Calendar calendar = Calendar.getInstance();
@@ -30,9 +31,8 @@ public class CalendarUtil {
         return dateInMillis / 1000;
     }
 
-    public static String getTimeInHours(long time) {
+    public static String getTimeInHours(Context context, long time) {
         Calendar calendar = getCalendarForTime(time);
-        Context context = ProWeatherApp.getAppContext();
         return calendar.get(Calendar.HOUR) + context.getResources().getString(R.string.short_hour);
 
     }
@@ -43,8 +43,7 @@ public class CalendarUtil {
         return (int) dateInMillis / 1000;
     }
 
-    public static String getWeekDay(long date) {
-        Context context = ProWeatherApp.getAppContext();
+    public static String getWeekDay(Context context, long date) {
         Calendar calendar = getCalendarForTime(date);
         int day = calendar.get(Calendar.DAY_OF_WEEK);
         switch (day) {
@@ -66,16 +65,15 @@ public class CalendarUtil {
         return "";
     }
 
-    public static String getTodayWeekDay() {
-        return getWeekDay(getTodayDate());
+    public static String getTodayWeekDay(Context context) {
+        return getWeekDay(context, getTodayDate());
     }
 
     public static String getLocaleDayAndMonth(long dateInSeconds) {
         Date date = new Date(dateInSeconds * 1000);
         String pattern = "d MMMM";
         DateFormat dateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
-        String formattedDate = dateFormat.format(date);
-        return formattedDate;
+        return dateFormat.format(date);
     }
 
     public static int getDateWithoutTime(long dateTime) {
@@ -94,7 +92,7 @@ public class CalendarUtil {
 
     @NonNull
     private static Calendar getCalendarForTime(long dateTime) {
-        Date date = new Date(dateTime * 1000L);
+        Date date = new Date(dateTime * MILLISECONDS_IN_ONE_SECOND);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.setTimeZone(TimeZone.getDefault());
@@ -104,8 +102,11 @@ public class CalendarUtil {
     public static long getDateFromToday(int numOfDays) {
         Calendar calendar = Calendar.getInstance();
         removeTimeFromCalendar(calendar);
-        int secondsInDay = 60 * 60 * 24;
+        int secondsInOneMinute = 60;
+        int minutesInOneHour = 60;
+        int hoursInOneDay = 24;
+        int secondsInDay = secondsInOneMinute * minutesInOneHour * hoursInOneDay;
         int secondsInNDays = secondsInDay * numOfDays;
-        return calendar.getTimeInMillis() / 1000 + secondsInNDays;
+        return calendar.getTimeInMillis() / MILLISECONDS_IN_ONE_SECOND + secondsInNDays;
     }
 }

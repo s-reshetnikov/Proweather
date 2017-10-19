@@ -41,8 +41,6 @@ public class DailyForecastFragment extends Fragment implements DailyForecastCont
     RecyclerView rvForecastList;
     @BindView(R.id.swipeNowForecast)
     SwipeRefreshLayout refreshLayout;
-    private OnFragmentInteractionListener mListener;
-
 
     public DailyForecastFragment() {
     }
@@ -107,7 +105,6 @@ public class DailyForecastFragment extends Fragment implements DailyForecastCont
     public void onDetach() {
         Timber.d("onDetach called");
         super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -137,12 +134,6 @@ public class DailyForecastFragment extends Fragment implements DailyForecastCont
         refreshLayout.setRefreshing(false);
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     private void setupForecastsRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         rvForecastList.setLayoutManager(layoutManager);
@@ -152,6 +143,7 @@ public class DailyForecastFragment extends Fragment implements DailyForecastCont
     }
 
     private void setupSwipeToRefresh() {
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

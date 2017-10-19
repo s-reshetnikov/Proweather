@@ -2,7 +2,7 @@ package by.reshetnikov.proweather.utils;
 
 import android.content.res.Resources;
 
-public class ScreenUnitsUtils {
+public final class ScreenUnitsUtils {
     public static int convertDpToPixel(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }

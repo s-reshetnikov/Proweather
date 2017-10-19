@@ -17,15 +17,10 @@ import io.fabric.sdk.android.Fabric;
 import io.reactivex.Observable;
 import timber.log.Timber;
 
-
 public class ProWeatherApp extends Application {
 
     private static ProWeatherApp proWeatherApp;
     private static ApplicationComponent applicationComponent;
-
-    public static ProWeatherApp getProWeatherApp() {
-        return proWeatherApp;
-    }
 
     public static Context getAppContext() {
         return proWeatherApp.getApplicationContext();
@@ -36,7 +31,6 @@ public class ProWeatherApp extends Application {
         super.onCreate();
 
         Fabric.with(this, new Crashlytics());
-
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
@@ -50,12 +44,12 @@ public class ProWeatherApp extends Application {
                 .applicationModule(new ApplicationModule(this)).build();
         proWeatherApp = this;
 
-        //TODO: move settings default values some where else
+        //TODO: move settings default values somewhere else
         Observable.fromCallable(new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
-                setPreferenceDefaultValues(true);
-                return true;
+            public Boolean call() {
+                setPreferenceDefaultValues(false);
+                return Boolean.TRUE;
             }
         });
     }
@@ -74,13 +68,6 @@ public class ProWeatherApp extends Application {
     private static class CrashReportingTree extends Timber.Tree {
         @Override
         protected void log(int priority, String tag, String message, Throwable throwable) {
-            if (priority == Log.VERBOSE || priority == Log.DEBUG)
-                return;
-
-            if (priority == Log.INFO) {
-                Fabric.getLogger().i(tag, message);
-                return;
-            }
 
             if (throwable != null) {
                 if (priority == Log.ERROR) {

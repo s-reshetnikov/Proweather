@@ -24,6 +24,7 @@ import by.reshetnikov.proweather.data.network.AppWeatherApiData;
 import by.reshetnikov.proweather.data.network.WeatherApiDataContract;
 import by.reshetnikov.proweather.data.network.openweathermap.OpenWeatherMapApiService;
 import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
+import by.reshetnikov.proweather.data.preferences.PreferencesContract;
 import by.reshetnikov.proweather.di.qualifier.ApplicationContext;
 import by.reshetnikov.proweather.di.qualifier.DatabaseInfo;
 import by.reshetnikov.proweather.di.qualifier.HighAccuracy;
@@ -129,7 +130,7 @@ public class ApplicationModule {
 
     // shared preferences
     @Provides
-    AppSharedPreferencesData provideSharedPreferencesData(@ApplicationContext Context context) {
+    PreferencesContract provideSharedPreferences(@ApplicationContext Context context) {
         return new AppSharedPreferencesData(context);
     }
 

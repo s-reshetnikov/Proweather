@@ -63,13 +63,10 @@
     <string name="pref_wind_speed_unit_title">Wind speed unit</string>
     <string name="location_permission_denied">Location Permissions denied</string>
     <string name="location_permission_not_granated">Location permission is not granted.</string>
-    <string name="grant_location_permission">Open Permissions and grant the Location permission</string>
+    <string name="open_and_grant_location_permission">Open Permissions and grant the Location permission</string>
     <string name="settings_snackbar">SETTINGS</string>
     <string name="location_needed_to_locate_position">Location permission is needed to automatically detect your position</string>
     <string name="grant_snackbar">GRANT</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_locations">Locations</string>
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
@@ -116,4 +113,6 @@
     <string name="title_activity_temp">TempActivity</string>
     <string name="permissions_not_granted">Permissions was not granted</string>
     <string name="play_services_unavailiable">Google Play Services unavailable. Some features will be disabled</string>
+    <string name="location_name_hint">Location name</string>
+    <string name="unable_to_load_forecast">Unable to load forecast</string>
 </resources>

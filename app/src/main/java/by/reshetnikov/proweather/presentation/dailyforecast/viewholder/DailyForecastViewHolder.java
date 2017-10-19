@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.utils.WeatherStateIconUtil;
 
@@ -70,23 +71,18 @@ public class DailyForecastViewHolder extends RecyclerView.ViewHolder implements 
     public DailyForecastViewHolder(LayoutInflater inflater, ViewGroup parent) {
         super(inflater.inflate(R.layout.item_daily_forecast, parent, false));
         ButterKnife.bind(this, itemView);
-
-        btnDetails.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("VH", "clicked");
-                rotateExpandableState();
-                if (isExpanded)
-                    collapse();
-                else
-                    expand();
-            }
-        });
-
         collapse();
-
     }
 
+    @OnClick(R.id.btnDailyCardDetails)
+    public void onClick(View v) {
+        Log.i("VH", "clicked");
+        rotateExpandableState();
+        if (isExpanded)
+            collapse();
+        else
+            expand();
+    }
 
     @Override
     public void setDate(String date) {

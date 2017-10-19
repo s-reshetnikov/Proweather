@@ -12,7 +12,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
  * Created by s-reshetnikov.
  */
 
-public class PermissionUtils {
+public final class PermissionUtils {
 
     public static boolean isFineLocationGranted(@NonNull Context context) {
         return ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;

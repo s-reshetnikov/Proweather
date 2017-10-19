@@ -21,8 +21,8 @@ public final class UnitUtils {
     private static final double ONE_METER_PER_SECOND_IN_MILES_PER_HOUR_CONSTANT = 2.2369362920544;
     private static final String WHITESPACE = " ";
     private static final char CELSIUS_SIGN = '\u2103';
-    private static final char KELVIN_SIGN = '\u2109';
-    private static final char FAHRENHEIT_SIGN = '\u212A';
+    private static final char KELVIN_SIGN = '\u212A';
+    private static final char FAHRENHEIT_SIGN = '\u2109';
 
     public static String getTemperatureWithUnits(int fahrenheitTemperature, TemperatureUnit temperatureUnit) {
         if (temperatureUnit == TemperatureUnit.CELSIUS)
@@ -43,19 +43,21 @@ public final class UnitUtils {
     public static String getSpeed(double windSpeed, SpeedUnit speedUnit) {
         Context context = ProWeatherApp.getAppContext();
         if (speedUnit == SpeedUnit.METRES_PER_SECOND)
-            return getFormatedDecimal(windSpeed) + WHITESPACE + context.getString(R.string.metres_per_second);
+            return getRoundedDecimal(windSpeed) + WHITESPACE + context.getString(R.string.metres_per_second);
         return metesPerSecondToMilesPerHour(windSpeed) + windSpeed + context.getString(R.string.miles_per_second);
     }
 
     @NonNull
-    private static String getFormatedDecimal(double number) {
+    private static String getRoundedDecimal(double number) {
         DecimalFormat formatter = new DecimalFormat("###.#");
         formatter.setRoundingMode(RoundingMode.HALF_UP);
         return formatter.format(number);
     }
 
     private static int kelvinsToFahrenheits(double kelvins) {
-        return (int) (kelvinsToCelsius(kelvins) * 1.8 + 32);
+        int waterFreezingPointInCelsius = 32;
+        double constant = 9 / 5;
+        return (int) (kelvinsToCelsius(kelvins) * constant + waterFreezingPointInCelsius);
     }
 
     private static int kelvinsToCelsius(double kelvins) {
@@ -64,7 +66,7 @@ public final class UnitUtils {
 
     private static String metesPerSecondToMilesPerHour(double metesPerSecond) {
         double windSpeed = metesPerSecond * ONE_METER_PER_SECOND_IN_MILES_PER_HOUR_CONSTANT;
-        return getFormatedDecimal(windSpeed);
+        return getRoundedDecimal(windSpeed);
 
     }
 

@@ -29,7 +29,7 @@ public interface NowForecastContract {
 
     interface Presenter extends PresenterContract {
 
-        void refreshClicked();
+        void swipedToRefresh();
 
         void setView(NowForecastContract.View view);
     }

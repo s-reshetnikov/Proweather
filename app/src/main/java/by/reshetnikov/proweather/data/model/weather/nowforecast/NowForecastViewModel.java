@@ -1,5 +1,6 @@
 package by.reshetnikov.proweather.data.model.weather.nowforecast;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
@@ -60,8 +61,8 @@ public class NowForecastViewModel {
         return UnitUtils.getWindDirection(forecast.getWindDirectionDegrees());
     }
 
-    public String getWeekDay() {
-        return CalendarUtil.getTodayWeekDay();
+    public String getWeekDay(Context context) {
+        return CalendarUtil.getTodayWeekDay(context);
     }
 
     public String getLocationName() {

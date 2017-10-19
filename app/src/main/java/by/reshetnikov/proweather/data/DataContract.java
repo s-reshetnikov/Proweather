@@ -41,9 +41,9 @@ public interface DataContract {
 
     Single<Units> getUnits();
 
-    Completable updateLocationPositions(List<LocationEntity> locations);
+    Completable updateLocationPositions(@NonNull List<LocationEntity> locations);
 
-    Single<List<DailyForecastEntity>> getDailyForecasts(LocationEntity location);
+    Single<List<DailyForecastEntity>> getDailyForecasts(@Nonnull LocationEntity location);
 
     Observable<Coordinates> getLastCoordinates();
 }

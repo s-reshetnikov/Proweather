@@ -15,7 +15,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:completionThreshold="3"
-        android:hint="Location name"
+        android:hint="@string/location_name_hint"
         android:imeOptions="flagNoExtractUi|actionSearch"
         android:inputType="textCapWords"
         android:paddingLeft="20dp"

@@ -49,8 +49,8 @@ public class AppSharedPreferencesData implements PreferencesContract {
     }
 
     @Override
-    public void setLocationUpdateRequestedPreference(boolean value) {
-        preferences.edit().putBoolean(LOCATION_UPDATES_REQUESTED_KEY, value).apply();
+    public void setLocationUpdateRequestedPreference(boolean canRequestLocation) {
+        preferences.edit().putBoolean(LOCATION_UPDATES_REQUESTED_KEY, canRequestLocation).apply();
     }
 
     @Override
