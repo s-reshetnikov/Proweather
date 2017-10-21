@@ -1,18 +1,14 @@
 package by.reshetnikov.proweather.presentation.nowforecast;
 
 
-import com.github.mikephil.charting.data.Entry;
-
-import java.util.List;
-
+import by.reshetnikov.proweather.data.model.weather.nowforecast.HourlyChartData;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
 import by.reshetnikov.proweather.presentation.base.PresenterContract;
-import by.reshetnikov.proweather.presentation.base.ViewContract;
 
 
 public interface NowForecastContract {
 
-    interface View extends ViewContract<Presenter> {
+    interface View {
 
         void showLoading();
 
@@ -20,7 +16,7 @@ public interface NowForecastContract {
 
         void showCurrentWeather(NowForecastViewModel currentWeather);
 
-        void updateTemperatureChartData(List<Entry> weatherForecast, char unitSign, List<String> xAxisDescription);
+        void updateTemperatureChartData(HourlyChartData chartData);
 
         void showLocationManager();
 

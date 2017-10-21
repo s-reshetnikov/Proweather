@@ -4,13 +4,13 @@ package by.reshetnikov.proweather.data.db.model;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Unique;
 
 
 @Entity
 public class HoursForecastEntity {
-    @Id(autoincrement = true)
-    private long hourlyForecastEntityId;
+
+    @Id
+    private Long date;
     private int locationId;
     private int temperature;
     private int humidity;
@@ -19,17 +19,15 @@ public class HoursForecastEntity {
     private int windDegrees;
     private int weatherConditionId;
     private String weatherDescription;
-    @Unique
-    private long date;
     private double snow;
     private double rain;
 
-    @Generated(hash = 1035020786)
-    public HoursForecastEntity(long hourlyForecastEntityId, int locationId,
-                               int temperature, int humidity, int pressure, double windSpeed,
-                               int windDegrees, int weatherConditionId, String weatherDescription,
-                               long date, double snow, double rain) {
-        this.hourlyForecastEntityId = hourlyForecastEntityId;
+    @Generated(hash = 1959683428)
+    public HoursForecastEntity(Long date, int locationId, int temperature,
+                               int humidity, int pressure, double windSpeed, int windDegrees,
+                               int weatherConditionId, String weatherDescription, double snow,
+                               double rain) {
+        this.date = date;
         this.locationId = locationId;
         this.temperature = temperature;
         this.humidity = humidity;
@@ -38,7 +36,6 @@ public class HoursForecastEntity {
         this.windDegrees = windDegrees;
         this.weatherConditionId = weatherConditionId;
         this.weatherDescription = weatherDescription;
-        this.date = date;
         this.snow = snow;
         this.rain = rain;
     }
@@ -95,8 +92,12 @@ public class HoursForecastEntity {
         this.windDegrees = windDegrees;
     }
 
-    public long getDate() {
+    public Long getDate() {
         return this.date;
+    }
+
+    public void setDate(Long date) {
+        this.date = date;
     }
 
     public void setDate(long date) {
@@ -133,17 +134,5 @@ public class HoursForecastEntity {
 
     public void setWeatherDescription(String weatherDescription) {
         this.weatherDescription = weatherDescription;
-    }
-
-    public long getForecastId() {
-        return this.hourlyForecastEntityId;
-    }
-
-    public long getHourlyForecastEntityId() {
-        return this.hourlyForecastEntityId;
-    }
-
-    public void setHourlyForecastEntityId(long hourlyForecastEntityId) {
-        this.hourlyForecastEntityId = hourlyForecastEntityId;
     }
 }

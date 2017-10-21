@@ -75,8 +75,7 @@ public class DailyForecastPresenter implements DailyForecastContract.Presenter {
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        Timber.e(e, "DailyForecastPresenter");
-                        getView().onError("Forecast loading failed (d)");
+                        Timber.e(e);
                     }
                 }));
     }

@@ -22,6 +22,8 @@ import by.reshetnikov.proweather.presentation.location.map.MapContract;
 import by.reshetnikov.proweather.presentation.location.map.MapPresenter;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastContract;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastPresenter;
+import by.reshetnikov.proweather.presentation.weather.WeatherContract;
+import by.reshetnikov.proweather.presentation.weather.WeatherPresenter;
 import by.reshetnikov.proweather.utils.scheduler.AppSchedulerProvider;
 import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
 import dagger.Module;
@@ -47,6 +49,11 @@ public class ActivityModule {
     @ActivityContext
     AppCompatActivity provideActivity() {
         return activity;
+    }
+
+    @Provides
+    WeatherContract.Presenter provideWeatherPresenter(WeatherPresenter presenter) {
+        return presenter;
     }
 
     @Provides

@@ -35,6 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
+import by.reshetnikov.proweather.data.model.weather.nowforecast.HourlyChartData;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
 import by.reshetnikov.proweather.di.component.ActivityComponent;
 import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
@@ -160,14 +161,6 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
         refreshLayout.setRefreshing(false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onFragmentPressed(String message) {
-        if (mListener != null) {
-            mListener.onCurrentWeatherFragmentInteraction(message);
-        }
-    }
-
-
     @Override
     public void showCurrentWeather(NowForecastViewModel nowForecast) {
         tvWeekDay.setText(nowForecast.getWeekDay(ProWeatherApp.getAppContext()));
@@ -180,48 +173,17 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     }
 
     @Override
-    public void updateTemperatureChartData(List<Entry> temperatureForecast, final char unitSign, final List<String> xAxisDescription) {
-        LineDataSet temperatureDataSet = getTemperatureDataSet(temperatureForecast);
-        int textSize = 16;
-        temperatureDataSet.setValueTextSize(textSize);
-        final LineData lineData = new LineData(temperatureDataSet);
-        lineData.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                return String.valueOf((int) value) + ' ' + unitSign;
-            }
-        });
+    public void updateTemperatureChartData(HourlyChartData chartData) {
+        LineData lineData = prepareDataForChart(chartData);
+        configureChartXAxis(chartData);
+        configureChartYAxis();
+        setListenersForChart();
         weatherChart.setData(lineData);
-        XAxis xAxis = weatherChart.getXAxis();
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(false);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setLabelCount(xAxisDescription.size(), true);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return xAxisDescription.get((int) value);
-            }
-        });
-        YAxis yAxisLeft = weatherChart.getAxisLeft();
-        yAxisLeft.setDrawGridLines(false);
-        yAxisLeft.setDrawAxisLine(false);
-        IAxisValueFormatter emptyAxisValueFormatter = getEmptyAxisValueFormatter();
-        yAxisLeft.setValueFormatter(emptyAxisValueFormatter);
-        YAxis yAxisRight = weatherChart.getAxisRight();
-        yAxisRight.setDrawGridLines(false);
-        yAxisRight.setDrawAxisLine(false);
-        yAxisRight.setValueFormatter(emptyAxisValueFormatter);
-        weatherChart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v instanceof LineChart) {
-                    for (ILineDataSet lineDataSet : ((LineChart) v).getLineData().getDataSets())
-                        lineDataSet.setDrawValues(!lineDataSet.isDrawValuesEnabled());
-                    v.invalidate();
-                }
-            }
-        });
+        configureChartOptions();
+        weatherChart.invalidate();
+    }
+
+    private void configureChartOptions() {
         weatherChart.setNoDataTextColor(R.color.colorPrimary);
         weatherChart.setNoDataText(getString(R.string.unable_to_load_forecast));
         int animationDuration = 2 * 1000;
@@ -232,7 +194,60 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
         weatherChart.getDescription().setEnabled(false);
         weatherChart.getLegend().setEnabled(false);
         weatherChart.setScaleEnabled(false);
-        weatherChart.invalidate();
+    }
+
+    private void setListenersForChart() {
+        weatherChart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v instanceof LineChart) {
+                    for (ILineDataSet lineDataSet : ((LineChart) v).getLineData().getDataSets())
+                        lineDataSet.setDrawValues(!lineDataSet.isDrawValuesEnabled());
+                    v.invalidate();
+                }
+            }
+        });
+    }
+
+    @NonNull
+    private LineData prepareDataForChart(HourlyChartData chartData) {
+        LineDataSet temperatureDataSet = getTemperatureDataSet(chartData.getTemperatureData());
+        int textSize = 16;
+        temperatureDataSet.setValueTextSize(textSize);
+        final LineData lineData = new LineData(temperatureDataSet);
+        lineData.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return String.valueOf((int) value) + ' ' + chartData.getUnitSign();
+            }
+        });
+        return lineData;
+    }
+
+    private void configureChartYAxis() {
+        YAxis yAxisLeft = weatherChart.getAxisLeft();
+        yAxisLeft.setDrawGridLines(false);
+        yAxisLeft.setDrawAxisLine(false);
+        IAxisValueFormatter emptyAxisValueFormatter = getEmptyAxisValueFormatter();
+        yAxisLeft.setValueFormatter(emptyAxisValueFormatter);
+        YAxis yAxisRight = weatherChart.getAxisRight();
+        yAxisRight.setDrawGridLines(false);
+        yAxisRight.setDrawAxisLine(false);
+        yAxisRight.setValueFormatter(emptyAxisValueFormatter);
+    }
+
+    private void configureChartXAxis(HourlyChartData chartData) {
+        XAxis xAxis = weatherChart.getXAxis();
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelCount(chartData.getXAxisDescription().size(), true);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return chartData.getXAxisDescription().get((int) value);
+            }
+        });
     }
 
     @NonNull
@@ -272,18 +287,6 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     @Override
     public void showTurnInternetOn() {
         Toast toast = Toast.makeText(this.getContext(), "Turn on internet to get weather forecast", Toast.LENGTH_LONG);
-        ToastUtils.showToast(toast);
-    }
-
-    @Override
-    public void showMessage(String message) {
-        Toast toast = Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG);
-        ToastUtils.showToast(toast);
-    }
-
-    @Override
-    public void onError(String message) {
-        Toast toast = Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG);
         ToastUtils.showToast(toast);
     }
 

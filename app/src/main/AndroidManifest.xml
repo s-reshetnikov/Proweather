@@ -39,7 +39,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
 
-        <!--<service android:name=".data.service.ForecastUpdateService" />-->
+        <service android:name=".data.service.ForecastUpdateService" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

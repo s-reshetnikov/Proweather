@@ -10,10 +10,9 @@ public class WeatherPresenter implements WeatherContract.Presenter {
     private WeakReference<WeatherContract.View> viewRef;
 
     @Inject
-    public WeatherPresenter() {
+    WeatherPresenter() {
 
     }
-
 
     @Override
     public void stop() {

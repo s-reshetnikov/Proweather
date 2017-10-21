@@ -47,7 +47,8 @@ public class AppDbData implements DbContract {
         return Single.fromCallable(new Callable<NowForecastEntity>() {
             @Override
             public NowForecastEntity call() throws Exception {
-                return getCurrentForecastEntity(location.getLocationId());
+                NowForecastEntity nowForecast = getCurrentForecastEntity(location.getLocationId());
+                return nowForecast;
             }
         });
     }
@@ -141,7 +142,6 @@ public class AppDbData implements DbContract {
 
     @Override
     public Completable saveNewLocation(final LocationEntity locationEntity) {
-        Timber.d("saveNewLocation()");
         return Completable.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {

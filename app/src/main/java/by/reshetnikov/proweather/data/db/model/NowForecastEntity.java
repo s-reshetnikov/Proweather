@@ -9,7 +9,7 @@ import org.greenrobot.greendao.annotation.Id;
 public class NowForecastEntity {
 
     @Id
-    private long currentWeatherId;
+    private Long currentWeatherId;
     private String locationId;
     private int weatherConditionId;
     private String weatherDescription;
@@ -21,8 +21,9 @@ public class NowForecastEntity {
     private int windDirectionDegrees;
     private long dateOfUpdate;
 
-    @Generated(hash = 870924467)
-    public NowForecastEntity(long currentWeatherId, String locationId,
+
+    @Generated(hash = 254857214)
+    public NowForecastEntity(Long currentWeatherId, String locationId,
                              int weatherConditionId, String weatherDescription, int temperature,
                              int rain, int snow, int humidity, double windSpeed,
                              int windDirectionDegrees, long dateOfUpdate) {
@@ -43,11 +44,12 @@ public class NowForecastEntity {
     public NowForecastEntity() {
     }
 
-    public long getCurrentWeatherId() {
+
+    public Long getCurrentWeatherId() {
         return currentWeatherId;
     }
 
-    public void setCurrentWeatherId(long currentWeatherId) {
+    public void setCurrentWeatherId(Long currentWeatherId) {
         this.currentWeatherId = currentWeatherId;
     }
 

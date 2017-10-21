@@ -37,6 +37,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import timber.log.Timber;
 
@@ -81,17 +82,29 @@ public class DataManager implements DataContract {
                     .flatMap(new Function<NowForecastEntity, SingleSource<NowForecastEntity>>() {
                         @Override
                         public SingleSource<NowForecastEntity> apply(NowForecastEntity nowForecastEntity) throws Exception {
+                            Timber.d("try to save now forecast");
                             return dbData.saveCurrentWeather(nowForecastEntity).toSingle(new Callable<NowForecastEntity>() {
                                 @Override
                                 public NowForecastEntity call() throws Exception {
-                                    Timber.d("save now forecast");
+                                    Timber.d("return now forecast");
                                     return nowForecastEntity;
                                 }
                             });
                         }
+                    }).doOnError(new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            Timber.e(throwable);
+                        }
                     });
         }
-        return dbData.getSavedNowForecast(location);
+        return dbData.getSavedNowForecast(location)
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Timber.e(throwable);
+                    }
+                });
     }
 
     @Override
@@ -114,6 +127,11 @@ public class DataManager implements DataContract {
                                     return hoursForecastEntities;
                                 }
                             });
+                        }
+                    }).doOnError(new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            Timber.e(throwable);
                         }
                     });
         }
@@ -143,6 +161,11 @@ public class DataManager implements DataContract {
                                     return dailyForecastEntities;
                                 }
                             });
+                        }
+                    }).doOnError(new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            Timber.e(throwable);
                         }
                     });
         }

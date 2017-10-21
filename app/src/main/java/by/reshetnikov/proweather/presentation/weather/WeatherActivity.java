@@ -13,7 +13,6 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -25,8 +24,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
 import by.reshetnikov.proweather.BuildConfig;
+import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
+import by.reshetnikov.proweather.di.component.ActivityComponent;
+import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
+import by.reshetnikov.proweather.di.module.ActivityModule;
 import by.reshetnikov.proweather.presentation.location.LocationActivity;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastFragment;
 import by.reshetnikov.proweather.presentation.settings.SettingsActivity;
@@ -42,27 +47,22 @@ public class WeatherActivity extends AppCompatActivity
     private static final String ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final String ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private final int PERMISSION_REQUEST_CODE = 14091;
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+    @Inject
+    WeatherContract.Presenter presenter;
+    private ActivityComponent component;
     private ForecastSectionsPagerAdapter forecastSectionsPagerAdapter;
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
-    private WeatherPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.d("onCreate() start");
         setContentView(R.layout.activity_weather);
-
+        component = DaggerActivityComponent.builder()
+                .activityModule(new ActivityModule(this))
+                .applicationComponent(((ProWeatherApp) getApplication()).getComponent())
+                .build();
+        component.inject(this);
         forecastSectionsPagerAdapter = new ForecastSectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.

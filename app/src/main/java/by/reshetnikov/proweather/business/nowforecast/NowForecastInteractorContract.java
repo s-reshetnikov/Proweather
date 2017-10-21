@@ -2,8 +2,8 @@ package by.reshetnikov.proweather.business.nowforecast;
 
 import android.support.v4.util.Pair;
 
+import by.reshetnikov.proweather.data.model.weather.nowforecast.HourlyChartData;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
-import by.reshetnikov.proweather.presentation.nowforecast.HourlyForecastForChartViewModel;
 import io.reactivex.Single;
 
 /**
@@ -12,9 +12,9 @@ import io.reactivex.Single;
 
 public interface NowForecastInteractorContract {
 
-    Single<Pair<NowForecastViewModel, HourlyForecastForChartViewModel>> getForecastDataPair();
+    Single<NowForecastViewModel> getNowForecastData();
 
-    Single<NowForecastViewModel> getNowForecast();
+    Single<HourlyChartData> getDataForChart();
 
-    Single<HourlyForecastForChartViewModel> getHourlyForecastForChart();
+    Single<Pair<NowForecastViewModel, HourlyChartData>> getForecasts();
 }

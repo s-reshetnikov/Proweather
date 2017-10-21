@@ -3,18 +3,16 @@ package by.reshetnikov.proweather.data.db.model;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * Created by s-reshetnikov.
  */
 @Entity
 public class DailyForecastEntity {
-    @Id(autoincrement = true)
-    private long dailyForecastEntityId;
+
+    @Id
+    private Long date;
     private int locationId;
-    @Unique
-    private long date;
     private int minTemperature;
     private int maxTemperature;
     private int humidity;
@@ -27,16 +25,13 @@ public class DailyForecastEntity {
     private int eveningTemperature;
     private int nightTemperature;
 
-
-    @Generated(hash = 1231985125)
-    public DailyForecastEntity(long dailyForecastEntityId, int locationId,
-                               long date, int minTemperature, int maxTemperature, int humidity,
-                               int pressure, double windSpeed, int windDegrees, int weatherConditionId,
-                               int morningTemperature, int dayTemperature, int eveningTemperature,
-                               int nightTemperature) {
-        this.dailyForecastEntityId = dailyForecastEntityId;
-        this.locationId = locationId;
+    @Generated(hash = 1289438299)
+    public DailyForecastEntity(Long date, int locationId, int minTemperature,
+                               int maxTemperature, int humidity, int pressure, double windSpeed,
+                               int windDegrees, int weatherConditionId, int morningTemperature,
+                               int dayTemperature, int eveningTemperature, int nightTemperature) {
         this.date = date;
+        this.locationId = locationId;
         this.minTemperature = minTemperature;
         this.maxTemperature = maxTemperature;
         this.humidity = humidity;
@@ -54,15 +49,6 @@ public class DailyForecastEntity {
     public DailyForecastEntity() {
     }
 
-
-    public long getDailyForecastEntityId() {
-        return this.dailyForecastEntityId;
-    }
-
-    public void setDailyForecastEntityId(long dailyForecastEntityId) {
-        this.dailyForecastEntityId = dailyForecastEntityId;
-    }
-
     public int getLocationId() {
         return this.locationId;
     }
@@ -71,11 +57,11 @@ public class DailyForecastEntity {
         this.locationId = locationId;
     }
 
-    public long getDate() {
+    public Long getDate() {
         return this.date;
     }
 
-    public void setDate(long date) {
+    public void setDate(Long date) {
         this.date = date;
     }
 
