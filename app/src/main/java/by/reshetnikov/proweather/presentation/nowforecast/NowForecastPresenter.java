@@ -12,7 +12,7 @@ import by.reshetnikov.proweather.data.exception.NoLocationException;
 import by.reshetnikov.proweather.data.exception.NoSavedForecastDataException;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.HourlyChartData;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -25,13 +25,13 @@ import timber.log.Timber;
 public class NowForecastPresenter implements NowForecastContract.Presenter {
 
 
-    private SchedulerProvider scheduler;
+    private ThreadSchedulerProvider scheduler;
     private WeakReference<NowForecastContract.View> viewRef;
     private CompositeDisposable compositeDisposables;
     private NowForecastInteractorContract interactor;
 
     @Inject
-    public NowForecastPresenter(NowForecastInteractorContract interactor, SchedulerProvider scheduler, CompositeDisposable disposables) {
+    public NowForecastPresenter(NowForecastInteractorContract interactor, ThreadSchedulerProvider scheduler, CompositeDisposable disposables) {
         this.interactor = interactor;
         this.scheduler = scheduler;
         compositeDisposables = disposables;

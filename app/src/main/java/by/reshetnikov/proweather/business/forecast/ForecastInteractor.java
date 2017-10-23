@@ -12,7 +12,7 @@ import by.reshetnikov.proweather.data.db.model.DailyForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.model.unit.Units;
 import by.reshetnikov.proweather.presentation.dailyforecast.DailyForecastViewModel;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.annotations.NonNull;
@@ -25,11 +25,11 @@ import timber.log.Timber;
  */
 
 public class ForecastInteractor implements ForecastInteractorContract {
-    private SchedulerProvider scheduler;
+    private ThreadSchedulerProvider scheduler;
     private DataContract data;
 
     @Inject
-    public ForecastInteractor(DataContract data, SchedulerProvider scheduler) {
+    public ForecastInteractor(DataContract data, ThreadSchedulerProvider scheduler) {
         this.data = data;
         this.scheduler = scheduler;
     }

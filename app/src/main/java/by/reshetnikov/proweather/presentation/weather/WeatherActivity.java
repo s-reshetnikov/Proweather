@@ -24,11 +24,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Trigger;
+
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.BuildConfig;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
+import by.reshetnikov.proweather.data.service.NowForecastService;
 import by.reshetnikov.proweather.di.component.ActivityComponent;
 import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
 import by.reshetnikov.proweather.di.module.ActivityModule;
@@ -83,8 +88,11 @@ public class WeatherActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        startNowForecastService();
+
         Timber.d("onCreate() end");
     }
+
 
     @Override
     public void onBackPressed() {
@@ -215,5 +223,23 @@ public class WeatherActivity extends AppCompatActivity
                 R.string.open_and_grant_location_permission, Toast.LENGTH_LONG);
         ToastUtils.showToast(toast);
     }
+
+    public void startNowForecastService() {
+        Timber.d("try o start service");
+        GooglePlayDriver playDriver = new GooglePlayDriver(getApplicationContext());
+        FirebaseJobDispatcher jobDispatcher = new FirebaseJobDispatcher(playDriver);
+        jobDispatcher.mustSchedule(
+                jobDispatcher.newJobBuilder()
+                        .setService(NowForecastService.class)
+                        .setTag("NowForecastService")
+                        .setRecurring(true)
+                        .setTrigger(Trigger.executionWindow(1, 15))
+                        .setReplaceCurrent(true)
+                        .build()
+        );
+        Timber.d("service should be started");
+    }
+
+
 }
 

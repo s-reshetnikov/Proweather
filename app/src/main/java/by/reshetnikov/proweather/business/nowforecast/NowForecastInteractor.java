@@ -19,7 +19,7 @@ import by.reshetnikov.proweather.data.model.weather.nowforecast.HourlyChartData;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
 import by.reshetnikov.proweather.presentation.nowforecast.HourlyForecastForChartViewModel;
 import by.reshetnikov.proweather.utils.UnitUtils;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.annotations.NonNull;
@@ -33,10 +33,10 @@ import io.reactivex.functions.Function;
 public class NowForecastInteractor implements NowForecastInteractorContract {
 
     private DataContract dataManager;
-    private SchedulerProvider scheduler;
+    private ThreadSchedulerProvider scheduler;
 
     @Inject
-    public NowForecastInteractor(DataContract dataManager, SchedulerProvider scheduler) {
+    public NowForecastInteractor(DataContract dataManager, ThreadSchedulerProvider scheduler) {
         this.dataManager = dataManager;
         this.scheduler = scheduler;
     }

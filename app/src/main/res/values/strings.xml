@@ -115,4 +115,5 @@
     <string name="play_services_unavailiable">Google Play Services unavailable. Some features will be disabled</string>
     <string name="location_name_hint">Location name</string>
     <string name="unable_to_load_forecast">Unable to load forecast</string>
+    <string name="notification_title">ProWeather</string>
 </resources>

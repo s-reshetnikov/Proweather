@@ -1,7 +1,6 @@
 package by.reshetnikov.proweather.di.module;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 
 import by.reshetnikov.proweather.business.forecast.ForecastInteractor;
 import by.reshetnikov.proweather.business.forecast.ForecastInteractorContract;
@@ -24,8 +23,8 @@ import by.reshetnikov.proweather.presentation.nowforecast.NowForecastContract;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastPresenter;
 import by.reshetnikov.proweather.presentation.weather.WeatherContract;
 import by.reshetnikov.proweather.presentation.weather.WeatherPresenter;
-import by.reshetnikov.proweather.utils.scheduler.AppSchedulerProvider;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.AppThreadSchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.disposables.CompositeDisposable;
@@ -33,21 +32,15 @@ import io.reactivex.disposables.CompositeDisposable;
 @Module
 public class ActivityModule {
 
-    private AppCompatActivity activity;
+    private Context activity;
 
-    public ActivityModule(AppCompatActivity activity) {
+    public ActivityModule(Context activity) {
         this.activity = activity;
     }
 
     @Provides
     @ActivityContext
     Context provideContext() {
-        return activity;
-    }
-
-    @Provides
-    @ActivityContext
-    AppCompatActivity provideActivity() {
         return activity;
     }
 
@@ -88,8 +81,8 @@ public class ActivityModule {
     }
 
     @Provides
-    SchedulerProvider provideSchedulerProvider() {
-        return new AppSchedulerProvider();
+    ThreadSchedulerProvider provideSchedulerProvider() {
+        return new AppThreadSchedulerProvider();
     }
 
     @Provides

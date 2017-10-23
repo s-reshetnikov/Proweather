@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import by.reshetnikov.proweather.business.map.MapInteractorContract;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Action;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -20,12 +20,12 @@ import timber.log.Timber;
 public class MapPresenter implements MapContract.Presenter {
 
     private MapInteractorContract interactor;
-    private SchedulerProvider scheduler;
+    private ThreadSchedulerProvider scheduler;
     private WeakReference<MapContract.View> viewRef;
     private CompositeDisposable disposables;
 
     @Inject
-    public MapPresenter(MapInteractorContract interactor, SchedulerProvider scheduler, CompositeDisposable disposables) {
+    public MapPresenter(MapInteractorContract interactor, ThreadSchedulerProvider scheduler, CompositeDisposable disposables) {
         this.interactor = interactor;
         this.scheduler = scheduler;
         this.disposables = disposables;
