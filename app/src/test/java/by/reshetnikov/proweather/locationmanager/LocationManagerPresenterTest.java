@@ -16,7 +16,7 @@ import by.reshetnikov.proweather.business.locationmanager.LocationManagerInterac
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerContract;
 import by.reshetnikov.proweather.presentation.location.locationmanager.LocationManagerPresenter;
-import by.reshetnikov.proweather.utils.scheduler.ImmediateSchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ImmediateThreadSchedulerProvider;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Single;
@@ -49,7 +49,7 @@ public class LocationManagerPresenterTest {
     @Before
     public void setupPresenterTest() {
         MockitoAnnotations.initMocks(this);
-        presenter = new LocationManagerPresenter(interactor, ImmediateSchedulerProvider.getInstance(), new CompositeDisposable());
+        presenter = new LocationManagerPresenter(interactor, ImmediateThreadSchedulerProvider.getInstance(), new CompositeDisposable());
         presenter.setView(view);
     }
 

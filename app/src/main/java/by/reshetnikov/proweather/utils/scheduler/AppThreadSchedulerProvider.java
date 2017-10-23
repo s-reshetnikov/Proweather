@@ -8,7 +8,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by SacRahl on 7/26/2017.
  */
 
-public class AppSchedulerProvider implements SchedulerProvider {
+public class AppThreadSchedulerProvider implements ThreadSchedulerProvider {
 
     @Override
     public Scheduler computation() {

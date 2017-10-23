@@ -6,7 +6,7 @@ import io.reactivex.Scheduler;
  * Created by SacRahl on 7/26/2017.
  */
 
-public interface SchedulerProvider {
+public interface ThreadSchedulerProvider {
 
     Scheduler computation();
 

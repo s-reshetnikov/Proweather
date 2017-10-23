@@ -7,15 +7,15 @@ import io.reactivex.schedulers.Schedulers;
  * Created by SacRahl on 7/26/2017.
  */
 
-public class ImmediateSchedulerProvider implements SchedulerProvider {
-    private static ImmediateSchedulerProvider INSTANCE;
+public class ImmediateThreadSchedulerProvider implements ThreadSchedulerProvider {
+    private static ImmediateThreadSchedulerProvider INSTANCE;
 
-    private ImmediateSchedulerProvider(){
+    private ImmediateThreadSchedulerProvider() {
     }
 
-    public static synchronized ImmediateSchedulerProvider getInstance (){
+    public static synchronized ImmediateThreadSchedulerProvider getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new ImmediateSchedulerProvider();
+            INSTANCE = new ImmediateThreadSchedulerProvider();
         }
         return INSTANCE;
     }
