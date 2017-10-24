@@ -77,8 +77,6 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     NowForecastPresenter presenter;
 
     private ActivityComponent component;
-    private OnFragmentInteractionListener mListener;
-
 
     public NowForecastFragment() {
     }
@@ -113,6 +111,7 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
         View view = inflater.inflate(R.layout.fragment_current_forecast, container, false);
         ButterKnife.bind(this, view);
         component.inject(this);
+        presenter.setView(this);
         setupSwipeToRefresh();
         return view;
     }
@@ -135,7 +134,6 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     @Override
     public void onStart() {
         super.onStart();
-        presenter.setView(this);
         presenter.start();
     }
 
@@ -148,7 +146,6 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override

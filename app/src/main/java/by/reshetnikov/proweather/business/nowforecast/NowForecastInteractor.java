@@ -19,7 +19,7 @@ import by.reshetnikov.proweather.data.model.weather.nowforecast.HourlyChartData;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
 import by.reshetnikov.proweather.presentation.nowforecast.HourlyForecastForChartViewModel;
 import by.reshetnikov.proweather.utils.UnitUtils;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.annotations.NonNull;
@@ -33,10 +33,10 @@ import io.reactivex.functions.Function;
 public class NowForecastInteractor implements NowForecastInteractorContract {
 
     private DataContract dataManager;
-    private SchedulerProvider scheduler;
+    private ThreadSchedulerProvider scheduler;
 
     @Inject
-    public NowForecastInteractor(DataContract dataManager, SchedulerProvider scheduler) {
+    public NowForecastInteractor(DataContract dataManager, ThreadSchedulerProvider scheduler) {
         this.dataManager = dataManager;
         this.scheduler = scheduler;
     }
@@ -44,12 +44,14 @@ public class NowForecastInteractor implements NowForecastInteractorContract {
     @Override
     public Single<NowForecastViewModel> getNowForecastData() {
         return dataManager.getChosenLocation()
+                .subscribeOn(scheduler.io())
                 .zipWith(dataManager.getUnits(), new BiFunction<LocationEntity, Units, Pair<LocationEntity, Units>>() {
                     @Override
                     public Pair<LocationEntity, Units> apply(@NonNull LocationEntity locationEntity, @NonNull Units units) throws Exception {
                         return new Pair<>(locationEntity, units);
                     }
                 })
+                .subscribeOn(scheduler.io())
                 .flatMap(new Function<Pair<LocationEntity, Units>, SingleSource<NowForecastViewModel>>() {
                     @Override
                     public SingleSource<NowForecastViewModel> apply(@NonNull Pair<LocationEntity, Units> pair) throws Exception {
@@ -67,12 +69,14 @@ public class NowForecastInteractor implements NowForecastInteractorContract {
     @Override
     public Single<HourlyChartData> getDataForChart() {
         return dataManager.getChosenLocation()
+                .subscribeOn(scheduler.io())
                 .zipWith(dataManager.getUnits(), new BiFunction<LocationEntity, Units, Pair<LocationEntity, Units>>() {
                     @Override
                     public Pair<LocationEntity, Units> apply(@NonNull LocationEntity locationEntity, @NonNull Units units) throws Exception {
                         return new Pair<>(locationEntity, units);
                     }
                 })
+                .subscribeOn(scheduler.io())
                 .flatMap(new Function<Pair<LocationEntity, Units>, SingleSource<HourlyChartData>>() {
                     @Override
                     public SingleSource<HourlyChartData> apply(Pair<LocationEntity, Units> locationEntityUnitsPair) throws Exception {
@@ -95,6 +99,7 @@ public class NowForecastInteractor implements NowForecastInteractorContract {
     @Override
     public Single<Pair<NowForecastViewModel, HourlyChartData>> getForecasts() {
         return getNowForecastData()
+                .subscribeOn(scheduler.io())
                 .zipWith(getDataForChart(), new BiFunction<NowForecastViewModel, HourlyChartData, Pair<NowForecastViewModel, HourlyChartData>>() {
                     @Override
                     public Pair<NowForecastViewModel, HourlyChartData> apply(NowForecastViewModel nowForecastViewModel, HourlyChartData chartData) throws Exception {

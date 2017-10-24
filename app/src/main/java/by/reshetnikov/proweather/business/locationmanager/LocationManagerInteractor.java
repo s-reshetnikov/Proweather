@@ -6,7 +6,7 @@ import javax.inject.Inject;
 
 import by.reshetnikov.proweather.data.DataContract;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import io.reactivex.Completable;
 import io.reactivex.CompletableSource;
 import io.reactivex.Single;
@@ -24,10 +24,10 @@ public class LocationManagerInteractor implements LocationManagerInteractorContr
     private final static int AUTO_COMPLETE_MAX_RESULTS = 10;
 
     private DataContract dataManager;
-    private SchedulerProvider scheduler;
+    private ThreadSchedulerProvider scheduler;
 
     @Inject
-    public LocationManagerInteractor(DataContract dataManager, SchedulerProvider scheduler) {
+    public LocationManagerInteractor(DataContract dataManager, ThreadSchedulerProvider scheduler) {
         this.dataManager = dataManager;
         this.scheduler = scheduler;
     }

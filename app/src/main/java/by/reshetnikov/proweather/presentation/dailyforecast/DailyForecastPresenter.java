@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import by.reshetnikov.proweather.business.forecast.ForecastInteractor;
 import by.reshetnikov.proweather.business.forecast.ForecastInteractorContract;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -21,11 +21,11 @@ public class DailyForecastPresenter implements DailyForecastContract.Presenter {
 
     private WeakReference<DailyForecastContract.View> viewRef;
     private ForecastInteractorContract interactor;
-    private SchedulerProvider scheduler;
+    private ThreadSchedulerProvider scheduler;
     private CompositeDisposable disposables;
 
     @Inject
-    public DailyForecastPresenter(ForecastInteractor interactor, SchedulerProvider scheduler, CompositeDisposable disposables) {
+    public DailyForecastPresenter(ForecastInteractor interactor, ThreadSchedulerProvider scheduler, CompositeDisposable disposables) {
         this.interactor = interactor;
         this.disposables = disposables;
         this.scheduler = scheduler;
@@ -53,7 +53,7 @@ public class DailyForecastPresenter implements DailyForecastContract.Presenter {
                 .observeOn(scheduler.ui())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
-                    public void accept(Disposable disposable) throws Exception {
+                    public void accept(Disposable disposable) {
                         getView().showLoading();
                     }
                 })
@@ -61,7 +61,7 @@ public class DailyForecastPresenter implements DailyForecastContract.Presenter {
                 .observeOn(scheduler.ui())
                 .doAfterTerminate(new Action() {
                     @Override
-                    public void run() throws Exception {
+                    public void run() {
                         getView().hideLoading();
                     }
                 })

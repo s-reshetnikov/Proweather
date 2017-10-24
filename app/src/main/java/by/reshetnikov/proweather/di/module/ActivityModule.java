@@ -24,8 +24,8 @@ import by.reshetnikov.proweather.presentation.nowforecast.NowForecastContract;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastPresenter;
 import by.reshetnikov.proweather.presentation.weather.WeatherContract;
 import by.reshetnikov.proweather.presentation.weather.WeatherPresenter;
-import by.reshetnikov.proweather.utils.scheduler.AppSchedulerProvider;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.AppThreadSchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.disposables.CompositeDisposable;
@@ -88,8 +88,8 @@ public class ActivityModule {
     }
 
     @Provides
-    SchedulerProvider provideSchedulerProvider() {
-        return new AppSchedulerProvider();
+    ThreadSchedulerProvider provideSchedulerProvider() {
+        return new AppThreadSchedulerProvider();
     }
 
     @Provides

@@ -63,6 +63,7 @@ public class WeatherActivity extends AppCompatActivity
                 .applicationComponent(((ProWeatherApp) getApplication()).getComponent())
                 .build();
         component.inject(this);
+        presenter.setView(this);
         forecastSectionsPagerAdapter = new ForecastSectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.

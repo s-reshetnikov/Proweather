@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import by.reshetnikov.proweather.business.locationmanager.LocationManagerInteractorContract;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.exception.NoNetworkException;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Action;
@@ -22,12 +22,12 @@ import timber.log.Timber;
 public class LocationManagerPresenter implements LocationManagerContract.Presenter {
 
     private LocationManagerInteractorContract interactor;
-    private SchedulerProvider scheduler;
+    private ThreadSchedulerProvider scheduler;
     private WeakReference<LocationManagerContract.View> viewRef;
     private CompositeDisposable disposables;
 
     @Inject
-    public LocationManagerPresenter(LocationManagerInteractorContract interactor, SchedulerProvider scheduler, CompositeDisposable disposables) {
+    public LocationManagerPresenter(LocationManagerInteractorContract interactor, ThreadSchedulerProvider scheduler, CompositeDisposable disposables) {
         this.interactor = interactor;
         this.scheduler = scheduler;
         this.disposables = disposables;

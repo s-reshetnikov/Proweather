@@ -12,7 +12,7 @@ import by.reshetnikov.proweather.data.exception.NoLocationException;
 import by.reshetnikov.proweather.data.exception.NoSavedForecastDataException;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.HourlyChartData;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
-import by.reshetnikov.proweather.utils.scheduler.SchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -25,13 +25,13 @@ import timber.log.Timber;
 public class NowForecastPresenter implements NowForecastContract.Presenter {
 
 
-    private SchedulerProvider scheduler;
+    private ThreadSchedulerProvider scheduler;
     private WeakReference<NowForecastContract.View> viewRef;
     private CompositeDisposable compositeDisposables;
     private NowForecastInteractorContract interactor;
 
     @Inject
-    public NowForecastPresenter(NowForecastInteractorContract interactor, SchedulerProvider scheduler, CompositeDisposable disposables) {
+    public NowForecastPresenter(NowForecastInteractorContract interactor, ThreadSchedulerProvider scheduler, CompositeDisposable disposables) {
         this.interactor = interactor;
         this.scheduler = scheduler;
         compositeDisposables = disposables;
@@ -55,22 +55,22 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
 
     private void updateWeather() {
         compositeDisposables.add(interactor.getForecasts()
-                .observeOn(scheduler.ui())
+                .subscribeOn(scheduler.ui())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
                         getView().showLoading();
                     }
                 })
-                .observeOn(scheduler.ui())
-                .doAfterTerminate(new Action() {
+                .subscribeOn(scheduler.ui())
+                .doFinally(new Action() {
                     @Override
                     public void run() throws Exception {
                         getView().hideLoading();
                     }
                 })
-                .observeOn(scheduler.ui())
                 .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
                 .subscribeWith(new DisposableSingleObserver<Pair<NowForecastViewModel, HourlyChartData>>() {
                     @Override
                     public void onSuccess(Pair<NowForecastViewModel, HourlyChartData> pair) {
