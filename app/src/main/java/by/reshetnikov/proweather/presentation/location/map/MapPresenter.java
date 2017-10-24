@@ -33,12 +33,12 @@ public class MapPresenter implements MapContract.Presenter {
 
     @Override
     public void start() {
-        disposables.clear();
+        //empty
     }
 
     @Override
     public void stop() {
-        disposables.dispose();
+        disposables.clear();
     }
 
     @Override

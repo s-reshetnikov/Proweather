@@ -34,7 +34,6 @@ public class DailyForecastPresenter implements DailyForecastContract.Presenter {
     @Override
     public void stop() {
         disposables.clear();
-        viewRef.clear();
     }
 
     @Override

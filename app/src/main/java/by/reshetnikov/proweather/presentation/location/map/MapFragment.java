@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,10 +18,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -50,6 +51,7 @@ import by.reshetnikov.proweather.di.component.ActivityComponent;
 import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
 import by.reshetnikov.proweather.di.module.ActivityModule;
 import by.reshetnikov.proweather.utils.PermissionUtils;
+import by.reshetnikov.proweather.utils.ResourcesUtil;
 import by.reshetnikov.proweather.utils.ToastUtils;
 import timber.log.Timber;
 
@@ -68,7 +70,7 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
     @BindView(R.id.mapView)
     MapView mapView;
     @BindView(R.id.ivLocationPointer)
-    ImageView ivLocationPointer;
+    AppCompatImageView ivLocationPointer;
     @BindView(R.id.fab_add_location_to_list)
     FloatingActionButton fabCurrentLocation;
     @BindView(R.id.fab_cancel_add_location_to_list)
@@ -106,6 +108,7 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
         ButterKnife.bind(this, view);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+        fabCancelAddLocation.setBackgroundTintList(ColorStateList.valueOf(ResourcesUtil.getColor(R.color.colorGrey)));
         MapsInitializer.initialize(this.getActivity());
         return view;
     }
@@ -256,7 +259,7 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
     @Override
     public void moveCameraToCoordinates(double latitude, double longitude, int zoom) {
         LatLng coordinates = new LatLng(latitude, longitude);
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
+//        map.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
     }
 
     @Override
@@ -371,11 +374,13 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
         builder.setMessage(getString(R.string.gps_disabled_quastion_message))
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(final DialogInterface dialog, final int id) {
                         startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     }
                 })
                 .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(final DialogInterface dialog, final int id) {
                         dialog.cancel();
                     }

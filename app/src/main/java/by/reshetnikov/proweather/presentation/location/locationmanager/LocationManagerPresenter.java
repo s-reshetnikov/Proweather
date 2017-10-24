@@ -41,7 +41,6 @@ public class LocationManagerPresenter implements LocationManagerContract.Present
     @Override
     public void stop() {
         disposables.dispose();
-        viewRef = null;
     }
 
     @Override

@@ -45,7 +45,6 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
     @Override
     public void stop() {
         compositeDisposables.clear();
-        viewRef.clear();
     }
 
     @Override
@@ -56,6 +55,7 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
     private void updateWeather() {
         compositeDisposables.add(interactor.getForecasts()
                 .subscribeOn(scheduler.ui())
+                .observeOn(scheduler.ui())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
@@ -63,6 +63,7 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
                     }
                 })
                 .subscribeOn(scheduler.ui())
+                .observeOn(scheduler.ui())
                 .doFinally(new Action() {
                     @Override
                     public void run() throws Exception {

@@ -43,6 +43,7 @@ import by.reshetnikov.proweather.di.module.ActivityModule;
 import by.reshetnikov.proweather.presentation.weather.WeatherContract;
 import by.reshetnikov.proweather.utils.ToastUtils;
 import by.reshetnikov.proweather.utils.WeatherStateIconUtil;
+import timber.log.Timber;
 
 
 public class NowForecastFragment extends Fragment implements NowForecastContract.View {
@@ -92,6 +93,7 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Timber.d("onAttach");
         if (context instanceof AppCompatActivity) {
             component = DaggerActivityComponent.builder()
                     .activityModule(new ActivityModule((AppCompatActivity) context))
@@ -103,15 +105,16 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Timber.d("onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Timber.d("onCreateView");
         View view = inflater.inflate(R.layout.fragment_current_forecast, container, false);
         ButterKnife.bind(this, view);
         component.inject(this);
-        presenter.setView(this);
         setupSwipeToRefresh();
         return view;
     }
@@ -129,23 +132,46 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Timber.d("onViewCreated");
+        presenter.setView(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Timber.d("onStart");
         presenter.start();
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Timber.d("onResume");
+    }
+
+    @Override
     public void onStop() {
+        Timber.d("onStop");
         super.onStop();
         presenter.stop();
     }
 
     @Override
     public void onDetach() {
+        Timber.d("onDetach");
         super.onDetach();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Timber.d("onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Timber.d("onDestroy");
     }
 
     @Override
