@@ -1,7 +1,6 @@
 package by.reshetnikov.proweather.di.module;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 
 import by.reshetnikov.proweather.business.forecast.ForecastInteractor;
 import by.reshetnikov.proweather.business.forecast.ForecastInteractorContract;
@@ -33,21 +32,15 @@ import io.reactivex.disposables.CompositeDisposable;
 @Module
 public class ActivityModule {
 
-    private AppCompatActivity activity;
+    private Context activity;
 
-    public ActivityModule(AppCompatActivity activity) {
+    public ActivityModule(Context activity) {
         this.activity = activity;
     }
 
     @Provides
     @ActivityContext
     Context provideContext() {
-        return activity;
-    }
-
-    @Provides
-    @ActivityContext
-    AppCompatActivity provideActivity() {
         return activity;
     }
 

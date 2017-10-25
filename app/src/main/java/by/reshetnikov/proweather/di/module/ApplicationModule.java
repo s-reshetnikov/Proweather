@@ -30,6 +30,8 @@ import by.reshetnikov.proweather.di.qualifier.DatabaseInfo;
 import by.reshetnikov.proweather.di.qualifier.HighAccuracy;
 import by.reshetnikov.proweather.di.qualifier.LowPower;
 import by.reshetnikov.proweather.utils.AppConstants;
+import by.reshetnikov.proweather.utils.scheduler.AppThreadSchedulerProvider;
+import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.disposables.CompositeDisposable;
@@ -58,6 +60,11 @@ public class ApplicationModule {
     @Provides
     Application provideApplication() {
         return application;
+    }
+
+    @Provides
+    ThreadSchedulerProvider provideSchedulerProvider() {
+        return new AppThreadSchedulerProvider();
     }
 
     // network

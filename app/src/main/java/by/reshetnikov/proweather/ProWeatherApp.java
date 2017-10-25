@@ -26,6 +26,10 @@ public class ProWeatherApp extends Application {
         return proWeatherApp.getApplicationContext();
     }
 
+    public static ProWeatherApp getProWeatherApp() {
+        return proWeatherApp;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -41,7 +45,8 @@ public class ProWeatherApp extends Application {
         }
 
         applicationComponent = DaggerApplicationComponent.builder()
-                .applicationModule(new ApplicationModule(this)).build();
+                .applicationModule(new ApplicationModule(this))
+                .build();
         proWeatherApp = this;
 
         //TODO: move settings default values somewhere else
