@@ -51,6 +51,21 @@
 #MPAndroidChart
 -keep class com.github.mikephil.charting.** { *; }
 
+#Dagger 2
+-dontwarn com.google.errorprone.annotations.*
+
+# GreenDAO 3
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+-dontwarn org.greenrobot.greendao.database.**
+-dontwarn rx.**
+-keepattributes *Annotation*
+ -keepclassmembers class ** {
+     @org.greenrobot.eventbus.Subscribe <methods>;
+ }
+
 #Crashlytics
 -keepattributes *Annotation*
 #to provide details reports
