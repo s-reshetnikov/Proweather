@@ -10,7 +10,7 @@ import dagger.Component;
  * Created by s-reshetnikov.
  */
 @ServiceScope
-@Component(dependencies = {ApplicationComponent.class}, modules = {ServiceModule.class})
+@Component(dependencies = ApplicationComponent.class, modules = ServiceModule.class)
 public interface ServiceComponent {
 
     void inject(NowForecastService service);

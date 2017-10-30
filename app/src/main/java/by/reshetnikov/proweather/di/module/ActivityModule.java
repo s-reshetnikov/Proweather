@@ -10,6 +10,8 @@ import by.reshetnikov.proweather.business.map.MapInteractor;
 import by.reshetnikov.proweather.business.map.MapInteractorContract;
 import by.reshetnikov.proweather.business.nowforecast.NowForecastInteractor;
 import by.reshetnikov.proweather.business.nowforecast.NowForecastInteractorContract;
+import by.reshetnikov.proweather.business.weather.WeatherInteractor;
+import by.reshetnikov.proweather.business.weather.WeatherInteractorContract;
 import by.reshetnikov.proweather.di.qualifier.ActivityContext;
 import by.reshetnikov.proweather.presentation.dailyforecast.DailyForecastContract;
 import by.reshetnikov.proweather.presentation.dailyforecast.DailyForecastPresenter;
@@ -47,6 +49,11 @@ public class ActivityModule {
     @Provides
     WeatherContract.Presenter provideWeatherPresenter(WeatherPresenter presenter) {
         return presenter;
+    }
+
+    @Provides
+    WeatherInteractorContract provideWeatherInteractor(WeatherInteractor interactor) {
+        return interactor;
     }
 
     @Provides

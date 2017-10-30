@@ -1,7 +1,7 @@
 package by.reshetnikov.proweather.di.component;
 
 import by.reshetnikov.proweather.di.module.ActivityModule;
-import by.reshetnikov.proweather.di.scope.PerActivity;
+import by.reshetnikov.proweather.di.scope.ActivityScope;
 import by.reshetnikov.proweather.presentation.dailyforecast.DailyForecastFragment;
 import by.reshetnikov.proweather.presentation.dailyforecast.DailyForecastPresenter;
 import by.reshetnikov.proweather.presentation.location.LocationActivity;
@@ -14,7 +14,7 @@ import by.reshetnikov.proweather.presentation.nowforecast.NowForecastPresenter;
 import by.reshetnikov.proweather.presentation.weather.WeatherActivity;
 import dagger.Component;
 
-@PerActivity
+@ActivityScope
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
 public interface ActivityComponent {
 

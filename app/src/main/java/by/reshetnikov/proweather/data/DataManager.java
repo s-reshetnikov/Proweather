@@ -29,7 +29,7 @@ import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweath
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationForecastApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationWeatherApiModel;
 import by.reshetnikov.proweather.data.preferences.PreferencesContract;
-import by.reshetnikov.proweather.di.qualifier.HighAccuracy;
+import by.reshetnikov.proweather.di.qualifier.BalancedPowerAccuracy;
 import by.reshetnikov.proweather.di.qualifier.LowPower;
 import by.reshetnikov.proweather.utils.NetworkUtils;
 import io.reactivex.Completable;
@@ -49,7 +49,7 @@ public class DataManager implements DataContract {
     private RxLocation rxLocation;
 
     private LocationRequest lowPowerLocationRequest;
-    private LocationRequest highAccuracyLocationRequest;
+    private LocationRequest balancedPowerLocationRequest;
 
     @Inject
     public DataManager(DbContract dbData,
@@ -64,9 +64,9 @@ public class DataManager implements DataContract {
     }
 
     @Inject
-    void initializeLocationRequests(@LowPower LocationRequest lowPower, @HighAccuracy LocationRequest highAccuracy) {
+    void initializeLocationRequests(@LowPower LocationRequest lowPower, @BalancedPowerAccuracy LocationRequest balancedPower) {
         this.lowPowerLocationRequest = lowPower;
-        this.highAccuracyLocationRequest = highAccuracy;
+        this.balancedPowerLocationRequest = balancedPower;
     }
 
     @Override
@@ -90,11 +90,6 @@ public class DataManager implements DataContract {
                                     return nowForecastEntity;
                                 }
                             });
-                        }
-                    }).doOnError(new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            Timber.e(throwable);
                         }
                     });
         }
@@ -172,16 +167,48 @@ public class DataManager implements DataContract {
         return dbData.getSavedDailyForecast(location);
     }
 
+    @Override
+    public Single<Coordinates> getLastSavedLocation() {
+        return sharedPreferencesData.getLastSavedCoordinates();
+    }
+
+    @Override
+    public Single<Coordinates> getSavedLastLocations() {
+        return sharedPreferencesData.getLastSavedCoordinates();
+    }
+
+    @Override
+    public Completable saveLastLocation(Coordinates coordinates) {
+        return sharedPreferencesData.saveLastCoordinates(coordinates);
+    }
+
     @SuppressLint("MissingPermission")
     @Override
-    public Observable<Coordinates> getLastCoordinates() {
-
+    public Observable<Coordinates> getBalancedPowerLastCoordinates() {
+        Timber.d("getBalancedPowerLastCoordinates called");
         return rxLocation
                 .location()
-                .updates(highAccuracyLocationRequest)
+                .updates(balancedPowerLocationRequest)
                 .map(new Function<Location, Coordinates>() {
                     @Override
                     public Coordinates apply(Location location) throws Exception {
+                        Timber.d("getBalancedPowerLastCoordinates() called");
+                        return new Coordinates(location.getLatitude(), location.getLongitude());
+                    }
+                });
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public Observable<Coordinates> getLowPowerLastCoordinates() {
+        Timber.d("getLowPowerLastCoordinates called");
+        return rxLocation
+                .location()
+                .updates(lowPowerLocationRequest)
+                .map(new Function<Location, Coordinates>() {
+                    @Override
+                    public Coordinates apply(Location location) throws Exception {
+                        Timber.d("getLowPowerLastCoordinates() called");
                         return new Coordinates(location.getLatitude(), location.getLongitude());
                     }
                 });

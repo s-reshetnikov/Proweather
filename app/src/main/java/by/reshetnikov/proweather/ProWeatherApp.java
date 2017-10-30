@@ -2,7 +2,6 @@ package by.reshetnikov.proweather;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -38,8 +37,8 @@ public class ProWeatherApp extends Application {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
+//            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
+//            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
         } else {
             Timber.plant(new CrashReportingTree());
         }

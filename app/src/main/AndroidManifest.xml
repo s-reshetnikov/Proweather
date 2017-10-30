@@ -47,6 +47,7 @@
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
+        <service android:name=".data.service.LocationService" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

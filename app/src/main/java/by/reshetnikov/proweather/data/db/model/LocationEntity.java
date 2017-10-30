@@ -102,6 +102,6 @@ public class LocationEntity {
 
     @Override
     public String toString() {
-        return getLocationName() + " (" + getCountryCode() + ", " + getLocationId() + ") - " + getPosition();
+        return getLocationName() + " (" + getLocationId() + ") - " + getPosition();
     }
 }

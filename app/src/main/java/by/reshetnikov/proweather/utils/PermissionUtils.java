@@ -22,8 +22,4 @@ public final class PermissionUtils {
         return ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
     }
 
-    public static void requestFineLocationPermission(){
-
-    }
-
 }

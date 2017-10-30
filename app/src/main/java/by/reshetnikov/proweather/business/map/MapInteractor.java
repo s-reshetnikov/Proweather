@@ -67,8 +67,7 @@ public class MapInteractor implements MapInteractorContract {
 
     @Override
     public Single<LocationEntity> getCurrentLocation() {
-        Timber.d("getLastCoordinates in interactor");
-        return dataManager.getLastCoordinates()
+        return dataManager.getLowPowerLastCoordinates()
                 .firstOrError()
                 .flatMap(new Function<Coordinates, SingleSource<List<LocationEntity>>>() {
                     @Override

@@ -65,14 +65,17 @@ public class AppWeatherApiData implements WeatherApiDataContract {
     }
 
     private HashMap<String, String> getQueryForRequest(LocationEntity location, int maxResults) {
+        if (location.getLocationId() != 0)
+            return getQuery(location.getLocationId());
+
+        if (location.getLatitude() != 0 && location.getLongitude() != 0)
+            return getQuery(location.getLatitude(), location.getLatitude(), maxResults);
 
         if (!TextUtils.isEmpty(location.getLocationName())) {
             if (TextUtils.isEmpty(location.getCountryCode()))
                 return getQuery(location.getLocationName() + "," + location.getCountryCode(), maxResults);
             return getQuery(location.getLocationName(), maxResults);
         }
-        if (location.getLatitude() != 0 && location.getLongitude() != 0)
-            return getQuery(location.getLatitude(), location.getLatitude(), maxResults);
         throw new InvalidParameterException("No such query builder");
     }
 

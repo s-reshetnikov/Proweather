@@ -11,6 +11,7 @@ import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
 import by.reshetnikov.proweather.data.model.Coordinates;
 import by.reshetnikov.proweather.data.model.unit.Units;
 import io.reactivex.Completable;
+import io.reactivex.CompletableSource;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
@@ -22,6 +23,10 @@ public interface DataContract {
     Single<NowForecastEntity> getNowForecast(@Nonnull LocationEntity location);
 
     Single<List<HoursForecastEntity>> getHourForecasts(@Nonnull LocationEntity location);
+
+    Observable<Coordinates> getBalancedPowerLastCoordinates();
+
+    Observable<Coordinates> getLowPowerLastCoordinates();
 
     Single<List<LocationEntity>> getAllLocationsByName(String locationName, int resultsCount);
 
@@ -45,5 +50,9 @@ public interface DataContract {
 
     Single<List<DailyForecastEntity>> getDailyForecasts(@Nonnull LocationEntity location);
 
-    Observable<Coordinates> getLastCoordinates();
+    Single<Coordinates> getSavedLastLocations();
+
+    CompletableSource saveLastLocation(Coordinates coordinates);
+
+    Single<Coordinates> getLastSavedLocation();
 }

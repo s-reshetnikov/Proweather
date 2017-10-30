@@ -12,12 +12,16 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
+import javax.inject.Inject;
+
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.business.nowforecast.NowForecastInteractorContract;
-import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
-import by.reshetnikov.proweather.di.module.ActivityModule;
+import by.reshetnikov.proweather.business.nowforecastservice.ServiceForecastInteractorContract;
+import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
+import by.reshetnikov.proweather.di.component.DaggerServiceComponent;
+import by.reshetnikov.proweather.di.module.ServiceModule;
 import by.reshetnikov.proweather.presentation.weather.WeatherActivity;
+import io.reactivex.observers.DisposableSingleObserver;
 import timber.log.Timber;
 
 /**
@@ -26,25 +30,34 @@ import timber.log.Timber;
 
 public class NowForecastService extends JobService {
 
-    private static final String CHANNEL_ID = "by.reshetnikov.proweather";
     private static final int NOTIFICATION_ID = 899041;
-
-    //    @Inject
-    NowForecastInteractorContract nowForecastInteractor;
+    @Inject
+    ServiceForecastInteractorContract interactor;
 
     @Override
     public boolean onStartJob(JobParameters job) {
         Timber.d("onStartJob called!");
-        DaggerActivityComponent.builder()
-                .serviceModule(new ActivityModule(getApplicationContext()))
+        DaggerServiceComponent.builder()
+                .serviceModule(new ServiceModule(getBaseContext()))
                 .applicationComponent(ProWeatherApp.getProWeatherApp().getComponent())
-                .build();
-//                .inject(this);
-        if (nowForecastInteractor == null)
-            Timber.w("failed to get data manager");
-        else
-            Timber.w("succeeded to get data manager");
-        sendNotification();
+                .build()
+                .inject(this);
+
+        interactor.getNowForecastData()
+                .subscribeWith(new DisposableSingleObserver<NowForecastViewModel>() {
+                    @Override
+                    public void onSuccess(NowForecastViewModel nowForecast) {
+                        Timber.d("NowForecastViewModel received, try to send notification");
+                        sendNotification(nowForecast);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.d("getting forecast data failed");
+                        Timber.e(e);
+                    }
+                });
+
         return false;
     }
 
@@ -54,34 +67,48 @@ public class NowForecastService extends JobService {
         return false;
     }
 
-    private void sendNotification() {
+    private void sendNotification(NowForecastViewModel nowForecast) {
         Timber.d("send notification called");
-        initChannel();
+        String channelId = createChannel();
 
         Intent intent = new Intent(this, WeatherActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        String contentText = new StringBuilder(nowForecast.getTemperature())
+                .append(", ")
+                .append(nowForecast.getHumidity())
+                .toString();
 
         Notification notification =
-                new NotificationCompat.Builder(getBaseContext(), CHANNEL_ID)
-                        .setContentTitle(getBaseContext().getString(R.string.notification_title))
-                        .setContentText("Yep!")
+                new NotificationCompat.Builder(getBaseContext(), channelId)
+                        .setContentTitle(getBaseContext().getString(R.string.app_name))
+                        .setContentText(contentText)
                         .setSmallIcon(R.drawable.ic_umbrella)
                         .setNumber(5)
                         .setAutoCancel(false)
                         .setContentIntent(pendingIntent)
+                        .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)
+                        .setOnlyAlertOnce(true)
                         .build();
 
         NotificationManagerCompat.from(getBaseContext()).notify(NOTIFICATION_ID, notification);
     }
 
-    private void initChannel() {
+    private String createChannel() {
+        String channelId = getString(R.string.app_package_name);
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-            return;
+            return channelId;
+
         NotificationManager notificationManager =
                 (NotificationManager) getBaseContext().getSystemService(getBaseContext().NOTIFICATION_SERVICE);
-        NotificationChannel channel =
-                new NotificationChannel(CHANNEL_ID, "ProWeather", NotificationManager.IMPORTANCE_DEFAULT);
-        channel.setDescription("Notifications from ProWeather app");
-        notificationManager.createNotificationChannel(channel);
+
+        NotificationChannel channel = notificationManager.getNotificationChannel(channelId);
+        if (channel == null) {
+            channel = new NotificationChannel(channelId, getString(R.string.app_name), NotificationManager.IMPORTANCE_LOW);
+            channel.setDescription(getString(R.string.description_for_notification_channel));
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        return channelId;
     }
 }

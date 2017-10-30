@@ -20,6 +20,10 @@ public interface WeatherContract {
         void openApplicationSettings();
 
         void showGrantPermissionsInSettingsMessage();
+
+        void startNowForecastService();
+
+        void startLocationService();
     }
 
     interface Presenter extends PresenterContract {

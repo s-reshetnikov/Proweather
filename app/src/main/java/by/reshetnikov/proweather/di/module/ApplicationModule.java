@@ -26,8 +26,8 @@ import by.reshetnikov.proweather.data.network.openweathermap.OpenWeatherMapApiSe
 import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
 import by.reshetnikov.proweather.data.preferences.PreferencesContract;
 import by.reshetnikov.proweather.di.qualifier.ApplicationContext;
+import by.reshetnikov.proweather.di.qualifier.BalancedPowerAccuracy;
 import by.reshetnikov.proweather.di.qualifier.DatabaseInfo;
-import by.reshetnikov.proweather.di.qualifier.HighAccuracy;
 import by.reshetnikov.proweather.di.qualifier.LowPower;
 import by.reshetnikov.proweather.utils.AppConstants;
 import by.reshetnikov.proweather.utils.scheduler.AppThreadSchedulerProvider;
@@ -157,18 +157,18 @@ public class ApplicationModule {
     @Provides
     @LowPower
     LocationRequest provideLowPowerLocationRequest() {
-        int requestInterval = 15 * 1000;
+        int requestInterval = 1 * 1000;
         return LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_LOW_POWER)
                 .setInterval(requestInterval);
     }
 
     @Provides
-    @HighAccuracy
-    LocationRequest provideHighAccuracyLocationRequest() {
-        int requestInterval = 5 * 1000;
+    @BalancedPowerAccuracy
+    LocationRequest provideBalancedPowerAccuracyLocationRequest() {
+        int requestInterval = 1 * 1000;
         return LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
                 .setInterval(requestInterval);
     }
 

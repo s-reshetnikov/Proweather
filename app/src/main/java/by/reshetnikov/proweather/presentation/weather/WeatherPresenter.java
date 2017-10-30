@@ -4,14 +4,17 @@ import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
+import by.reshetnikov.proweather.business.weather.WeatherInteractorContract;
+
 
 public class WeatherPresenter implements WeatherContract.Presenter {
 
     private WeakReference<WeatherContract.View> viewRef;
+    private WeatherInteractorContract interactor;
 
     @Inject
-    WeatherPresenter() {
-
+    WeatherPresenter(WeatherInteractorContract interactor) {
+        this.interactor = interactor;
     }
 
     @Override
@@ -21,14 +24,24 @@ public class WeatherPresenter implements WeatherContract.Presenter {
 
     @Override
     public void start() {
+        getView().startNowForecastService();
+        tryToStartLocationService();
+    }
 
+    private void tryToStartLocationService() {
+        if (interactor.canUseCurrentLocation())
+
+            if (getView().hasLocationPermissions())
+                getView().startLocationService();
+            else
+                getView().requestLocationPermission();
     }
 
     @Override
     public void onLocationPermissionsResult(boolean allowed) {
-        if (allowed)
-            getView().requestLocationPermission();
-        else
+        if (allowed) {
+            tryToStartLocationService();
+        } else
             getView().showPermissionDenied();
     }
 

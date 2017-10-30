@@ -13,7 +13,9 @@ import by.reshetnikov.proweather.data.DataContract;
 import by.reshetnikov.proweather.data.db.model.HoursForecastEntity;
 import by.reshetnikov.proweather.data.db.model.LocationEntity;
 import by.reshetnikov.proweather.data.db.model.NowForecastEntity;
+import by.reshetnikov.proweather.data.exception.NoLocationException;
 import by.reshetnikov.proweather.data.exception.NoSavedForecastDataException;
+import by.reshetnikov.proweather.data.model.Coordinates;
 import by.reshetnikov.proweather.data.model.unit.Units;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.HourlyChartData;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
@@ -106,6 +108,28 @@ public class NowForecastInteractor implements NowForecastInteractorContract {
                         return new Pair<>(nowForecastViewModel, chartData);
                     }
                 });
+    }
+
+    private Single<LocationEntity> getLocation() {
+        if (dataManager.canUseCurrentLocation())
+            return dataManager.getLastSavedLocation()
+                    .flatMap(new Function<Coordinates, SingleSource<LocationEntity>>() {
+                        @Override
+                        public SingleSource<LocationEntity> apply(Coordinates coordinates) throws Exception {
+                            int resultsCount = 1;
+                            return dataManager.getLocationsByCoordinates(coordinates.getLatitude(), coordinates.getLongitude(), 1)
+                                    .flatMap(new Function<List<LocationEntity>, SingleSource<LocationEntity>>() {
+                                        @Override
+                                        public SingleSource<LocationEntity> apply(List<LocationEntity> locationEntities) {
+                                            if (locationEntities.size() == 0)
+                                                return Single.error(new NoLocationException());
+                                            int firstLocationIndex = 0;
+                                            return Single.just(locationEntities.get(firstLocationIndex));
+                                        }
+                                    });
+                        }
+                    });
+        return dataManager.getChosenLocation();
     }
 
     private HourlyChartData getDataForChart(@NonNull HourlyForecastForChartViewModel viewModel) {

@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Trigger;
@@ -33,6 +34,7 @@ import javax.inject.Inject;
 import by.reshetnikov.proweather.BuildConfig;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
+import by.reshetnikov.proweather.data.service.LocationService;
 import by.reshetnikov.proweather.data.service.NowForecastService;
 import by.reshetnikov.proweather.di.component.ActivityComponent;
 import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
@@ -52,6 +54,7 @@ public class WeatherActivity extends AppCompatActivity
     private static final String ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final String ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private final int PERMISSION_REQUEST_CODE = 14091;
+
     @Inject
     WeatherContract.Presenter presenter;
     private ActivityComponent component;
@@ -88,12 +91,20 @@ public class WeatherActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        startNowForecastService();
-
         Timber.d("onCreate() end");
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.stop();
+    }
 
     @Override
     public void onBackPressed() {
@@ -160,7 +171,8 @@ public class WeatherActivity extends AppCompatActivity
 
     @Override
     public void requestLocationPermission() {
-        final String[] permissions = {ACCESS_FINE_LOCATION};
+
+        final String[] permissions = {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION};
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION) &&
                 ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_FINE_LOCATION)) {
             final String permissionsRequestMessage = getString(R.string.location_needed_to_locate_position);
@@ -170,7 +182,7 @@ public class WeatherActivity extends AppCompatActivity
                         @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
                         public void onClick(View v) {
-                            requestPermissions(permissions, PERMISSION_REQUEST_CODE);
+                            ActivityCompat.requestPermissions(WeatherActivity.this, permissions, PERMISSION_REQUEST_CODE);
                         }
                     }).show();
         } else {
@@ -225,8 +237,12 @@ public class WeatherActivity extends AppCompatActivity
         ToastUtils.showToast(toast);
     }
 
+    @Override
     public void startNowForecastService() {
-        Timber.d("try o start service");
+        Timber.d("try to start forecast service");
+        //in seconds
+        int from = 1;
+        int to = 5;
         GooglePlayDriver playDriver = new GooglePlayDriver(getApplicationContext());
         FirebaseJobDispatcher jobDispatcher = new FirebaseJobDispatcher(playDriver);
         jobDispatcher.mustSchedule(
@@ -234,13 +250,32 @@ public class WeatherActivity extends AppCompatActivity
                         .setService(NowForecastService.class)
                         .setTag("NowForecastService")
                         .setRecurring(true)
-                        .setTrigger(Trigger.executionWindow(1, 15))
+                        .setTrigger(Trigger.executionWindow(from, to))
                         .setReplaceCurrent(true)
                         .build()
         );
         Timber.d("service should be started");
     }
 
+
+    @Override
+    public void startLocationService() {
+        //in seconds
+        int from = 1;
+        int to = 5;
+        GooglePlayDriver playDriver = new GooglePlayDriver(getApplicationContext());
+        FirebaseJobDispatcher jobDispatcher = new FirebaseJobDispatcher(playDriver);
+        jobDispatcher.mustSchedule(
+                jobDispatcher.newJobBuilder()
+                        .setService(LocationService.class)
+                        .setTag("LocationService")
+                        .setRecurring(true)
+                        .setTrigger(Trigger.executionWindow(from, to))
+                        .setReplaceCurrent(true)
+                        .addConstraint(Constraint.ON_ANY_NETWORK)
+                        .build()
+        );
+    }
 
 }
 

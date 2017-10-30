@@ -1,7 +1,6 @@
 package by.reshetnikov.proweather.presentation.dailyforecast;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -59,7 +58,7 @@ public class DailyForecastFragment extends Fragment implements DailyForecastCont
         Timber.d("onAttach() called");
         if (context instanceof AppCompatActivity) {
             component = DaggerActivityComponent.builder()
-                    .activityModule(new ActivityModule((AppCompatActivity) context))
+                    .activityModule(new ActivityModule(context))
                     .applicationComponent(((ProWeatherApp) getActivity().getApplication()).getComponent())
                     .build();
         }
@@ -150,9 +149,5 @@ public class DailyForecastFragment extends Fragment implements DailyForecastCont
                 presenter.onRefresh();
             }
         });
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

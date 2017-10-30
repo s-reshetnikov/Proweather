@@ -1,56 +1,39 @@
 package by.reshetnikov.proweather.data.preferences;
 
 import android.content.Context;
-import android.location.Location;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import javax.inject.Inject;
 
+import by.reshetnikov.proweather.data.exception.NoLocationException;
+import by.reshetnikov.proweather.data.model.Coordinates;
 import by.reshetnikov.proweather.data.model.unit.Units;
 import by.reshetnikov.proweather.data.preferences.units.DistanceUnits;
 import by.reshetnikov.proweather.data.preferences.units.SpeedUnit;
 import by.reshetnikov.proweather.data.preferences.units.TemperatureUnit;
 import by.reshetnikov.proweather.di.qualifier.ApplicationContext;
+import io.reactivex.Completable;
+import io.reactivex.Single;
+import timber.log.Timber;
 
 
 public class AppSharedPreferencesData implements PreferencesContract {
 
     private static final String USE_CURRENT_LOCATION_KEY = "use_current_location";
+    private static final String IS_LOCATION_UPDATED_KEY = "is_location_updated";
+    private static final String LAST_LOCATION_KEY = "last_location";
     private static final String TEMPERATURE_UNIT_KEY = "temperature_unit";
     private static final String DISTANCE_UNIT_KEY = "distance_unit";
     private static final String WIND_SPEED_UNIT_KEY = "wind_speed_unit";
-    private static final String LOCATION_UPDATES_REQUESTED_KEY = "location-updates-requested";
-    private static final String CURRENT_LOCATION_KEY = "current-location";
-
-    private final android.content.SharedPreferences preferences;
+    private SharedPreferences preferences;
 
     @Inject
     public AppSharedPreferencesData(@ApplicationContext Context context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
-    }
-
-    @Override
-    public Location getCurrentLocationPreference() {
-        String json = preferences.getString(CURRENT_LOCATION_KEY, null);
-        return json == null ? null : new Gson().fromJson(json, Location.class);
-    }
-
-    @Override
-    public void setCurrentLocationPreference(Location location) {
-        String json = location == null ? null : new Gson().toJson(location);
-        preferences.edit().putString(CURRENT_LOCATION_KEY, json).apply();
-    }
-
-    @Override
-    public boolean getLocationUpdateRequestedPreference() {
-        return preferences.getBoolean(LOCATION_UPDATES_REQUESTED_KEY, false);
-    }
-
-    @Override
-    public void setLocationUpdateRequestedPreference(boolean canRequestLocation) {
-        preferences.edit().putBoolean(LOCATION_UPDATES_REQUESTED_KEY, canRequestLocation).apply();
     }
 
     @Override
@@ -99,6 +82,39 @@ public class AppSharedPreferencesData implements PreferencesContract {
         SpeedUnit windSpeed = getWindSpeedUnitPreference();
         DistanceUnits distance = getDistanceUnitPreference();
         return new Units(temperature, distance, windSpeed);
+    }
+
+    @Override
+    public boolean canGetLatestLocation() {
+        boolean canUse = preferences.getBoolean(IS_LOCATION_UPDATED_KEY, false);
+        Timber.d(IS_LOCATION_UPDATED_KEY + " = " + canUse);
+        return canUse;
+    }
+
+    @Override
+    public Completable saveLastCoordinates(Coordinates coordinates) {
+        Timber.d("saveLastLocations() called");
+        preferences.edit()
+                .putString(LAST_LOCATION_KEY, new Gson().toJson(coordinates))
+                .putBoolean(IS_LOCATION_UPDATED_KEY, true)
+                .commit();
+        return Completable.complete();
+    }
+
+    @Override
+    public Single<Coordinates> getLastSavedCoordinates() {
+        String lastLocation = preferences.getString(LAST_LOCATION_KEY, null);
+
+        Coordinates coordinates = null;
+        try {
+            coordinates = new Gson().fromJson(lastLocation, Coordinates.class);
+        } catch (JsonSyntaxException e) {
+            return Single.error(e);
+        }
+        if (coordinates == null)
+            return Single.error(new NoLocationException());
+
+        return Single.just(coordinates);
     }
 
 }
