@@ -72,3 +72,6 @@ public static java.lang.String TABLENAME;
 -keepattributes SourceFile,LineNumberTable
 #for custom exceptions
 -keep public class * extends java.lang.Exception
+
+#for reactive location
+-dontwarn com.google.android.gms.location.places.*
