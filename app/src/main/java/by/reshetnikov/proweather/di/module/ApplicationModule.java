@@ -159,19 +159,27 @@ public class ApplicationModule {
     @Provides
     @LowPower
     LocationRequest provideLowPowerLocationRequest() {
-        int requestInterval = 1 * 1000;
+        //10 min
+        int fastestInterval = 10 * 60 * 60 * 1000;
+        //60 min
+        int slowestInterval = 60 * 60 * 60 * 1000;
         return LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_LOW_POWER)
-                .setInterval(requestInterval);
+                .setFastestInterval(fastestInterval)
+                .setInterval(slowestInterval);
     }
 
     @Provides
     @BalancedPowerAccuracy
     LocationRequest provideBalancedPowerAccuracyLocationRequest() {
-        int requestInterval = 1 * 1000;
+        //7 min
+        int fastestInterval = 7 * 60 * 60 * 1000;
+        //30 min
+        int slowestInterval = 30 * 60 * 60 * 1000;
         return LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                .setInterval(requestInterval);
+                .setFastestInterval(fastestInterval)
+                .setInterval(slowestInterval);
     }
 
     @Provides

@@ -3,7 +3,6 @@ package by.reshetnikov.proweather.presentation.dailyforecast.viewholder;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.utils.WeatherStateIconUtil;
+import timber.log.Timber;
 
 
 /**
@@ -63,8 +63,8 @@ public class DailyForecastViewHolder extends RecyclerView.ViewHolder implements 
 
     @BindView(R.id.btnDailyCardDetails)
     Button btnDetails;
-    @BindView(R.id.ivCollapsebleCardState)
-    ImageView ivExpandedState;
+    @BindView(R.id.ivCollapsibleCardState)
+    ImageView ivCollapsibleCardState;
 
     private boolean isExpanded = false;
 
@@ -74,9 +74,9 @@ public class DailyForecastViewHolder extends RecyclerView.ViewHolder implements 
         collapse();
     }
 
-    @OnClick(R.id.btnDailyCardDetails)
+    @OnClick({R.id.btnDailyCardDetails, R.id.ivCollapsibleCardState})
     public void onClick(View v) {
-        Log.i("VH", "clicked");
+        Timber.d("VH", "clicked");
         rotateExpandableState();
         if (isExpanded)
             collapse();
@@ -91,7 +91,7 @@ public class DailyForecastViewHolder extends RecyclerView.ViewHolder implements 
 
     @Override
     public void setTemperature(String temperature) {
-
+        tvTemperatureCard.setText(temperature);
     }
 
     @Override
@@ -157,9 +157,9 @@ public class DailyForecastViewHolder extends RecyclerView.ViewHolder implements 
 
     private void rotateExpandableState() {
         int rotationDegrees = 180;
-        ivExpandedState.setPivotX(ivExpandedState.getWidth() / 2);
-        ivExpandedState.setPivotY(ivExpandedState.getHeight() / 2);
-        ivExpandedState.setRotation(ivExpandedState.getRotation() + rotationDegrees);
+        ivCollapsibleCardState.setPivotX(ivCollapsibleCardState.getWidth() / 2);
+        ivCollapsibleCardState.setPivotY(ivCollapsibleCardState.getHeight() / 2);
+        ivCollapsibleCardState.setRotation(ivCollapsibleCardState.getRotation() + rotationDegrees);
     }
 
     void setVisibilityForDetails(boolean isVisible) {

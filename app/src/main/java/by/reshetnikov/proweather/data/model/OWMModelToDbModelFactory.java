@@ -131,7 +131,7 @@ public class OWMModelToDbModelFactory {
     private static void setWindDetails(HourlyForecastApiModel apiModel, DailyForecastEntity entity) {
         Wind wind = getWind(apiModel.forecasts);
         entity.setWindDegrees((int) Math.round(wind.getDegrees()));
-        entity.setWindSpeed(wind.getDegrees());
+        entity.setWindSpeed(wind.getSpeed());
     }
 
     private static Wind getWind(List<ForecastByHoursApiModel> forecasts) {

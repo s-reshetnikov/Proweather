@@ -26,7 +26,9 @@ import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import timber.log.Timber;
 
 /**
  * Created by s-reshetnikov.
@@ -45,7 +47,7 @@ public class NowForecastInteractor implements NowForecastInteractorContract {
 
     @Override
     public Single<NowForecastViewModel> getNowForecastData() {
-        return dataManager.getChosenLocation()
+        return getLocation()
                 .subscribeOn(scheduler.io())
                 .zipWith(dataManager.getUnits(), new BiFunction<LocationEntity, Units, Pair<LocationEntity, Units>>() {
                     @Override
@@ -70,7 +72,7 @@ public class NowForecastInteractor implements NowForecastInteractorContract {
 
     @Override
     public Single<HourlyChartData> getDataForChart() {
-        return dataManager.getChosenLocation()
+        return getLocation()
                 .subscribeOn(scheduler.io())
                 .zipWith(dataManager.getUnits(), new BiFunction<LocationEntity, Units, Pair<LocationEntity, Units>>() {
                     @Override
@@ -111,13 +113,14 @@ public class NowForecastInteractor implements NowForecastInteractorContract {
     }
 
     private Single<LocationEntity> getLocation() {
-        if (dataManager.canUseCurrentLocation())
+        int attemptsNumber = 3;
+        if (dataManager.canUseCurrentLocation() && dataManager.canGetLatestLocation())
             return dataManager.getLastSavedLocation()
                     .flatMap(new Function<Coordinates, SingleSource<LocationEntity>>() {
                         @Override
                         public SingleSource<LocationEntity> apply(Coordinates coordinates) throws Exception {
                             int resultsCount = 1;
-                            return dataManager.getLocationsByCoordinates(coordinates.getLatitude(), coordinates.getLongitude(), 1)
+                            return dataManager.getLocationsByCoordinates(coordinates.getLatitude(), coordinates.getLongitude(), resultsCount)
                                     .flatMap(new Function<List<LocationEntity>, SingleSource<LocationEntity>>() {
                                         @Override
                                         public SingleSource<LocationEntity> apply(List<LocationEntity> locationEntities) {
@@ -127,6 +130,16 @@ public class NowForecastInteractor implements NowForecastInteractorContract {
                                             return Single.just(locationEntities.get(firstLocationIndex));
                                         }
                                     });
+                        }
+                    })
+                    .retry(attemptsNumber)
+                    .doOnError(new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            if (throwable instanceof NoLocationException)
+                                Timber.w(throwable);
+                            else
+                                Timber.e(throwable);
                         }
                     });
         return dataManager.getChosenLocation();

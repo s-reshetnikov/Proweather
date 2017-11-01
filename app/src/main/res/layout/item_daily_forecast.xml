@@ -161,12 +161,12 @@
                 android:id="@+id/tvForecastStateMorning"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:text="@string/morning"
                 android:textSize="16sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/tvForecastStateDay"
-                android:layout_marginTop="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/tvPressureLabel" />
 
             <TextView
@@ -261,16 +261,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvMorningTemperatureDataValue" />
 
             <ImageView
-                android:id="@+id/ivCollapsebleCardState"
+                android:id="@+id/ivCollapsibleCardState"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_expand_more_24dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginRight="8dp"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/btnDailyCardDetails"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/btnDailyCardDetails"
-                android:layout_marginBottom="8dp" />
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btnDailyCardDetails"
+                app:srcCompat="@drawable/ic_expand_more_24dp" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>

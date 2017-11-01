@@ -12,10 +12,10 @@ import by.reshetnikov.proweather.utils.UnitUtils;
 
 public class DailyForecastViewModel {
 
-    private static final char WHITESPACE = ' ';
-    private static final char PERCENT = '%';
-    private static final char DASH = '-';
-    private static final char COMMA = ',';
+    private static final String WHITESPACE = " ";
+    private static final String PERCENT = "%";
+    private static final String DASH = "-";
+    private static final String COMMA = ",";
 
     private DailyForecastEntity entity;
 
