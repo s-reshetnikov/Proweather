@@ -24,9 +24,7 @@ public interface DataContract {
 
     Single<List<HoursForecastEntity>> getHourForecasts(@Nonnull LocationEntity location);
 
-    Observable<Coordinates> getBalancedPowerLastCoordinates();
-
-    Observable<Coordinates> getLowPowerLastCoordinates();
+    Observable<Coordinates> locateCurrentPosition();
 
     Single<List<LocationEntity>> getAllLocationsByName(String locationName, int resultsCount);
 
@@ -43,6 +41,8 @@ public interface DataContract {
     Completable removeLocation(@Nonnull LocationEntity location);
 
     boolean canUseCurrentLocation();
+
+    boolean canGetLatestLocation();
 
     Single<Units> getUnits();
 

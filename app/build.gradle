@@ -66,7 +66,7 @@ ext {
     rxAndroidVersion = '2.0.1'
     gsonVersion = '2.8.0'
     converterGsonVersion = '2.3.0'
-    rxLocationVersion = '1.0.3'
+    reactiveLocationVersion = '2.0'
     firebaseJobDispatcherVersion = '0.8.4'
     daoVersion = '3.2.2'
     timberVersion = '4.5.1'
@@ -124,7 +124,7 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"
 
     //rxLocation
-    compile "com.patloew.rxlocation:rxlocation:${rxLocationVersion}"
+    compile "pl.charmas.android:android-reactive-location2:${reactiveLocationVersion}@aar"
 
     // green DAO
     compile "org.greenrobot:greendao:${daoVersion}"

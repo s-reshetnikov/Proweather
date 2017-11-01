@@ -3,11 +3,12 @@ package by.reshetnikov.proweather.di.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.google.android.gms.location.LocationRequest;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.patloew.rxlocation.RxLocation;
 
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +39,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import pl.charmas.android.reactivelocation2.ReactiveLocationProvider;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -174,7 +176,19 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    RxLocation provideRxLocation(@ApplicationContext Context context) {
-        return new RxLocation(context);
+    ReactiveLocationProvider provideRxLocation(@ApplicationContext Context context) {
+        return new ReactiveLocationProvider(context);
+    }
+
+    @Provides
+    @Singleton
+    GooglePlayDriver provideGooglePlayDriver(@ApplicationContext Context context) {
+        return new GooglePlayDriver(context);
+    }
+
+    @Provides
+    @Singleton
+    FirebaseJobDispatcher provideFirebaseJobDispatcher(GooglePlayDriver googlePlayDriver) {
+        return new FirebaseJobDispatcher(googlePlayDriver);
     }
 }

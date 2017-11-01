@@ -67,7 +67,7 @@ public class MapInteractor implements MapInteractorContract {
 
     @Override
     public Single<LocationEntity> getCurrentLocation() {
-        return dataManager.getLowPowerLastCoordinates()
+        return dataManager.locateCurrentPosition()
                 .firstOrError()
                 .flatMap(new Function<Coordinates, SingleSource<List<LocationEntity>>>() {
                     @Override

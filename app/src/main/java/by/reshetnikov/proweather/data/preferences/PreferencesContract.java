@@ -12,7 +12,7 @@ public interface PreferencesContract {
 
     Units getUnits();
 
-    boolean canGetLatestLocation();
+    boolean canUseLatestLocation();
 
     Completable saveLastCoordinates(Coordinates coordinates);
 

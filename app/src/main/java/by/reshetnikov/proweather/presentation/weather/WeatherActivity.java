@@ -57,6 +57,9 @@ public class WeatherActivity extends AppCompatActivity
 
     @Inject
     WeatherContract.Presenter presenter;
+    @Inject
+    FirebaseJobDispatcher firebaseJobDispatcher;
+
     private ActivityComponent component;
     private ForecastSectionsPagerAdapter forecastSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -173,6 +176,9 @@ public class WeatherActivity extends AppCompatActivity
     public void requestLocationPermission() {
 
         final String[] permissions = {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION};
+        boolean coarse = ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION);
+        boolean fine = ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_FINE_LOCATION);
+
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION) &&
                 ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_FINE_LOCATION)) {
             final String permissionsRequestMessage = getString(R.string.location_needed_to_locate_position);
@@ -243,10 +249,9 @@ public class WeatherActivity extends AppCompatActivity
         //in seconds
         int from = 1;
         int to = 5;
-        GooglePlayDriver playDriver = new GooglePlayDriver(getApplicationContext());
-        FirebaseJobDispatcher jobDispatcher = new FirebaseJobDispatcher(playDriver);
-        jobDispatcher.mustSchedule(
-                jobDispatcher.newJobBuilder()
+
+        firebaseJobDispatcher.mustSchedule(
+                firebaseJobDispatcher.newJobBuilder()
                         .setService(NowForecastService.class)
                         .setTag("NowForecastService")
                         .setRecurring(true)

@@ -1,5 +1,6 @@
 package by.reshetnikov.proweather.business.weather;
 
+
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.data.DataContract;
@@ -24,4 +25,5 @@ public class WeatherInteractor implements WeatherInteractorContract {
     public boolean canUseCurrentLocation() {
         return dataManager.canUseCurrentLocation();
     }
+
 }

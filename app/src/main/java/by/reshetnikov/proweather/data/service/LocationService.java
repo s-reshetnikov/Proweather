@@ -1,7 +1,6 @@
 package by.reshetnikov.proweather.data.service;
 
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.firebase.jobdispatcher.Trigger;
@@ -31,14 +30,17 @@ import timber.log.Timber;
 
 public class LocationService extends JobService {
 
+    private final String serviceTag = "ImmediateNowForecastLocationService";
+
     @Inject
     DataContract dataManager;
     @Inject
     CompositeDisposable compositeDisposables;
+    @Inject
+    FirebaseJobDispatcher firebaseJobDispatcher;
 
     @Override
     public boolean onStartJob(JobParameters job) {
-        Timber.d("on Start Job LocationService called");
 
         DaggerServiceComponent.builder()
                 .serviceModule(new ServiceModule(getBaseContext()))
@@ -46,25 +48,7 @@ public class LocationService extends JobService {
                 .build()
                 .inject(this);
 
-        Timber.d("get latest coordinates called from location service");
-
-//        getAndSaveLatestCoordinates().subscribe();
-//        compositeDisposables.add(getAndSaveLatestCoordinates()
-//                .doOnComplete(new Action() {
-//                    @Override
-//                    public void run() {
-//                        Timber.d("startNowForecastService() called from location service");
-//                        startNowForecastService();
-//                    }
-//                })
-//                .doAfterTerminate(new Action() {
-//                    @Override
-//                    public void run() throws Exception {
-//                        Timber.d("Location Service finished");
-//                        jobFinished(job, false);
-//                    }
-//                })
-//                .subscribe());
+        Timber.d("LocationService start()");
         compositeDisposables.add(getAndSaveLatestCoordinates()
                 .subscribeOn(Schedulers.io())
                 .doAfterTerminate(new Action() {
@@ -77,7 +61,8 @@ public class LocationService extends JobService {
                 .subscribeWith(new DisposableCompletableObserver() {
                     @Override
                     public void onComplete() {
-                        Timber.d("Complete()");
+                        Timber.d("start forecast service");
+                        startNowForecastService();
                     }
 
                     @Override
@@ -91,42 +76,40 @@ public class LocationService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters job) {
-        Timber.d("onStopJob called");
+        Timber.d("onStopJob() called");
         compositeDisposables.clear();
+        firebaseJobDispatcher.cancel(serviceTag);
         return false;
     }
 
     private Completable getAndSaveLatestCoordinates() {
-        int timeout = 30;
-        return dataManager.getLowPowerLastCoordinates()
-                .timeout(timeout, TimeUnit.SECONDS)
+        Timber.d("getAndSaveLatestCoordinates() called");
+        int requestTimeout = 60;
+        return dataManager.locateCurrentPosition()
+                .timeout(requestTimeout, TimeUnit.SECONDS)
                 .firstOrError()
                 .flatMapCompletable(new Function<Coordinates, CompletableSource>() {
                     @Override
                     public CompletableSource apply(Coordinates coordinates) throws Exception {
-                        Timber.d("try to get coordinates");
+                        Timber.d("Coordinates are : " + coordinates.getLatitude() + ", " + coordinates.getLongitude());
                         if (coordinates != null) {
-                            Timber.i("Get coordinates: " + coordinates.getLatitude() + ", " + coordinates.getLongitude());
                             return dataManager.saveLastLocation(coordinates);
                         }
+                        Timber.d("coordinates NOT received");
                         return Completable.never();
                     }
                 });
     }
 
     private void startNowForecastService() {
-        Timber.d("try o start NowForecastLocationBasedService service");
-        GooglePlayDriver playDriver = new GooglePlayDriver(getApplicationContext());
-        FirebaseJobDispatcher jobDispatcher = new FirebaseJobDispatcher(playDriver);
-        jobDispatcher.mustSchedule(
-                jobDispatcher.newJobBuilder()
+        firebaseJobDispatcher.mustSchedule(
+                firebaseJobDispatcher.newJobBuilder()
                         .setService(NowForecastService.class)
-                        .setTag("NowForecastLocationBasedService")
+                        .setTag(serviceTag)
                         .setRecurring(false)
                         .setTrigger(Trigger.NOW)
                         .setReplaceCurrent(false)
                         .build()
         );
-        Timber.d("service should be started");
     }
 }

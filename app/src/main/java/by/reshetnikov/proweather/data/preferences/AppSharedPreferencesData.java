@@ -16,15 +16,16 @@ import by.reshetnikov.proweather.data.preferences.units.DistanceUnits;
 import by.reshetnikov.proweather.data.preferences.units.SpeedUnit;
 import by.reshetnikov.proweather.data.preferences.units.TemperatureUnit;
 import by.reshetnikov.proweather.di.qualifier.ApplicationContext;
+import by.reshetnikov.proweather.utils.CalendarUtil;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import timber.log.Timber;
 
 
 public class AppSharedPreferencesData implements PreferencesContract {
-
+    private static final String DATE_PATTERN = "MM/dd/yyyy HH:mm";
     private static final String USE_CURRENT_LOCATION_KEY = "use_current_location";
-    private static final String IS_LOCATION_UPDATED_KEY = "is_location_updated";
+    private static final String DATE_OF_LAST_LOCATION_UPDATE_KEY = "is_location_updated";
     private static final String LAST_LOCATION_KEY = "last_location";
     private static final String TEMPERATURE_UNIT_KEY = "temperature_unit";
     private static final String DISTANCE_UNIT_KEY = "distance_unit";
@@ -85,18 +86,21 @@ public class AppSharedPreferencesData implements PreferencesContract {
     }
 
     @Override
-    public boolean canGetLatestLocation() {
-        boolean canUse = preferences.getBoolean(IS_LOCATION_UPDATED_KEY, false);
-        Timber.d(IS_LOCATION_UPDATED_KEY + " = " + canUse);
-        return canUse;
+    public boolean canUseLatestLocation() {
+        int locationDate = preferences.getInt(DATE_OF_LAST_LOCATION_UPDATE_KEY, 0);
+        int todayDate = CalendarUtil.getTodayDateInSeconds();
+        int threeHoursInSeconds = 3 * 60 * 60;
+        // if update older than 3 hours ago  - last location expired
+        return todayDate - locationDate < threeHoursInSeconds;
     }
 
     @Override
     public Completable saveLastCoordinates(Coordinates coordinates) {
         Timber.d("saveLastLocations() called");
+
         preferences.edit()
                 .putString(LAST_LOCATION_KEY, new Gson().toJson(coordinates))
-                .putBoolean(IS_LOCATION_UPDATED_KEY, true)
+                .putInt(DATE_OF_LAST_LOCATION_UPDATE_KEY, CalendarUtil.getTodayDateInSeconds())
                 .commit();
         return Completable.complete();
     }
@@ -116,5 +120,4 @@ public class AppSharedPreferencesData implements PreferencesContract {
 
         return Single.just(coordinates);
     }
-
 }

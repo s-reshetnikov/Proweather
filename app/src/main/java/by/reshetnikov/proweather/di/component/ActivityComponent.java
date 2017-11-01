@@ -37,5 +37,4 @@ public interface ActivityComponent {
     void inject(DailyForecastFragment fragment);
 
     void inject(DailyForecastPresenter presenter);
-
 }

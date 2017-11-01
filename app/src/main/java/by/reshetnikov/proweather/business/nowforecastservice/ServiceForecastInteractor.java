@@ -64,7 +64,7 @@ public class ServiceForecastInteractor implements ServiceForecastInteractorContr
 
     private Single<LocationEntity> getLocation() {
         int attemptsNumber = 3;
-        if (dataManager.canUseCurrentLocation())
+        if (dataManager.canUseCurrentLocation() && dataManager.canGetLatestLocation())
             return dataManager.getLastSavedLocation()
                     .flatMap(new Function<Coordinates, SingleSource<LocationEntity>>() {
                         @Override
@@ -81,7 +81,8 @@ public class ServiceForecastInteractor implements ServiceForecastInteractorContr
                                         }
                                     });
                         }
-                    }).retry(attemptsNumber)
+                    })
+                    .retry(attemptsNumber)
                     .doOnError(new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {

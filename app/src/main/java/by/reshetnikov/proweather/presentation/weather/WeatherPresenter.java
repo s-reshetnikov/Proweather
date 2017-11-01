@@ -5,16 +5,19 @@ import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.business.weather.WeatherInteractorContract;
+import io.reactivex.disposables.CompositeDisposable;
 
 
 public class WeatherPresenter implements WeatherContract.Presenter {
 
     private WeakReference<WeatherContract.View> viewRef;
     private WeatherInteractorContract interactor;
+    private CompositeDisposable disposables;
 
     @Inject
-    WeatherPresenter(WeatherInteractorContract interactor) {
+    WeatherPresenter(WeatherInteractorContract interactor, CompositeDisposable disposables) {
         this.interactor = interactor;
+        this.disposables = disposables;
     }
 
     @Override
@@ -24,8 +27,8 @@ public class WeatherPresenter implements WeatherContract.Presenter {
 
     @Override
     public void start() {
-        getView().startNowForecastService();
         tryToStartLocationService();
+        getView().startNowForecastService();
     }
 
     private void tryToStartLocationService() {

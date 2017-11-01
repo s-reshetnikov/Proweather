@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.location.Location;
 
 import com.google.android.gms.location.LocationRequest;
-import com.patloew.rxlocation.RxLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ import by.reshetnikov.proweather.data.network.openweathermap.model.location.Loca
 import by.reshetnikov.proweather.data.preferences.PreferencesContract;
 import by.reshetnikov.proweather.di.qualifier.BalancedPowerAccuracy;
 import by.reshetnikov.proweather.di.qualifier.LowPower;
-import by.reshetnikov.proweather.utils.NetworkUtils;
+import by.reshetnikov.proweather.utils.SystemServiceUtils;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -39,6 +38,7 @@ import io.reactivex.SingleSource;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import pl.charmas.android.reactivelocation2.ReactiveLocationProvider;
 import timber.log.Timber;
 
 public class DataManager implements DataContract {
@@ -46,7 +46,7 @@ public class DataManager implements DataContract {
     private DbContract dbData;
     private WeatherApiDataContract apiData;
     private PreferencesContract sharedPreferencesData;
-    private RxLocation rxLocation;
+    private ReactiveLocationProvider reactiveLocation;
 
     private LocationRequest lowPowerLocationRequest;
     private LocationRequest balancedPowerLocationRequest;
@@ -55,12 +55,12 @@ public class DataManager implements DataContract {
     public DataManager(DbContract dbData,
                        WeatherApiDataContract apiData,
                        PreferencesContract sharedPreferencesData,
-                       RxLocation rxLocation
+                       ReactiveLocationProvider reactiveLocation
     ) {
         this.dbData = dbData;
         this.apiData = apiData;
         this.sharedPreferencesData = sharedPreferencesData;
-        this.rxLocation = rxLocation;
+        this.reactiveLocation = reactiveLocation;
     }
 
     @Inject
@@ -71,7 +71,7 @@ public class DataManager implements DataContract {
 
     @Override
     public Single<NowForecastEntity> getNowForecast(@NonNull LocationEntity location) {
-        if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
+        if (SystemServiceUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getCurrentForecast(location)
                     .map(new Function<CurrentForecastApiModel, NowForecastEntity>() {
                         @Override
@@ -104,8 +104,8 @@ public class DataManager implements DataContract {
 
     @Override
     public Single<List<HoursForecastEntity>> getHourForecasts(@NonNull LocationEntity location) {
-        Timber.d("getHourForecasts(), Is location null? " + (location == null));
-        if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
+        Timber.d("getHourForecasts() called");
+        if (SystemServiceUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getHourlyForecast(location)
                     .map(new Function<HourlyForecastApiModel, List<HoursForecastEntity>>() {
                         @Override
@@ -123,7 +123,8 @@ public class DataManager implements DataContract {
                                 }
                             });
                         }
-                    }).doOnError(new Consumer<Throwable>() {
+                    })
+                    .doOnError(new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             Timber.e(throwable);
@@ -135,16 +136,13 @@ public class DataManager implements DataContract {
 
     @Override
     public Single<List<DailyForecastEntity>> getDailyForecasts(@NonNull LocationEntity location) {
-        Timber.d("getDailyForecasts(), Is location null? " + (location == null));
-        if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
+        Timber.d("getDailyForecasts() called");
+        if (SystemServiceUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getDailyForecast(location)
                     .map(new Function<HourlyForecastApiModel, List<DailyForecastEntity>>() {
                         @Override
                         public List<DailyForecastEntity> apply(@NonNull HourlyForecastApiModel apiModel) throws Exception {
-                            Timber.d("received models = " + apiModel.forecasts.size());
-                            List<DailyForecastEntity> dayForecasts = OWMModelToDbModelFactory.createDailyForecastsFromAPI(apiModel);
-                            Timber.d("view model size = " + dayForecasts.size());
-                            return dayForecasts;
+                            return OWMModelToDbModelFactory.createDailyForecastsFromAPI(apiModel);
                         }
                     })
                     .flatMap(new Function<List<DailyForecastEntity>, SingleSource<List<DailyForecastEntity>>>() {
@@ -157,9 +155,10 @@ public class DataManager implements DataContract {
                                 }
                             });
                         }
-                    }).doOnError(new Consumer<Throwable>() {
+                    })
+                    .doOnError(new Consumer<Throwable>() {
                         @Override
-                        public void accept(Throwable throwable) throws Exception {
+                        public void accept(Throwable throwable) {
                             Timber.e(throwable);
                         }
                     });
@@ -182,33 +181,37 @@ public class DataManager implements DataContract {
         return sharedPreferencesData.saveLastCoordinates(coordinates);
     }
 
-    @SuppressLint("MissingPermission")
     @Override
-    public Observable<Coordinates> getBalancedPowerLastCoordinates() {
+    public Observable<Coordinates> locateCurrentPosition() {
+        if (SystemServiceUtils.isGpsEnabled(ProWeatherApp.getAppContext()))
+            return getBalancedPowerLastCoordinates();
+
+        return getLowPowerLastCoordinates();
+    }
+
+    @SuppressLint("MissingPermission")
+    private Observable<Coordinates> getBalancedPowerLastCoordinates() {
         Timber.d("getBalancedPowerLastCoordinates called");
-        return rxLocation
-                .location()
-                .updates(balancedPowerLocationRequest)
+        return reactiveLocation
+                .getUpdatedLocation(balancedPowerLocationRequest)
                 .map(new Function<Location, Coordinates>() {
                     @Override
                     public Coordinates apply(Location location) throws Exception {
-                        Timber.d("getBalancedPowerLastCoordinates() called");
+                        Timber.w("Coordinates are : " + location.getLatitude() + ", " + location.getLongitude());
                         return new Coordinates(location.getLatitude(), location.getLongitude());
                     }
                 });
     }
 
     @SuppressLint("MissingPermission")
-    @Override
-    public Observable<Coordinates> getLowPowerLastCoordinates() {
+    private Observable<Coordinates> getLowPowerLastCoordinates() {
         Timber.d("getLowPowerLastCoordinates called");
-        return rxLocation
-                .location()
-                .updates(lowPowerLocationRequest)
+        return reactiveLocation
+                .getUpdatedLocation(lowPowerLocationRequest)
                 .map(new Function<Location, Coordinates>() {
                     @Override
                     public Coordinates apply(Location location) throws Exception {
-                        Timber.d("getLowPowerLastCoordinates() called");
+                        Timber.w("Coordinates are : " + location.getLatitude() + ", " + location.getLongitude());
                         return new Coordinates(location.getLatitude(), location.getLongitude());
                     }
                 });
@@ -216,7 +219,8 @@ public class DataManager implements DataContract {
 
     @Override
     public Single<List<LocationEntity>> getAllLocationsByName(String locationName, int resultsCount) {
-        if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
+        Timber.d("getAllLocationsByName() called");
+        if (SystemServiceUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getLocationsByName(locationName, resultsCount)
                     .map(new Function<LocationForecastApiModel, List<LocationEntity>>() {
                         @Override
@@ -234,7 +238,8 @@ public class DataManager implements DataContract {
 
     @Override
     public Single<List<LocationEntity>> getLocationsByCoordinates(double latitude, double longitude, int resultsCount) {
-        if (NetworkUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
+        Timber.d("getLocationsByCoordinates() called");
+        if (SystemServiceUtils.isNetworkConnected(ProWeatherApp.getAppContext())) {
             return apiData.getLocationsByCoordinates(latitude, longitude, resultsCount)
                     .map(new Function<LocationForecastApiModel, List<LocationEntity>>() {
                         @Override
@@ -281,6 +286,11 @@ public class DataManager implements DataContract {
     }
 
     @Override
+    public boolean canGetLatestLocation() {
+        return sharedPreferencesData.canUseLatestLocation();
+    }
+
+    @Override
     public Single<Units> getUnits() {
         return Single.just(sharedPreferencesData.getUnits());
     }
@@ -289,5 +299,4 @@ public class DataManager implements DataContract {
     public Completable updateLocationPositions(final List<LocationEntity> locations) {
         return dbData.updateLocations(locations);
     }
-
 }

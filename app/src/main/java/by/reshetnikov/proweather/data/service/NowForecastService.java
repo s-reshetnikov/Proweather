@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.business.nowforecastservice.ServiceForecastInteractorContract;
+import by.reshetnikov.proweather.data.exception.NoLocationException;
 import by.reshetnikov.proweather.data.model.weather.nowforecast.NowForecastViewModel;
 import by.reshetnikov.proweather.di.component.DaggerServiceComponent;
 import by.reshetnikov.proweather.di.module.ServiceModule;
@@ -54,6 +55,8 @@ public class NowForecastService extends JobService {
                     @Override
                     public void onError(Throwable e) {
                         Timber.d("getting forecast data failed");
+                        if (e instanceof NoLocationException)
+                            Timber.d("NoLocationException, getting forecast data failed");
                         Timber.e(e);
                     }
                 });
@@ -67,15 +70,17 @@ public class NowForecastService extends JobService {
         return false;
     }
 
-    private void sendNotification(NowForecastViewModel nowForecast) {
+    private void sendNotification(NowForecastViewModel nowForecastViewModel) {
         Timber.d("send notification called");
         String channelId = createChannel();
 
         Intent intent = new Intent(this, WeatherActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        String contentText = new StringBuilder(nowForecast.getTemperature())
+        String contentText = new StringBuilder(nowForecastViewModel.getLocationName())
+                .append(": ")
+                .append(nowForecastViewModel.getWeatherDescription())
                 .append(", ")
-                .append(nowForecast.getHumidity())
+                .append(nowForecastViewModel.getTemperature())
                 .toString();
 
         Notification notification =
@@ -83,7 +88,6 @@ public class NowForecastService extends JobService {
                         .setContentTitle(getBaseContext().getString(R.string.app_name))
                         .setContentText(contentText)
                         .setSmallIcon(R.drawable.ic_umbrella)
-                        .setNumber(5)
                         .setAutoCancel(false)
                         .setContentIntent(pendingIntent)
                         .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)

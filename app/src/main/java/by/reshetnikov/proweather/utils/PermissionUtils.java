@@ -15,11 +15,11 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 public final class PermissionUtils {
 
     public static boolean isFineLocationGranted(@NonNull Context context) {
-        return ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     public static boolean isCoarseLocationGranted(@NonNull Context context) {
-        return ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
 }
