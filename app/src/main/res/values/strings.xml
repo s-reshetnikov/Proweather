@@ -117,4 +117,6 @@
     <string name="location_name_hint">Location name</string>
     <string name="unable_to_load_forecast">Unable to load forecast</string>
     <string name="description_for_notification_channel">Notifications from ProWeather app</string>
+    <string name="now_forecast_page_title">NOW</string>
+    <string name="daily_forecast_page_title">FORECAST</string>
 </resources>

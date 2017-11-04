@@ -56,8 +56,9 @@ public class NowForecastService extends JobService {
                     public void onError(Throwable e) {
                         Timber.d("getting forecast data failed");
                         if (e instanceof NoLocationException)
-                            Timber.d("NoLocationException, getting forecast data failed");
-                        Timber.e(e);
+                            Timber.w("NoLocationException, getting forecast data failed");
+                        else
+                            Timber.e(e);
                     }
                 });
 

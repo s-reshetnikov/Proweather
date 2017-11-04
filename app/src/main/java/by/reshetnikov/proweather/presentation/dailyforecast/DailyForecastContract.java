@@ -15,6 +15,10 @@ public interface DailyForecastContract {
         void showLoading();
 
         void hideLoading();
+
+        void showTurnInternetOn();
+
+        void showLocationManager();
     }
 
     interface Presenter extends PresenterContract {

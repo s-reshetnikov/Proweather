@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import by.reshetnikov.proweather.business.forecast.ForecastInteractor;
 import by.reshetnikov.proweather.business.forecast.ForecastInteractorContract;
+import by.reshetnikov.proweather.data.exception.NoLocationException;
+import by.reshetnikov.proweather.data.exception.NoSavedForecastDataException;
 import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
@@ -74,9 +76,21 @@ public class DailyForecastPresenter implements DailyForecastContract.Presenter {
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        Timber.e(e);
+                        onErrorResponseReceived(e);
                     }
                 }));
+    }
+
+    private void onErrorResponseReceived(Throwable exception) {
+        if (exception instanceof NoLocationException) {
+            getView().showLocationManager();
+            return;
+        }
+        if (exception instanceof NoSavedForecastDataException) {
+            getView().showTurnInternetOn();
+            return;
+        }
+        Timber.e(exception);
     }
 
     private DailyForecastContract.View getView() {

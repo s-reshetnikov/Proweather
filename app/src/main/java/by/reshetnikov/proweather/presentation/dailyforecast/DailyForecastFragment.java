@@ -25,6 +25,7 @@ import by.reshetnikov.proweather.di.component.ActivityComponent;
 import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
 import by.reshetnikov.proweather.di.module.ActivityModule;
 import by.reshetnikov.proweather.presentation.dailyforecast.adapter.DailyForecastRecyclerViewAdapter;
+import by.reshetnikov.proweather.presentation.weather.WeatherContract;
 import by.reshetnikov.proweather.utils.ToastUtils;
 import timber.log.Timber;
 
@@ -70,8 +71,7 @@ public class DailyForecastFragment extends Fragment implements DailyForecastCont
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Timber.d("onCreateView() called");
         View view = inflater.inflate(R.layout.fragment_weather_forecast, container, false);
         component.inject(this);
@@ -131,6 +131,17 @@ public class DailyForecastFragment extends Fragment implements DailyForecastCont
     @Override
     public void hideLoading() {
         refreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void showTurnInternetOn() {
+        ToastUtils.showTurnInternetOnToast();
+    }
+
+    @Override
+    public void showLocationManager() {
+        WeatherContract.View parentView = (WeatherContract.View) getActivity();
+        parentView.startLocationActivity();
     }
 
     private void setupForecastsRecyclerView() {

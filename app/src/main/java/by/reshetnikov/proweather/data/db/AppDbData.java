@@ -240,6 +240,7 @@ public class AppDbData implements DbContract {
         LocationEntity defaultLocation = locationDao.queryBuilder()
                 .where(LocationEntityDao.Properties.Position.eq(firstPosition))
                 .unique();
+
         if (defaultLocation == null)
             Timber.w("default location is not set");
         return defaultLocation;

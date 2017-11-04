@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -96,7 +95,7 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
         Timber.d("onAttach");
         if (context instanceof AppCompatActivity) {
             component = DaggerActivityComponent.builder()
-                    .activityModule(new ActivityModule((AppCompatActivity) context))
+                    .activityModule(new ActivityModule(context))
                     .applicationComponent(((ProWeatherApp) getActivity().getApplication()).getComponent())
                     .build();
         }
@@ -309,11 +308,6 @@ public class NowForecastFragment extends Fragment implements NowForecastContract
 
     @Override
     public void showTurnInternetOn() {
-        Toast toast = Toast.makeText(this.getContext(), "Turn on internet to get weather forecast", Toast.LENGTH_LONG);
-        ToastUtils.showToast(toast);
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onCurrentWeatherFragmentInteraction(String message);
+        ToastUtils.showTurnInternetOnToast();
     }
 }

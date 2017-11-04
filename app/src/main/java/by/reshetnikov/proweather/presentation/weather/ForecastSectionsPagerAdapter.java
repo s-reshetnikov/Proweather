@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import by.reshetnikov.proweather.ProWeatherApp;
+import by.reshetnikov.proweather.R;
 import by.reshetnikov.proweather.presentation.dailyforecast.DailyForecastFragment;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastFragment;
 
@@ -36,9 +38,9 @@ public class ForecastSectionsPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "NOW";
+                return ProWeatherApp.getAppContext().getString(R.string.now_forecast_page_title);
             case 1:
-                return "FORECAST";
+                return ProWeatherApp.getAppContext().getString(R.string.daily_forecast_page_title);
         }
         return null;
     }

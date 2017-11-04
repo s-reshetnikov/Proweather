@@ -81,11 +81,7 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        Timber.e(e);
-                        if (e instanceof NoSavedForecastDataException)
-                            getView().showTurnInternetOn();
-                        if (e instanceof NoLocationException)
-                            getView().showLocationManager();
+                        onErrorResponseReceived(e);
                     }
                 }));
     }
@@ -116,9 +112,13 @@ public class NowForecastPresenter implements NowForecastContract.Presenter {
     private void onErrorResponseReceived(Throwable exception) {
         if (exception instanceof NoLocationException) {
             getView().showLocationManager();
+            return;
         }
-        if (exception instanceof NoSavedForecastDataException)
+        if (exception instanceof NoSavedForecastDataException) {
             getView().showTurnInternetOn();
+            return;
+        }
+        Timber.e(exception);
     }
 
     private NowForecastContract.View getView() {
