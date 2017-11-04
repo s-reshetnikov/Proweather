@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="db_name" formatted="false" translatable="false">proweatherDb</string>
+    <string name="open_weather_map_api_url" formatted="false" translatable="false">http://api.openweathermap.org/</string>
+    <integer name="internet_connection_timeout" formatted="false" translatable="false">3</integer>
+    <integer name="location_service_window_start" formatted="false" translatable="false">5</integer>
+    <integer name="location_service_window_end" formatted="false" translatable="false">10</integer>
+    <integer name="forecast_service_window_start" formatted="false" translatable="false">5</integer>
+    <integer name="forecast_service_window_end" formatted="false" translatable="false">10</integer>
+    <integer name="location_low_power_fastest_interval" formatted="false" translatable="false">5
+    </integer>
+    <integer name="location_low_power_slowest_interval" formatted="false" translatable="false">7
+    </integer>
+    <integer name="location_balanced_power_fastest_interval" formatted="false" translatable="false">
+        5
+    </integer>
+    <integer name="location_balanced_power_slowest_interval" formatted="false" translatable="false">
+        7
+    </integer>
+</resources>
