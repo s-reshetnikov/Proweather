@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -25,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -89,7 +87,7 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
         super.onAttach(context);
         if (context instanceof AppCompatActivity) {
             component = DaggerActivityComponent.builder()
-                    .activityModule(new ActivityModule((AppCompatActivity) context))
+                    .activityModule(new ActivityModule(context))
                     .applicationComponent(((ProWeatherApp) getActivity().getApplication()).getComponent())
                     .build();
         }
@@ -219,19 +217,21 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
             return;
 
         map = googleMap;
-        setUpMap();
+        setUpMyLocationOnMap();
         presenter.onMapReady();
     }
 
     @Override
     public boolean checkOrRequestLocationPermissions() {
-        final LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
-        }
 
         return checkLocationPermission();
+    }
+
+    @Override
+    public boolean isGPSEnabled() {
+        final LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     @Override
@@ -305,9 +305,10 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
 
     // check performed at @class PermissionUtils
     @SuppressLint("MissingPermission")
-    private void setUpMap() {
-        if (PermissionUtils.isCoarseLocationGranted(this.getActivity()) || PermissionUtils.isFineLocationGranted(this.getActivity())) {
+    private void setUpMyLocationOnMap() {
+        if (!PermissionUtils.isCoarseLocationGranted() || !PermissionUtils.isFineLocationGranted()) {
             Timber.d("location permissions denied");
+            presenter.locationPermissionsDenied();
             return;
         }
         map.getUiSettings().setMyLocationButtonEnabled(true);
@@ -324,7 +325,7 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
     }
 
     private boolean checkLocationPermission() {
-        if (PermissionUtils.isCoarseLocationGranted(this.getActivity()) && PermissionUtils.isFineLocationGranted(this.getActivity())) {
+        if (PermissionUtils.isCoarseLocationGranted() && PermissionUtils.isFineLocationGranted()) {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(), ACCESS_FINE_LOCATION)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(), ACCESS_COARSE_LOCATION)) {
@@ -352,20 +353,6 @@ public class MapFragment extends Fragment implements MapContract.View, MapFragme
             return false;
         } else {
             return true;
-        }
-    }
-
-
-    private void checkPlayServicesAvailable() {
-        final GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        final int status = apiAvailability.isGooglePlayServicesAvailable(this.getContext());
-
-        if (status != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(status)) {
-                apiAvailability.getErrorDialog(this.getActivity(), status, 1).show();
-            } else {
-                Snackbar.make(mapView, R.string.play_services_unavailiable, Snackbar.LENGTH_INDEFINITE).show();
-            }
         }
     }
 

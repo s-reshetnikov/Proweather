@@ -28,8 +28,9 @@ import by.reshetnikov.proweather.data.network.openweathermap.model.forecastweath
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationForecastApiModel;
 import by.reshetnikov.proweather.data.network.openweathermap.model.location.LocationWeatherApiModel;
 import by.reshetnikov.proweather.data.preferences.PreferencesContract;
-import by.reshetnikov.proweather.di.qualifier.BalancedPowerAccuracy;
-import by.reshetnikov.proweather.di.qualifier.LowPower;
+import by.reshetnikov.proweather.di.qualifier.locationrequest.BalancedPowerAccuracy;
+import by.reshetnikov.proweather.di.qualifier.locationrequest.LowPower;
+import by.reshetnikov.proweather.utils.PermissionUtils;
 import by.reshetnikov.proweather.utils.SystemServiceUtils;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -282,7 +283,9 @@ public class DataManager implements DataContract {
 
     @Override
     public boolean canUseCurrentLocation() {
-        return sharedPreferencesData.getCanUseCurrentLocationPreference();
+        return (PermissionUtils.isFineLocationGranted() ||
+                PermissionUtils.isCoarseLocationGranted()) &&
+                sharedPreferencesData.getCanUseCurrentLocationPreference();
     }
 
     @Override

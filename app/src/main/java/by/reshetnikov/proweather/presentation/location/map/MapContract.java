@@ -19,6 +19,8 @@ public interface MapContract {
 
         boolean checkOrRequestLocationPermissions();
 
+        boolean isGPSEnabled();
+
         void showLocationPermissionIsNotGranted();
 
         void addMarkerOnMap(LocationEntity locationEntity, boolean moveCamera);
@@ -42,8 +44,10 @@ public interface MapContract {
 
     interface Presenter extends PresenterContract {
 
+        @Override
         void start();
 
+        @Override
         void stop();
 
         void setView(@NonNull MapContract.View view);

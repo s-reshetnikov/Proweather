@@ -3,8 +3,11 @@ package by.reshetnikov.proweather.di.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.android.gms.location.LocationRequest;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -26,10 +29,16 @@ import by.reshetnikov.proweather.data.network.WeatherApiDataContract;
 import by.reshetnikov.proweather.data.network.openweathermap.OpenWeatherMapApiService;
 import by.reshetnikov.proweather.data.preferences.AppSharedPreferencesData;
 import by.reshetnikov.proweather.data.preferences.PreferencesContract;
+import by.reshetnikov.proweather.data.service.LocationService;
+import by.reshetnikov.proweather.data.service.NowForecastService;
 import by.reshetnikov.proweather.di.qualifier.ApplicationContext;
-import by.reshetnikov.proweather.di.qualifier.BalancedPowerAccuracy;
 import by.reshetnikov.proweather.di.qualifier.DatabaseInfo;
-import by.reshetnikov.proweather.di.qualifier.LowPower;
+import by.reshetnikov.proweather.di.qualifier.job.ImmediateForecast;
+import by.reshetnikov.proweather.di.qualifier.job.ImmediateLocation;
+import by.reshetnikov.proweather.di.qualifier.job.IntervalForecast;
+import by.reshetnikov.proweather.di.qualifier.job.IntervalLocation;
+import by.reshetnikov.proweather.di.qualifier.locationrequest.BalancedPowerAccuracy;
+import by.reshetnikov.proweather.di.qualifier.locationrequest.LowPower;
 import by.reshetnikov.proweather.utils.AppConstants;
 import by.reshetnikov.proweather.utils.scheduler.AppThreadSchedulerProvider;
 import by.reshetnikov.proweather.utils.scheduler.ThreadSchedulerProvider;
@@ -159,27 +168,19 @@ public class ApplicationModule {
     @Provides
     @LowPower
     LocationRequest provideLowPowerLocationRequest() {
-        //10 min
-        int fastestInterval = 10 * 60 * 60 * 1000;
-        //60 min
-        int slowestInterval = 60 * 60 * 60 * 1000;
         return LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_LOW_POWER)
-                .setFastestInterval(fastestInterval)
-                .setInterval(slowestInterval);
+                .setFastestInterval(AppConstants.LOCATION_LOW_POWER_FASTEST_INTERVAL)
+                .setInterval(AppConstants.LOCATION_LOW_POWER_SLOWEST_INTERVAL);
     }
 
     @Provides
     @BalancedPowerAccuracy
     LocationRequest provideBalancedPowerAccuracyLocationRequest() {
-        //7 min
-        int fastestInterval = 7 * 60 * 60 * 1000;
-        //30 min
-        int slowestInterval = 30 * 60 * 60 * 1000;
         return LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                .setFastestInterval(fastestInterval)
-                .setInterval(slowestInterval);
+                .setFastestInterval(AppConstants.LOCATION_BALANCED_POWER_FASTEST_INTERVAL)
+                .setInterval(AppConstants.LOCATION_BALANCED_POWER_SLOWEST_INTERVAL);
     }
 
     @Provides
@@ -198,5 +199,59 @@ public class ApplicationModule {
     @Singleton
     FirebaseJobDispatcher provideFirebaseJobDispatcher(GooglePlayDriver googlePlayDriver) {
         return new FirebaseJobDispatcher(googlePlayDriver);
+    }
+
+    @Provides
+    @ImmediateLocation
+    Job provideImmediateLocationJob(FirebaseJobDispatcher firebaseJobDispatcher) {
+        return firebaseJobDispatcher.newJobBuilder()
+                .setService(LocationService.class)
+                .setTag("ImmediateLocationJob")
+                .setRecurring(false)
+                .setTrigger(Trigger.executionWindow(AppConstants.LOCATION_SERVICE_WINDOW_START,
+                        AppConstants.LOCATION_SERVICE_WINDOW_END))
+                .setReplaceCurrent(true)
+                .addConstraint(Constraint.ON_ANY_NETWORK)
+                .build();
+    }
+
+    @Provides
+    @IntervalLocation
+    Job provideIntervalLocationJob(FirebaseJobDispatcher firebaseJobDispatcher) {
+        return firebaseJobDispatcher.newJobBuilder()
+                .setService(LocationService.class)
+                .setTag("IntervalLocationJob")
+                .setRecurring(true)
+                .setTrigger(Trigger.executionWindow(AppConstants.LOCATION_SERVICE_WINDOW_START,
+                        AppConstants.LOCATION_SERVICE_WINDOW_END))
+                .setReplaceCurrent(true)
+                .addConstraint(Constraint.ON_ANY_NETWORK)
+                .build();
+    }
+
+    @Provides
+    @ImmediateForecast
+    Job provideImmediateForecastJob(FirebaseJobDispatcher firebaseJobDispatcher) {
+        return firebaseJobDispatcher.newJobBuilder()
+                .setService(NowForecastService.class)
+                .setTag("ImmediateNowForecastJob")
+                .setRecurring(false)
+                .setTrigger(Trigger.NOW)
+                .setReplaceCurrent(true)
+                .build();
+    }
+
+    @Provides
+    @IntervalForecast
+    Job provideIntervalForecastJob(FirebaseJobDispatcher firebaseJobDispatcher) {
+        return firebaseJobDispatcher.newJobBuilder()
+                .setService(NowForecastService.class)
+                .setTag("IntervalNowForecastJob")
+                .setRecurring(true)
+                .setTrigger(Trigger.executionWindow(AppConstants.FORECAST_SERVICE_WINDOW_START,
+                        AppConstants.FORECAST_SERVICE_WINDOW_END))
+                .setReplaceCurrent(true)
+                .addConstraint(Constraint.ON_ANY_NETWORK)
+                .build();
     }
 }

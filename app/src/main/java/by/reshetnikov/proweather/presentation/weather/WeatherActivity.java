@@ -24,24 +24,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Trigger;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import javax.inject.Inject;
 
 import by.reshetnikov.proweather.BuildConfig;
 import by.reshetnikov.proweather.ProWeatherApp;
 import by.reshetnikov.proweather.R;
-import by.reshetnikov.proweather.data.service.LocationService;
 import by.reshetnikov.proweather.data.service.NowForecastService;
-import by.reshetnikov.proweather.di.component.ActivityComponent;
 import by.reshetnikov.proweather.di.component.DaggerActivityComponent;
 import by.reshetnikov.proweather.di.module.ActivityModule;
+import by.reshetnikov.proweather.di.qualifier.job.ImmediateForecast;
+import by.reshetnikov.proweather.di.qualifier.job.IntervalLocation;
 import by.reshetnikov.proweather.presentation.location.LocationActivity;
 import by.reshetnikov.proweather.presentation.nowforecast.NowForecastFragment;
 import by.reshetnikov.proweather.presentation.settings.SettingsActivity;
+import by.reshetnikov.proweather.utils.AppConstants;
 import by.reshetnikov.proweather.utils.PermissionUtils;
 import by.reshetnikov.proweather.utils.ToastUtils;
 import timber.log.Timber;
@@ -59,30 +61,37 @@ public class WeatherActivity extends AppCompatActivity
     WeatherContract.Presenter presenter;
     @Inject
     FirebaseJobDispatcher firebaseJobDispatcher;
+    @Inject
+    @ImmediateForecast
+    Job immediateForecastJob;
+    @Inject
+    @IntervalLocation
+    Job intervalLocationJob;
 
-    private ActivityComponent component;
     private ForecastSectionsPagerAdapter forecastSectionsPagerAdapter;
-    private ViewPager mViewPager;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.d("onCreate() start");
         setContentView(R.layout.activity_weather);
-        component = DaggerActivityComponent.builder()
+
+        DaggerActivityComponent.builder()
                 .activityModule(new ActivityModule(this))
                 .applicationComponent(((ProWeatherApp) getApplication()).getComponent())
-                .build();
-        component.inject(this);
+                .build()
+                .inject(this);
+
         presenter.setView(this);
         forecastSectionsPagerAdapter = new ForecastSectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById(R.id.container);
-        mViewPager.setAdapter(forecastSectionsPagerAdapter);
+        viewPager = findViewById(R.id.container);
+        viewPager.setAdapter(forecastSectionsPagerAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.setupWithViewPager(viewPager);
         Toolbar toolbar = findViewById(R.id.location_toolbar);
         setSupportActionBar(toolbar);
 
@@ -94,6 +103,7 @@ public class WeatherActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        presenter.create();
         Timber.d("onCreate() end");
     }
 
@@ -169,15 +179,13 @@ public class WeatherActivity extends AppCompatActivity
 
     @Override
     public boolean hasLocationPermissions() {
-        return PermissionUtils.isFineLocationGranted(this) && PermissionUtils.isCoarseLocationGranted(this);
+        return PermissionUtils.isFineLocationGranted() && PermissionUtils.isCoarseLocationGranted();
     }
 
     @Override
     public void requestLocationPermission() {
 
         final String[] permissions = {ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION};
-        boolean coarse = ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION);
-        boolean fine = ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_FINE_LOCATION);
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION) &&
                 ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_FINE_LOCATION)) {
@@ -246,40 +254,52 @@ public class WeatherActivity extends AppCompatActivity
     @Override
     public void startNowForecastService() {
         Timber.d("try to start forecast service");
-        //in seconds
-        int from = 1;
-        int to = 5;
 
         firebaseJobDispatcher.mustSchedule(
                 firebaseJobDispatcher.newJobBuilder()
                         .setService(NowForecastService.class)
                         .setTag("NowForecastService")
                         .setRecurring(true)
-                        .setTrigger(Trigger.executionWindow(from, to))
+                        .setTrigger(Trigger.executionWindow(AppConstants.FORECAST_SERVICE_WINDOW_START,
+                                AppConstants.FORECAST_SERVICE_WINDOW_END))
                         .setReplaceCurrent(true)
                         .build()
         );
         Timber.d("service should be started");
     }
 
+    @Override
+    public void startNowForecastServiceImmediate() {
+        Timber.d("try to start forecast job");
+        firebaseJobDispatcher.mustSchedule(immediateForecastJob);
+        Timber.d("job started");
+    }
 
     @Override
     public void startLocationService() {
-        //in seconds
-        int from = 1;
-        int to = 5;
-        GooglePlayDriver playDriver = new GooglePlayDriver(getApplicationContext());
-        FirebaseJobDispatcher jobDispatcher = new FirebaseJobDispatcher(playDriver);
-        jobDispatcher.mustSchedule(
-                jobDispatcher.newJobBuilder()
-                        .setService(LocationService.class)
-                        .setTag("LocationService")
-                        .setRecurring(true)
-                        .setTrigger(Trigger.executionWindow(from, to))
-                        .setReplaceCurrent(true)
-                        .addConstraint(Constraint.ON_ANY_NETWORK)
-                        .build()
-        );
+        Timber.d("try to start location job");
+        firebaseJobDispatcher.mustSchedule(intervalLocationJob);
+        Timber.d("job started");
+    }
+
+    @Override
+    public boolean checkPlayServicesAvailable() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int status = apiAvailability.isGooglePlayServicesAvailable(getApplicationContext());
+        return status == ConnectionResult.SUCCESS;
+    }
+
+    @Override
+    public void tryToResolveGooglePlayServiceAvailabilityError() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int status = apiAvailability.isGooglePlayServicesAvailable(getApplicationContext());
+
+        if (apiAvailability.isUserResolvableError(status)) {
+            apiAvailability.getErrorDialog(this, status, 1).show();
+        } else {
+            Snackbar.make(viewPager, R.string.play_services_unavailiable, Snackbar.LENGTH_INDEFINITE).show();
+        }
+
     }
 
 }

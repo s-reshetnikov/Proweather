@@ -1,4 +1,4 @@
-package by.reshetnikov.proweather.di.qualifier;
+package by.reshetnikov.proweather.di.qualifier.locationrequest;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

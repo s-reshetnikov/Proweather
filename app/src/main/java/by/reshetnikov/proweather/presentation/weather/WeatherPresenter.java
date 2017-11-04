@@ -22,13 +22,17 @@ public class WeatherPresenter implements WeatherContract.Presenter {
 
     @Override
     public void stop() {
-
+        disposables.dispose();
     }
 
     @Override
     public void start() {
-        tryToStartLocationService();
-        getView().startNowForecastService();
+        if (!getView().checkPlayServicesAvailable()) {
+            getView().tryToResolveGooglePlayServiceAvailabilityError();
+        } else {
+            tryToStartLocationService();
+            getView().startNowForecastService();
+        }
     }
 
     private void tryToStartLocationService() {
@@ -64,6 +68,13 @@ public class WeatherPresenter implements WeatherContract.Presenter {
         getView().openApplicationSettings();
     }
 
+    @Override
+    public void create() {
+        if (!getView().checkPlayServicesAvailable()) {
+            getView().tryToResolveGooglePlayServiceAvailabilityError();
+        }
+    }
+
     private WeatherContract.View getView() {
         if (viewRef != null)
             return viewRef.get();
@@ -74,5 +85,4 @@ public class WeatherPresenter implements WeatherContract.Presenter {
     public void setView(WeatherContract.View view) {
         this.viewRef = new WeakReference<>(view);
     }
-
 }

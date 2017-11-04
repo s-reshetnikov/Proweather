@@ -145,6 +145,7 @@ public class MapPresenter implements MapContract.Presenter {
     public void locationPermissionsDenied() {
         Timber.d("locationPermissionsDenied()");
         getView().showLocationPermissionIsNotGranted();
+        getView().checkOrRequestLocationPermissions();
     }
 
     private MapContract.View getView() {

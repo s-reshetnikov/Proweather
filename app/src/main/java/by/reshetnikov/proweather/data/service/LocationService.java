@@ -1,9 +1,9 @@
 package by.reshetnikov.proweather.data.service;
 
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
-import com.firebase.jobdispatcher.Trigger;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -15,6 +15,7 @@ import by.reshetnikov.proweather.data.DataContract;
 import by.reshetnikov.proweather.data.model.Coordinates;
 import by.reshetnikov.proweather.di.component.DaggerServiceComponent;
 import by.reshetnikov.proweather.di.module.ServiceModule;
+import by.reshetnikov.proweather.di.qualifier.job.ImmediateForecast;
 import io.reactivex.Completable;
 import io.reactivex.CompletableSource;
 import io.reactivex.disposables.CompositeDisposable;
@@ -30,14 +31,15 @@ import timber.log.Timber;
 
 public class LocationService extends JobService {
 
-    private final String serviceTag = "ImmediateNowForecastLocationService";
-
     @Inject
     DataContract dataManager;
     @Inject
     CompositeDisposable compositeDisposables;
     @Inject
     FirebaseJobDispatcher firebaseJobDispatcher;
+    @Inject
+    @ImmediateForecast
+    Job immediateForecastJob;
 
     @Override
     public boolean onStartJob(JobParameters job) {
@@ -78,7 +80,7 @@ public class LocationService extends JobService {
     public boolean onStopJob(JobParameters job) {
         Timber.d("onStopJob() called");
         compositeDisposables.clear();
-        firebaseJobDispatcher.cancel(serviceTag);
+        firebaseJobDispatcher.cancel(immediateForecastJob.getTag());
         return false;
     }
 
@@ -102,14 +104,6 @@ public class LocationService extends JobService {
     }
 
     private void startNowForecastService() {
-        firebaseJobDispatcher.mustSchedule(
-                firebaseJobDispatcher.newJobBuilder()
-                        .setService(NowForecastService.class)
-                        .setTag(serviceTag)
-                        .setRecurring(false)
-                        .setTrigger(Trigger.NOW)
-                        .setReplaceCurrent(false)
-                        .build()
-        );
+        firebaseJobDispatcher.mustSchedule(immediateForecastJob);
     }
 }

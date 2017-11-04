@@ -23,12 +23,20 @@ public interface WeatherContract {
 
         void startNowForecastService();
 
+        void startNowForecastServiceImmediate();
+
         void startLocationService();
+
+        boolean checkPlayServicesAvailable();
+
+        void tryToResolveGooglePlayServiceAvailabilityError();
     }
 
     interface Presenter extends PresenterContract {
 
         void setView(WeatherContract.View view);
+
+        void create();
 
         void onLocationPermissionsResult(boolean allowed);
 
