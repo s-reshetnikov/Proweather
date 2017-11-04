@@ -41,7 +41,6 @@ import by.reshetnikov.proweather.di.module.ActivityModule;
 import by.reshetnikov.proweather.di.qualifier.job.ImmediateForecast;
 import by.reshetnikov.proweather.di.qualifier.job.IntervalLocation;
 import by.reshetnikov.proweather.presentation.location.LocationActivity;
-import by.reshetnikov.proweather.presentation.nowforecast.NowForecastFragment;
 import by.reshetnikov.proweather.presentation.settings.SettingsActivity;
 import by.reshetnikov.proweather.utils.AppConstants;
 import by.reshetnikov.proweather.utils.PermissionUtils;
@@ -50,8 +49,7 @@ import timber.log.Timber;
 
 
 public class WeatherActivity extends AppCompatActivity
-        implements WeatherContract.View, NavigationView.OnNavigationItemSelectedListener,
-        NowForecastFragment.OnFragmentInteractionListener {
+        implements WeatherContract.View, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final String ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -170,11 +168,6 @@ public class WeatherActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.weather_view);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onCurrentWeatherFragmentInteraction(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

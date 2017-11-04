@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Proweather</string>
+    <string name="app_name">ProWeather</string>
     <string name="app_package_name" translatable="false">by.reshetnikov.proweather</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -13,35 +13,35 @@
     <!-- Example General settings -->
 
     <string-array name="pref_temperature_units_titles">
-        <item>Celsius</item>
-        <item>Kelvin</item>
-        <item>Fahrenheit</item>
+        <item>@string/celsius</item>
+        <item>@string/kelvin</item>
+        <item>@string/fahrenheit</item>
     </string-array>
 
     <string-array name="pref_temperature_units_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
+        <item>@string/zero</item>
+        <item>@string/one</item>
+        <item>@string/two</item>
     </string-array>
 
     <string-array name="pref_wind_units_titles">
-        <item>Meters per second (m/s)</item>
-        <item>Miles per hour (mph)</item>
+        <item>@string/wind_units_title_mps</item>
+        <item>@string/wind_units_title_mph</item>
     </string-array>
 
     <string-array name="pref_wind_units_values">
-        <item>0</item>
-        <item>1</item>
+        <item>@string/zero</item>
+        <item>@string/one</item>
     </string-array>
 
     <string-array name="pref_distance_units_titles">
-        <item>Kilometres (km)</item>
-        <item>Miles (mi)</item>
+        <item>@string/distance_title_km</item>
+        <item>@string/distance_title_mi</item>
     </string-array>
 
     <string-array name="pref_distance_units_values">
-        <item>0</item>
-        <item>1</item>
+        <item>@string/zero</item>
+        <item>@string/one</item>
     </string-array>
 
     <!-- Example settings for Data & Sync -->
@@ -111,12 +111,21 @@
     <string name="yes">yes</string>
     <string name="no">No</string>
     <string name="gps_disabled_quastion_message">Your GPS seems to be disabled, do you want to enable it?</string>
-    <string name="title_activity_temp">TempActivity</string>
     <string name="permissions_not_granted">Permissions was not granted</string>
-    <string name="play_services_unavailiable">Google Play Services unavailable. Some features will be disabled</string>
+    <string name="play_services_unavailiable">Google Play Services unavailable. App will not  work without it.</string>
     <string name="location_name_hint">Location name</string>
     <string name="unable_to_load_forecast">Unable to load forecast</string>
     <string name="description_for_notification_channel">Notifications from ProWeather app</string>
     <string name="now_forecast_page_title">NOW</string>
     <string name="daily_forecast_page_title">FORECAST</string>
+    <string name="celsius">Celsius (℃)</string>
+    <string name="kelvin">Kelvin (K)</string>
+    <string name="fahrenheit">Fahrenheit (℉)</string>
+    <string name="zero" translatable="false">0</string>
+    <string name="one" translatable="false">1</string>
+    <string name="two" translatable="false">2</string>
+    <string name="distance_title_km">Kilometres (km)</string>
+    <string name="distance_title_mi">Miles (mi)</string>
+    <string name="wind_units_title_mps">Meters per second (m/s)</string>
+    <string name="wind_units_title_mph">Miles per hour (mph)</string>
 </resources>
